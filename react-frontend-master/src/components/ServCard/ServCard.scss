@@ -1,0 +1,164 @@
+.serv-card{
+
+    * {
+        outline: none;
+        transition-duration: 0.3s;
+    }
+
+    width: 440px;
+    height: 220px;
+    background-color: var(--main);
+    border-radius: 50px;
+    padding:32px 40px 40px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition-duration: 0.3s;
+    transform: none;
+    p {
+        margin: 0px;
+    }
+
+    .card-title-container{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+
+        .serv-status-online,
+        .serv-status-offline,
+        .serv-status-starting,
+        .serv-status-loading,
+        .serv-status-empty{
+            cursor: default;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            border-radius: 10px;
+
+            .status-icon{
+                margin-right: 20px;
+                font-size: 22px;
+            }
+
+            p {
+                font-size: 18px;
+            }
+        }
+
+        .serv-status-online{
+            background: var(--green);
+        }
+
+        .serv-status-offline{
+            background: var(--red);
+        }
+
+        .serv-status-starting{
+            background: var(--yellow);
+        }
+
+        .serv-status-empty{
+            background: rgb(136, 136, 136);
+        }
+
+        .name-container{
+            overflow: hidden;
+
+            .card-name{
+                font-weight: 720;
+                font-size: 28px;
+            }
+    
+            .card-name-input-1,
+            .card-name-input-2{
+                
+                width: 85%;
+                border: none;
+                padding: none;
+                font-family: "Nunito Sans", sans-serif;
+                font-size: 28px;
+                background:transparent;
+                color: white;
+                font-weight: 650;
+            }            
+
+            .card-name-input-1::placeholder{
+                color: #d0c8ff4b;
+                font-weight: 300;
+                font-size: 20px;
+                font-style: italic;
+            }
+
+            .card-name-input-2::placeholder{
+                color: #d11d1d;
+                font-weight: 350;
+                font-size: 20px;
+                font-style: italic;
+            }
+        }
+    }
+
+    .card-properties{
+        cursor: default;
+        display: flex;
+        margin-left: 2px;
+
+        div{
+            display: flex;
+            flex-direction: column;
+            margin-right: 20px;
+
+            p{
+                margin-bottom: 10px;
+            }
+
+            
+        }
+        .left{
+
+            p{
+                color: var(--light);
+                font-weight: 600;
+            }
+        }
+    }
+
+    .manage-button{
+        cursor: pointer;
+        display: flex;
+        padding: 10px 30px 10px 30px;
+        border-radius: 150px;
+        background: rgba(255, 255, 255, 1);
+        border: solid 2px white;
+        font-size: 18px;
+        width: fit-content;
+        margin-top: 10px;
+        transition-duration: 0.3s;
+
+        &:hover,
+        &:focus{
+            background: rgba(255, 255, 255, 0.4);
+
+            p{
+                color: white;
+            }
+        }
+
+        &:active{
+            background: rgba(255, 255, 255, 0);
+        }
+
+        p {           
+            color: var(--main);
+            transition-duration: 0.3s;
+        }
+    }
+}
+
+.serv-card:hover,
+.serv-card:focus{
+    transform: scale(1.03,1.03);
+    box-shadow: 0 0 17px 17px #0c0c0cb4;
+}
