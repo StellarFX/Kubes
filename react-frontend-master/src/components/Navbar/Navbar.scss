@@ -67,7 +67,7 @@
         padding: 0 20px;
 
         a, Link{
-            color: white;
+            color: rgb(186, 173, 206);
             text-decoration: none;
             cursor: pointer;
             align-items: center;
@@ -82,6 +82,10 @@
                 margin-right: 2em;
                 transition-duration: 0s;
                 -webkit-transition: 0s;
+            }
+
+            &:hover:not(.active){
+                color: rgb(235, 231, 241);
             }
         }
 

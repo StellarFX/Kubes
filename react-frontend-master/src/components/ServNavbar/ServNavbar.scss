@@ -1,0 +1,32 @@
+.serv-navbar{
+
+    border-right: 1px solid #262333;
+    padding-right: 4rem;
+    min-width: 9.8rem;
+    max-width: 9.8rem;
+    display: flex;
+    flex-direction: column;
+
+    a{
+        transition: 0.3s;
+        margin:0;
+        color: #7f759d;
+        margin-top: 2rem;
+        font-size: 1.1rem;
+        text-decoration: none;
+
+        svg{
+            margin-right: 2rem;
+        }
+
+        &:hover:not(.serv-active){
+            transition: 0;
+            color: #b8adda;
+        }
+    }
+
+    .serv-active{
+        cursor: default;
+        color: var(--main);
+    }
+}
