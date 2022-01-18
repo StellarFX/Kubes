@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import Dashboard from './Pages/Dashboard';
+import Servers from './Pages/Servers';
 import {
   BrowserRouter as Router,
   Routes,
@@ -11,10 +12,11 @@ import Navbar from './components/Navbar/Navbar';
 
 ReactDOM.render(
   <div className='main-container'>
-    <Navbar />
     <Router>
+      <Navbar />
       <Routes>
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard" element={<Dashboard />}/>
+        <Route path="/servers" element={<Servers />} />
       </Routes>
 
     </Router>

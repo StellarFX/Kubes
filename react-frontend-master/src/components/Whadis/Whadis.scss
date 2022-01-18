@@ -1,0 +1,39 @@
+.whadis-container{
+
+    background: var(--dark);
+    padding: 0 40px 40px 40px;
+    border-radius: 25px;
+    width: 440px;
+    overflow: hidden;
+
+    .title-container{
+        display: flex;
+        margin-bottom: 30px;
+        padding-top: 25px;
+        align-items: center;
+
+        .title-icon{
+            font-size: 40px;
+            color: var(--main);
+            filter: drop-shadow(3px 2px 1px #7547ff4d);
+        }
+
+        .title{
+            font-size: 35px;
+            font-weight: 700;
+            margin: 0;
+            margin-left: 25px;
+        }
+
+    }
+
+    .main-text-container{
+
+        .whadis{
+            color: var(--light);
+            margin: 0;
+        }
+
+    }
+
+}

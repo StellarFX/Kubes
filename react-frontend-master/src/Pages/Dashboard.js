@@ -1,4 +1,5 @@
 import ServCard from '../components/ServCard/ServCard.jsx';
+import Whadis from '../components/Whadis/Whadis.jsx';
 import { faGlobe } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react';
@@ -38,42 +39,39 @@ function Dashboard() {
 
   return (
     
-    <div className='content-container'>
-
-      <p className='main-title'>Dashboard</p>
-
-
-      <div className='last-serv-container'>
-        <p className='last-serv-title'>Last server launched</p>
-
-        <div className='servcard-container'>
-          <ServCard />
-        </div>
-      </div>
-
-
-      <div className='ip-card-container'>
-
-        <div className='ip-title-container'>
-          <FontAwesomeIcon className='ip-icon' icon={faGlobe}/>
-          <p className='ip-title'>Your IP</p>
-          <p className='copy-link' onClick={() => Copy()}>Click to copy</p>
-
-          
-        </div>
-
-        <div className='ip-container' onClick={() => Copy()}>
-          <div className='copied-msg' style={style}>
-            <p className='copied'>Copied!</p>
-            <div className='arrow'></div>
+    <div className='page-main-container'>
+      <p className='page-title'>Dashboard</p>
+      <div className='page-content' id='dc'>
+        <div className='dashboard-left' id="dl">
+          <div className='servcard-container'>
+            <p className='last-serv'>Last server launched</p>
+            <ServCard status="1"/>
           </div>
-          
-          <p className='ip' tabindex="1">{IP}</p>
-        </div>
-      </div>
-      
-    </div>
 
+          <div className='ip-card-container' id="ic">
+
+            <div className='ip-title-container'>
+              <FontAwesomeIcon className='ip-icon' icon={faGlobe}/>
+              <p className='ip-title'>Your IP</p>
+              <p className='copy-link' onClick={() => Copy()}>Click to copy</p>
+            </div>
+
+            <div className='ip-container' onClick={() => Copy()}>
+              <div className='copied-msg' style={style}>
+                <p className='copied'>Copied!</p>
+                <div className='arrow'></div>
+              </div>
+                
+              <p className='ip' tabindex="1">{IP}</p>
+            </div>
+          </div>
+        </div>
+        <div className='dashboard-right' id="dr">
+          <Whadis/>
+        </div>
+        
+      </div>
+    </div>
   );
 }
 

@@ -1,6 +1,7 @@
 .navbar {
     height: 100vh;
-    width: 18%;
+    min-width: 17.5rem;
+    max-width: 17.5rem;
     display: flex;
     flex-direction: column;
     padding: 2em;
@@ -8,6 +9,12 @@
     font-size: larger;
     box-sizing: border-box;
     border-right: 1px solid #262333;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    &::-webkit-scrollbar{
+        display: none;
+    }
 
     *{
         -webkit-touch-callout: none; /* iOS Safari */
@@ -16,6 +23,15 @@
         -moz-user-select: none; /* Old versions of Firefox */
         -ms-user-select: none; /* Internet Explorer/Edge */
         user-select: none;
+        outline: none;
+    }
+
+    .main-logo{
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 20px 0 40px 0;
+        text-decoration: none;
+        color: white;
     }
 
     .button {
@@ -30,22 +46,52 @@
         margin-top: 30px;
         margin-bottom: 10px;
         border-radius: 50px;
+        border: solid 2px var(--main);
         background-color: var(--main);
+
+        &:hover,
+        &:focus{
+            background-color: var(--mainTrans);
+        }
+
+        &:active{
+            background-color: transparent;
+        }
     }
 
     .navbar-group {
-        width: 80%;
+        width: 10rem;
         display: flex;
         flex-direction: column;
         border-bottom: 1px solid #262333;
         padding: 0 20px;
 
-        p {
+        a, Link{
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            align-items: center;
+            display: flex;
+            margin-block-start: 1em;
+            margin-block-end: 1em;
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;
+            transition-duration: 0.3s;
+
+            svg {
+                margin-right: 2em;
+                transition-duration: 0s;
+                -webkit-transition: 0s;
+            }
+        }
+
+        p{
             cursor: pointer;
             display: flex;
             align-items: center;
 
             svg {
+                transition-duration: 0.3s;
                 margin-right: 2em;
             }
         }
@@ -68,9 +114,16 @@
     .navbar-group:nth-of-type(3) {
         margin-top: auto;
         border-top: 1px solid #262333;
+        transition: 0s;
     }
 
     .navbar-group:last-of-type {
         border-bottom: unset;
+    }
+
+    @media only screen and (max-height : 613px){
+        .navbar-group:nth-of-type(3) {
+            border-top: 0px;
+        }
     }
 }
