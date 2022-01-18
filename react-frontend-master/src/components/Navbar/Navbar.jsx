@@ -13,7 +13,12 @@ export default function Navbar() {
             if(document.getElementsByClassName('active')[0] != undefined){
                 document.getElementsByClassName('active')[0].classList.remove('active');
             }
-            document.getElementById(location.pathname.substring(1) + "-nb").classList.add('active');
+            if(location.pathname.slice(0,7) == "/server"){
+                document.getElementById("servers-nb").classList.add('active');
+            }
+            else{
+                document.getElementById(location.pathname.substring(1) + "-nb").classList.add('active');
+            }
         }
     }, [location]);  
 

@@ -23,7 +23,7 @@ export default function ServCard(props) {
         let Value = e.target.value.replaceAll(" ", "");
         
         if(e.key === 'Enter'){
-            if(Value.length >= 1 && document.getElementById(e.target.value) == undefined){
+            if(Value.length >= 1 && document.getElementById(e.target.value) == undefined && Value.length <= 35){
                 setName(e.target.value);
                 name = e.target.value;
                 setSelector(0);
@@ -40,6 +40,9 @@ export default function ServCard(props) {
                 }
                 if(document.getElementById(e.target.value) != undefined){
                     setPlaceHolder("Name already used.");
+                }
+                if(Value.length >35){
+                    setPlaceHolder("Too long.");
                 }
                 
                 e.target.value = "";
@@ -149,7 +152,7 @@ export default function ServCard(props) {
                 
             </div>
 
-            <Link to={{pathname:`/server/${Name}`}}className="manage-button" tabindex="1">
+            <Link to={{pathname:`/server/${Name}/console`}}className="manage-button" tabindex="1">
                 <p>Manage</p>
             </Link>
         </div>

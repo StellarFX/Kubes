@@ -40,7 +40,9 @@ function Dashboard() {
   return (
     
     <div className='page-main-container'>
-      <p className='page-title'>Dashboard</p>
+      <div className='page-title-container'>
+        <p className='page-title'>Dashboard</p>
+      </div>
       <div className='page-content' id='dc'>
         <div className='dashboard-left' id="dl">
           <div className='servcard-container'>

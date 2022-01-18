@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import Dashboard from './Pages/Dashboard';
 import Servers from './Pages/Servers';
+import ServerManage from './Pages/ServerManage';
 import {
   BrowserRouter as Router,
   Routes,
@@ -17,6 +18,7 @@ ReactDOM.render(
       <Routes>
         <Route path="/dashboard" element={<Dashboard />}/>
         <Route path="/servers" element={<Servers />} />
+        <Route path="/server/:id/:config" element={<ServerManage />} />
       </Routes>
 
     </Router>

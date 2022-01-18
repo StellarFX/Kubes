@@ -1,16 +1,19 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react';
 import ServCard from '../components/ServCard/ServCard.jsx';
 import './Servers.scss';
 
 function Servers(){
+
+    const folderPath = "C:/Users/User/Documents/Servers_File";
+
     return(
         <div className='page-main-container'>
-            <p className='page-title'>Servers</p>
+            <div className='page-title-container'>
+                <p className='page-title'>Servers</p>
+                <p className='text'>Folder path:</p>
+                <p className='folder-path'>{folderPath}</p>
+            </div>
             <div className='page-content' id="servers-content">
-                <div className='add-server-container'>
-                    
-                </div>
                 <div className='servers-grid'>
                     <ServCard status="0"/>
                     <ServCard status="1"/>

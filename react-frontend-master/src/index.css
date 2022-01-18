@@ -68,12 +68,18 @@ body::-webkit-scrollbar{
   display: none;
 }
 
+.page-title-container{
+  display: flex;
+  padding-bottom: 1.8rem;
+  border-bottom: 1px solid #262333;
+  align-items: center;
+}
+
 .page-title{
   margin: 0;
   font-size: 1.7rem;
   font-weight: 700;
-  padding-bottom: 1.8rem;
-  border-bottom: 1px solid #262333;
+  
   position: sticky;
   position: -webkit-sticky;
   top: 0rem;
