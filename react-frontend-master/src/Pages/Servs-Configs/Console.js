@@ -28,7 +28,16 @@ export default function Console(){
                 <div className="console-properties">
                     <p className="console-bottom-title">Properties</p>
                     <div className="properties-container">
-                        
+                        <div className="p-left">
+                            <p>Users online:</p>
+                            <p>Version:</p>
+                            <p>Port:</p>
+                        </div>
+                        <div className="p-right">
+                            <p>0/50</p>
+                            <p>Spigot 1.12.2</p>
+                            <p>25250</p>
+                        </div>
                     </div>
                 </div>
             </div>

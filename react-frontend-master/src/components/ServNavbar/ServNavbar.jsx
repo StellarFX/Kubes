@@ -9,17 +9,18 @@ import { useEffect } from "react";
 
 export default function ServNavbar(props) {
 
-    const { config } = useParams();
-    const {id} = useParams();
+    console.log(props.config);
+
+    const { id } = useParams();
 
     useEffect(()=>{
         if(window.readyState = "interactive"){
             if(document.getElementsByClassName('serv-active')[0] != undefined){
                 document.getElementsByClassName('serv-active')[0].classList.remove('serv-active');
             }
-            document.getElementById(config+"-snb").classList.add('serv-active');
+            document.getElementById(props.config+"-snb").classList.add('serv-active');
         }
-    }, [config]); 
+    }, [props.config]);
 
     return(
         <div className="serv-navbar">

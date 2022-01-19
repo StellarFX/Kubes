@@ -48,6 +48,7 @@
         border-radius: 50px;
         border: solid 2px var(--main);
         background-color: var(--main);
+        transition: 0.3s;
 
         &:hover,
         &:focus{

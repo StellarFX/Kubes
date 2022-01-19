@@ -7,7 +7,7 @@
     .console-container{
         width: 100%;
         height: 60%;
-        background: black;
+        background: var(--dark);
     }
 
     .console-bottom{
@@ -46,12 +46,15 @@
             .start-server,
             .stop-server,
             .restart-server{
+                cursor: pointer;
                 margin-right: 2.5rem;
                 height: fit-content;
                 padding: 0.7rem 1.3rem;
                 border-radius: 100px;
                 min-width: 6rem;
                 max-width: 6.5rem;
+                transform: none;
+                transition: 0.3s;
                 p{
                     margin: 0;
                     display: flex;
@@ -64,6 +67,15 @@
                     font-size: 1.4rem;
                     margin-right: 1.5rem;
                 }
+
+                &:hover{
+                    transform: scale(110%, 110%);
+                }
+
+                &:active{
+                    transform: scale(115%, 115%);
+                }
+
             }
 
             .start-server{
@@ -76,6 +88,29 @@
 
             .restart-server{
                 background: var(--yellow);
+            }
+        }
+
+        .console-properties{
+
+
+            .properties-container{
+                p{
+                    margin: 0;
+                    margin-bottom: 0.8rem;
+                }
+
+                .p-left{
+                    font-size: 1.2rem;
+                    color: var(--lighter);
+                    font-weight: 600;
+                    margin-right: 3rem;
+                }
+
+                .p-right{
+                    font-size: 1.2rem;
+                    color: var(--light);
+                }
             }
         }
     }

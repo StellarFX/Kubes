@@ -95,4 +95,5 @@ body::-webkit-scrollbar{
   justify-content: space-between;
   overflow-y: auto;
   overflow-x: hidden;
+  contain: strict;
 }

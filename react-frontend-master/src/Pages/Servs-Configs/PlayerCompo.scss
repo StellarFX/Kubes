@@ -1,0 +1,130 @@
+.player-container{
+    background: transparent;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 5.5rem;
+    max-height: 5.5rem;
+    min-width: 50rem;
+    max-width: 50rem;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgb(17, 17, 19);
+    margin-left: 2rem;
+    justify-content: space-between;
+
+    .minecraft-face{
+        background-image: url(https://www.cewe.fr/cdn/c2/xx/c2xxdkdGN0oxNWViZ283amNXVDNZTmRJUkRxMTA4WkFYSmNxME9mbmcxUT0);
+        background-size: cover;
+        background-position: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 100px;
+    }
+
+    .player-name{
+        margin: 0;
+        font-size: 2rem;
+        margin-left: 2rem;
+    }
+
+    .op-player,
+    .ban-player,
+    .banip-player,
+    .oped-player,
+    .baned-player,
+    .banedip-player{
+        cursor: pointer;
+        transition: 0.3s;
+        border-radius: 100px;
+        margin-left: 2rem;
+
+        p{
+            display: flex;
+            margin: 0;
+            font-size: 1.2rem;
+            padding: 0.6rem 2rem;
+            
+            align-items: center;
+            
+            svg{
+                margin-right: 1rem;
+                font-size: 1.3rem;
+            }
+        }
+    }
+
+    .op-player{
+        border: 2px solid var(--green);
+
+        &:hover{
+            background: #1dd1a128;
+        }
+
+        &:active{
+            background: var(--green);
+        }
+    }
+
+    .ban-player{
+        border: 2px solid var(--yellow);
+
+        &:hover{
+            background: #d19b1d2d;
+        }
+
+        &:active{
+            background: var(--yellow);
+        }
+    }
+
+    .banip-player{
+        border: 2px solid var(--red);
+
+        &:hover{
+            background: #d11d1d31;
+        }
+
+        &:active{
+            background: var(--red);
+        }
+    }
+
+    .oped-player{
+        border: 2px solid var(--green);
+        background: var(--green);
+
+        &:hover{
+            background: #1dd1a1b4;
+        }
+
+        &:active{
+            background: transparent;
+        }
+    }
+
+    .baned-player{
+        border: 2px solid var(--yellow);
+        background: var(--yellow);
+
+        &:hover{
+            background: #d19b1db9;
+        }
+
+        &:active{
+            background: transparent;
+        }
+    }
+
+    .banedip-player{
+        border: 2px solid var(--red);
+        background: var(--red);
+
+        &:hover{
+            background: #d11d1daf;
+        }
+
+        &:active{
+            background: transparent;
+        }
+    }
+}

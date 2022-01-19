@@ -18,7 +18,7 @@ ReactDOM.render(
       <Routes>
         <Route path="/dashboard" element={<Dashboard />}/>
         <Route path="/servers" element={<Servers />} />
-        <Route path="/server/:id/:config" element={<ServerManage />} />
+        <Route path="/server/:id/*" element={<ServerManage />} />
       </Routes>
 
     </Router>
