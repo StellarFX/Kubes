@@ -14,6 +14,7 @@ import ServNavbar from '../components/ServNavbar/ServNavbar.jsx';
 import Console from './Servs-Configs/Console';
 import Configuration from './Servs-Configs/Configuration';
 import Players from './Servs-Configs/Players';
+import Whitelist from './Servs-Configs/Whitelist';
 
 function ServerManage(){
 
@@ -36,6 +37,7 @@ function ServerManage(){
                         <Route path="/console" element={<Console/>}/>
                         <Route path="/configuration" element={<Configuration/>}/>
                         <Route path="/players" element={<Players/>}/>
+                        <Route path="/whitelist" element={<Whitelist/>}/>
                     </Routes>
                 </div>
             </div>

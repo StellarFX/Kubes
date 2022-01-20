@@ -4,4 +4,11 @@
     display: flex;
     background: var(--dark);
     padding: 1rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+    color: var(--lighter);
+
+    &::-webkit-scrollbar{
+        display: none;
+    }
 }

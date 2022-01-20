@@ -51,7 +51,7 @@
         transition: 0.3s;
 
         &:hover,
-        &:focus{
+        &:focus-visible{
             background-color: var(--mainTrans);
         }
 

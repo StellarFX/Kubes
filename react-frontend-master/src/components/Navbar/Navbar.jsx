@@ -19,6 +19,9 @@ export default function Navbar() {
             else{
                 document.getElementById(location.pathname.substring(1) + "-nb").classList.add('active');
             }
+            if(location.pathname == "/server" || location.pathname == "/server/"){
+                window.location = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/servers";
+            }
         }
     }, [location]);  
 

@@ -18,7 +18,12 @@ export default function ServNavbar(props) {
             if(document.getElementsByClassName('serv-active')[0] != undefined){
                 document.getElementsByClassName('serv-active')[0].classList.remove('serv-active');
             }
-            document.getElementById(props.config+"-snb").classList.add('serv-active');
+            if(document.getElementById(props.config+"-snb") != undefined){
+                document.getElementById(props.config+"-snb").classList.add('serv-active');
+            }
+            else{
+                window.location = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/server/" + id + "/console";
+            }
         }
     }, [props.config]);
 
@@ -29,7 +34,7 @@ export default function ServNavbar(props) {
             <Link to={{pathname:`/server/${id}/players`}} id="players-snb"><FontAwesomeIcon icon={faUser}/>Players</Link>
             <Link to={{pathname:`/server/${id}/whitelist`}} id="whitelist-snb"><FontAwesomeIcon icon={faList}/>Whitelist</Link>
             <Link to={{pathname:`/server/${id}/files`}} id="files-snb"><FontAwesomeIcon icon={faFolder}/>Files</Link>
-            <Link to={{pathname:`/server/${id}/usage`}} id="usage-snb"><FontAwesomeIcon icon={faChartBar}/>Usage</Link>
+            <Link to={{pathname:`/server/${id}/performances`}} id="performances-snb"><FontAwesomeIcon icon={faChartBar}/>Performances</Link>
         </div>
     );
 

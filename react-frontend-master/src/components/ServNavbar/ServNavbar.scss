@@ -1,5 +1,16 @@
 .serv-navbar{
 
+    @media only screen and (max-width : 1230px){
+
+        svg{
+            display: none;
+        }
+        min-width: 5.8rem;
+        max-width: 5.8rem;
+
+    }
+
+    transition: 0.3s;
     border-right: 1px solid #262333;
     padding-right: 4rem;
     min-width: 9.8rem;
@@ -14,6 +25,8 @@
         margin-top: 2rem;
         font-size: 1.1rem;
         text-decoration: none;
+        display: flex;
+        align-items: center;
 
         svg{
             margin-right: 2rem;
