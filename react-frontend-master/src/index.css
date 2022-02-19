@@ -60,7 +60,7 @@ body::-webkit-scrollbar{
   flex-direction: column;
   height: auto;
   width: 100%;
-  padding: 4.5rem 5.5rem 3rem 5.5rem;
+  padding: 4.5rem 5.5rem 3rem 3.5rem;
   
 }
 
