@@ -1,10 +1,9 @@
-import { render } from "@testing-library/react";
 import React from 'react';
 import { useParams } from "react-router-dom";
 import './ServNavbar.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTerminal, faCog, faUser, faList, faFolder, faChartBar } from '@fortawesome/free-solid-svg-icons';
-import { Link , useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useEffect } from "react";
 
 export default function ServNavbar(props) {
@@ -13,12 +12,12 @@ export default function ServNavbar(props) {
 
     const { id } = useParams();
 
-    useEffect(()=>{
-        if(window.readyState = "interactive"){
-            if(document.getElementsByClassName('serv-active')[0] != undefined){
+    useEffect(() => {
+        if(window.readyState === "interactive"){
+            if(document.getElementsByClassName('serv-active')[0] !== undefined){
                 document.getElementsByClassName('serv-active')[0].classList.remove('serv-active');
             }
-            if(document.getElementById(props.config+"-snb") != undefined){
+            if(document.getElementById(props.config+"-snb") !== undefined){
                 document.getElementById(props.config+"-snb").classList.add('serv-active');
             }
             else{

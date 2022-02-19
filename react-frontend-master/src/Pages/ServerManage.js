@@ -1,6 +1,5 @@
 import { 
-    useParams, 
-    BrowserRouter as Router,
+    useParams,
     Routes,
     Route,
     useLocation} from "react-router-dom";
@@ -20,9 +19,7 @@ function ServerManage(){
 
     const { id } = useParams();
 
-    const location = useLocation().pathname.replaceAll("/", "").substring(6 +id.length);;
-
-    //{location.charAt(0).toUpperCase() + location.slice(1)}
+    const location = useLocation().pathname.replaceAll("/", "").substring(6 +id.length);
 
     return(
         <div className='page-main-container'>

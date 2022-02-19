@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ServCard from '../components/ServCard/ServCard.jsx';
 import './Servers.scss';
 

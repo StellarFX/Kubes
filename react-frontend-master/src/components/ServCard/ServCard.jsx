@@ -1,7 +1,7 @@
-import { faCheck, faTimes, faEllipsisH, faAmericanSignLanguageInterpreting } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faTimes, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react';
-import { Link , useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './ServCard.scss';
 
 export default function ServCard(props) {
@@ -81,7 +81,7 @@ export default function ServCard(props) {
 
     function checkHeight(value){
         let card = document.getElementsByClassName('card-name');
-        let cont = document.getElementById('snc');
+        // let cont = document.getElementById('snc');
         for(let i = 0; i < card.length; i++){
             if(card[i] === document.getElementById(value) && card[i].clientHeight > 60){
                 setDots('...');
