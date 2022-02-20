@@ -12,7 +12,7 @@
 
         .whitelist-action-container{
             margin-top: 2.5rem;
-            max-width: 25rem;
+            max-width: 22rem;
             width: 80%;
             
         }
@@ -32,7 +32,9 @@
     @media screen and (min-width: 1491px){
         .whitelist-action-container{
             margin-left: 3rem;
-            width: 25rem;
+            width: 22rem;
+            max-width: 22rem;
+            min-width: 22rem;
 
             .whitelist-add{
                 margin-right: 2rem;
@@ -92,9 +94,8 @@
     }
 
     .whitelist-action-container{
+        
         padding: 2.5rem;
-        max-width: 22rem;
-        min-width: 12rem;
         height: fit-content;
         display: flex;
         flex-direction: column;

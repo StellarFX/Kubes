@@ -97,16 +97,3 @@ body::-webkit-scrollbar{
   overflow-x: hidden;
   contain: strict;
 }
-
-* {
-  &::-webkit-scrollbar {
-    width: 10px;
-
-  &::-webkit-scrollbar-track {
-      background: #15161e;
-  }
-
-  &::-webkit-scrollbar-thumb {
-      background-color: #1e202a;
-  }
-}

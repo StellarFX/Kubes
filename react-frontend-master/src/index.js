@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import './index.scss';
 import Dashboard from './Pages/Dashboard';
 import Servers from './Pages/Servers';
 import ServerManage from './Pages/ServerManage';

@@ -27,35 +27,34 @@ export default function Navbar() {
 
     return(
         <div className="navbar">
-            
-            <Link to={{pathname:"/dashboard"}} className="main-logo">MsM</Link>
 
-            <div className="navbar-group">
-                <Link to={{pathname:"/dashboard"}} id='dashboard-nb'><FontAwesomeIcon icon={faHome}/> Dashboard</Link>
-            </div>   
+            <div className="navbar-overflow">
 
-            <div className="navbar-group">
-                <div className="button" tabindex="1">
-                    <p><FontAwesomeIcon icon={faPlus}/>Create</p>
-                </div>
+                <Link to={{pathname:"/dashboard"}} className="main-logo">MsM</Link>
 
-                <Link to={{pathname:"/servers"}} id='servers-nb'><FontAwesomeIcon icon={faServer}/> Servers</Link>
+                <div className="navbar-group">
+                    <Link to={{pathname:"/dashboard"}} id='dashboard-nb'><FontAwesomeIcon icon={faHome}/> Dashboard</Link>
+                </div>   
 
-            </div>   
+                <div className="navbar-group">
+                    <div className="button" tabindex="1">
+                        <p><FontAwesomeIcon icon={faPlus}/>Create</p>
+                    </div>
 
-            <div className="navbar-group">
-                <Link to={{pathname:"/preferences"}} id='preferences-nb'><FontAwesomeIcon icon={faCog}/> Preferences</Link>
-            </div>     
+                    <Link to={{pathname:"/servers"}} id='servers-nb'><FontAwesomeIcon icon={faServer}/> Servers</Link>
 
-            <div className="navbar-group">
-                <Link to={{pathname:"/about"}} id='about-nb'><FontAwesomeIcon icon={faInfoCircle}/> About</Link>
-                <p><FontAwesomeIcon icon={faDollarSign}/> Donate</p>
-            </div>     
-        
+                </div>   
+
+                <div className="navbar-group">
+                    <Link to={{pathname:"/preferences"}} id='preferences-nb'><FontAwesomeIcon icon={faCog}/> Preferences</Link>
+                </div>     
+
+                <div className="navbar-group">
+                    <Link to={{pathname:"/about"}} id='about-nb'><FontAwesomeIcon icon={faInfoCircle}/> About</Link>
+                    <p><FontAwesomeIcon icon={faDollarSign}/> Donate</p>
+                </div>  
+
+            </div>        
         </div>
     );
-
-    
-    
-
 }
