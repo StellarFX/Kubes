@@ -25,6 +25,16 @@ export default function Navbar() {
         }
     }, [location]);  
 
+    function createWindow(){
+        popupWindow = window.open(
+
+            "http://localhost:1234/create",
+            'popupWindow',
+            'innerHeight=540,innerWidth=960,left=50%,top=50%,resizable=no,location=no,scrollbars=no,status=no,tollbar=no,menubar=no'
+        
+        )
+    }
+
     return(
         <div className="navbar">
 
@@ -37,7 +47,7 @@ export default function Navbar() {
                 </div>   
 
                 <div className="navbar-group">
-                    <div className="button" tabindex="1">
+                    <div className="button" tabindex="1" onClick={()=>{createWindow()}}>
                         <p><FontAwesomeIcon icon={faPlus}/>Create</p>
                     </div>
 
