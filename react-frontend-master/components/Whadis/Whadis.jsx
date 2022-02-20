@@ -9,7 +9,7 @@ export default function Whadis() {
         <div className="whadis-container" id='wc'>
             <div className="title-container">
                 <FontAwesomeIcon icon={faQuestion} className="title-icon"/>
-                <p className="title">Whadis?</p>
+                <p className="title">What is MsM ?</p>
             </div>
             <div className="main-text-container">
                 <p className="whadis">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt 
