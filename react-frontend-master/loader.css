@@ -1,0 +1,37 @@
+.loader {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--dark);
+    z-index: 1000;
+    transition: .3s;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loader img {
+    width: 10%;
+    animation: 1.5s cubic-bezier(.61,-0.01,.41,.99) infinite rotate;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+        filter: blur(0px);
+    }
+
+    38% {
+        filter: blur(1px);
+    }
+
+    75% {
+        transform: rotate(360deg);
+        filter: blur(0px);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
