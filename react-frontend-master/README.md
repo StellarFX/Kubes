@@ -1,6 +1,6 @@
 
 <div align="center">
-	<img width="20%" src="https://raw.githubusercontent.com/SlyZ1/MSM/main/react-frontend-master/Logo-Full.png?token=GHSAT0AAAAAABRZL4WAJ6NPPS3EEW5FADFAYQTNSMQ">
+	<img width="20%" src="https://i.ibb.co/HVYkTKd/Logo-Full.png">
 	<br/>
 	<br/>
 	<img src="https://forthebadge.com/images/badges/made-with-javascript.svg"/>
