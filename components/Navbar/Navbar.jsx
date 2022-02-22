@@ -13,17 +13,17 @@ export default function Navbar() {
     console.log(createOpen);
 
     useEffect(() => {
-        if(window.readyState = "interactive"){
-            if(document.getElementsByClassName('active')[0] != undefined){
+        if(window.readyState === "interactive"){
+            if(document.getElementsByClassName('active')[0] !== undefined){
                 document.getElementsByClassName('active')[0].classList.remove('active');
             }
-            if(location.pathname.slice(0,7) == "/server"){
+            if(location.pathname.slice(0,7) === "/server"){
                 document.getElementById("servers-nb").classList.add('active');
             }
             else{
                 document.getElementById(location.pathname.substring(1) + "-nb")?.classList?.add('active');
             }
-            if(location.pathname == "/server" || location.pathname == "/server/"){
+            if(location.pathname === "/server" || location.pathname === "/server/"){
                 window.location = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/servers";
             }
         }
@@ -36,7 +36,7 @@ export default function Navbar() {
 
             <div className="navbar-overflow">
 
-                <img src="../../Logo-Full.png" className="icon"/>
+                <img src="/assets/Logo-Full.png" className="icon"/>
 
                 <div className="navbar-group">
                     <Link to={{pathname:"/dashboard"}} id='dashboard-nb'><FontAwesomeIcon icon={faHome}/> Dashboard</Link>
