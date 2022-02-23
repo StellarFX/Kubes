@@ -10,24 +10,29 @@ export default function Navbar() {
     const location = useLocation();
     const [createOpen, setCreateOpen] = useState(false);
 
-    console.log(createOpen);
-
     useEffect(() => {
-        if(window.readyState === "interactive"){
-            if(document.getElementsByClassName('active')[0] !== undefined){
-                document.getElementsByClassName('active')[0].classList.remove('active');
-            }
-            if(location.pathname.slice(0,7) === "/server"){
-                document.getElementById("servers-nb").classList.add('active');
-            }
-            else{
-                document.getElementById(location.pathname.substring(1) + "-nb")?.classList?.add('active');
-            }
-            if(location.pathname === "/server" || location.pathname === "/server/"){
-                window.location = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/servers";
-            }
+        if(document.getElementsByClassName('active')[0] !== undefined){
+            document.getElementsByClassName('active')[0].classList.remove('active');
+        }
+        if(location.pathname.slice(0,7) === "/server"){
+            document.getElementById("servers-nb").classList.add('active');
+            addComplete();
+        }
+        else{
+            document.getElementById(location.pathname.substring(1) + "-nb")?.classList?.add('active');
+            addComplete();
+        }
+        if(location.pathname === "/server" || location.pathname === "/server/"){
+            window.location = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/servers";
         }
     }, [location]);  
+
+    function addComplete(){
+        setTimeout(() => {
+            document.getElementsByClassName("completed")[0]?.classList.remove('completed');
+            document.getElementsByClassName("active")[0].classList.add('completed');
+        }, 100);
+    }
 
     return(
         <div className="navbar">

@@ -56,7 +56,8 @@
             }
 
             p {
-                font-size: 18px;
+                font-size: 1.05rem;
+                font-weight: 400;
             }
         }
 
@@ -77,21 +78,14 @@
         }
 
         .name-container{
-            overflow: hidden;
             max-height: 2.1rem;
-
-            .n-dots{
-                font-weight: 720;
-                font-size: 28px;
-                margin-right: 0.4rem;
-            }
+            overflow: hidden;
 
             .card-name{
-                font-weight: 720;
+                font-weight: 600;
                 font-size: 28px;
                 word-break: break-all;
                 width: 100%;
-                overflow: hidden;
                 white-space: nowrap;
                 text-overflow: ellipsis;
             }
@@ -145,7 +139,7 @@
 
             p{
                 color: var(--light);
-                font-weight: 600;
+                font-weight: 500;
             }
         }
     }
@@ -157,7 +151,8 @@
         border-radius: 150px;
         background: rgba(255, 255, 255, 1);
         border: solid 2px white;
-        font-size: 18px;
+        font-size: 1rem;
+        font-weight: 500;
         width: fit-content;
         transition-duration: 0.3s;
         align-items: center;

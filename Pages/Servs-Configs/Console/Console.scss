@@ -97,7 +97,7 @@
 
         .console-actions{
 
-            margin-right: 2rem;
+            margin-right: 5.2rem;
 
             .start-server,
             .restart-server{
@@ -122,7 +122,7 @@
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    font-size: 1.1rem;
+                    font-size: 1rem;
                 }
 
                 svg{
@@ -163,14 +163,14 @@
                 }
 
                 .p-left{
-                    font-size: 1.2rem;
+                    font-size: 1rem;
                     color: var(--lighter);
-                    font-weight: 600;
+                    font-weight: 500;
                     margin-right: 3rem;
                 }
 
                 .p-right{
-                    font-size: 1.2rem;
+                    font-size: 1rem;
                     color: var(--light);
                 }
             }

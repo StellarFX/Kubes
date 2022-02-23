@@ -8,21 +8,19 @@ import { useEffect } from "react";
 
 export default function ServNavbar(props) {
 
-    console.log(props.config);
+    
 
     const { id } = useParams();
 
     useEffect(() => {
-        if(window.readyState === "interactive"){
-            if(document.getElementsByClassName('serv-active')[0] !== undefined){
-                document.getElementsByClassName('serv-active')[0].classList.remove('serv-active');
-            }
-            if(document.getElementById(props.config+"-snb") !== undefined){
-                document.getElementById(props.config+"-snb").classList.add('serv-active');
-            }
-            else{
-                window.location = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/server/" + id + "/console";
-            }
+        if(document.getElementsByClassName('serv-active')[0] !== undefined){
+            document.getElementsByClassName('serv-active')[0].classList.remove('serv-active');
+        }
+        if(document.getElementById(props.config+"-snb") !== undefined){
+            document.getElementById(props.config+"-snb").classList.add('serv-active');
+        }
+        else{
+            window.location = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/server/" + id + "/console";
         }
     }, [props.config]);
 
@@ -30,7 +28,7 @@ export default function ServNavbar(props) {
 
     return(
         <div className="serv-navbar">
-            <Link to={{pathname:`/server/${id}/console`}} id="console-snb"><FontAwesomeIcon icon={faTerminal}/><p>Console</p></Link>
+            <Link to={{pathname:`/server/${id}/console`}} id="console-snb" className='serv-active'><FontAwesomeIcon icon={faTerminal}/><p>Console</p></Link>
             <Link to={{pathname:`/server/${id}/configuration`}} id="configuration-snb"><FontAwesomeIcon icon={faCog}/><p>Configuration</p></Link>
             <Link to={{pathname:`/server/${id}/players`}} id="players-snb"><FontAwesomeIcon icon={faUser}/><p>Players</p></Link>
             <Link to={{pathname:`/server/${id}/whitelist`}} id="whitelist-snb"><FontAwesomeIcon icon={faList}/><p>Whitelist</p></Link>

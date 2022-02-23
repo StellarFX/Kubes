@@ -1,10 +1,9 @@
 .whadis-container{
-
     background: var(--dark);
     padding: 0 40px 40px 40px;
     border-radius: 25px;
     width: 440px;
-    margin-top: 2rem;
+    margin-top: 5rem;
 
     .title-container{
         display: flex;
@@ -19,7 +18,7 @@
         }
 
         .title{
-            font-size: 35px;
+            font-size: 1.5rem;
             font-weight: 700;
             margin: 0;
             margin-left: 25px;
@@ -32,6 +31,7 @@
         .whadis{
             color: var(--light);
             margin: 0;
+            font-size: 0.9rem;
         }
 
     }

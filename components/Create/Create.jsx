@@ -25,7 +25,7 @@ const inputStyle = {
   },
 
   selected: {
-    backgroundColor: "#7447ff",
+    backgroundColor: "#0e0d16",
     color: "white"
   }
 
