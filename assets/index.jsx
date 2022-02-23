@@ -7,12 +7,14 @@ import ServerManage from '/Pages/ServerManage/ServerManage';
 import {
   BrowserRouter as Router,
   Routes,
-  Route
+  Route,
+  Navigate
 } from "react-router-dom";
 import Navbar from '/components/Navbar/Navbar';
 import Preferences from '/Pages/Preferences/Preferences';
 import About from '/Pages/About/About';
 import Donate from '/Pages/Donate/Donate';
+import FileManager from '/components/FileManager/FileManager'
 
 function WithNavbar(props) {
   
@@ -33,6 +35,8 @@ ReactDOM.render(
         <Route path="/preferences" element={<WithNavbar><Preferences /></WithNavbar>}/>
         <Route path="/about" element={<WithNavbar><About /></WithNavbar>}/>
         <Route path="/donate" element={<WithNavbar><Donate /></WithNavbar>}/>
+        <Route path="/dev/filemanager" element={<FileManager/>}/>
+        <Route path="/" element={<Navigate to="/dashboard"/>}/>
       </Routes>
     </Router>
   ,

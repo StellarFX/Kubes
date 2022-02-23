@@ -41,7 +41,10 @@ export default function Navbar() {
 
             <div className="navbar-overflow">
 
-                <img src="/assets/Logo-Full.png" className="icon"/>
+                <div className="logo-nb">
+                    <img src="/assets/Logo-Full.png" className="icon"/>
+                    <p>Kubes</p>
+                </div>
 
                 <div className="navbar-group">
                     <Link to={{pathname:"/dashboard"}} id='dashboard-nb'><FontAwesomeIcon icon={faHome}/> Dashboard</Link>

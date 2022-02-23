@@ -78,13 +78,14 @@
         }
 
         .name-container{
-            max-height: 2.1rem;
+            max-height: 3rem;
             overflow: hidden;
 
             .card-name{
                 font-weight: 600;
-                font-size: 28px;
+                font-size: 1.6rem;
                 word-break: break-all;
+                overflow: hidden;
                 width: 100%;
                 white-space: nowrap;
                 text-overflow: ellipsis;

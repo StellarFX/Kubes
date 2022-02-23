@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './Create.scss';
-import { faPlus , faPen , faServer , faCodeBranch , faMicrochip , faCloud, faFile } from '@fortawesome/free-solid-svg-icons';
+import { faPlus , faPen , faServer , faCodeBranch , faMicrochip , faCloud, faFile, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { TextInput, Select, Button } from '@mantine/core';
+import { TextInput, Select, Button, Accordion } from '@mantine/core';
 
 const inputStyle = {
 
@@ -41,6 +41,8 @@ export default function Create({ open, setOpen }) {
   const [versionValue, setVersionValue] = useState("1.18.1");
   const [ramValue, setRamValue] = useState("1024");
   const [portValue, setPortValue] = useState("25565");
+  const [IPValue, setIPValue] = useState("127.0.0.1");
+  const [MotdValue, setMotdValue] = useState("Server built with Kubes!");
   const [eulaValue, setEulaValue] = useState("true");
 
   // <------------------------------ VALUES ------------------------------>
@@ -65,7 +67,7 @@ export default function Create({ open, setOpen }) {
     return (
       <div className="create-server" style={{transition: ".2s", opacity: opacity}} onClick={() => setOpenWithTransition(false)}>
         <div className='create-server-container' onClick={(e) => e.stopPropagation()}>
-            <p className='create-title'><FontAwesomeIcon icon={faPlus}/>Create a new server</p>
+            <p className='create-title'><FontAwesomeIcon icon={faPlus}/>Create a new server<FontAwesomeIcon className="close" onClick={() => setOpenWithTransition(false)} icon={faTimes}/></p>
             <div className='create-properties'>
               <div className='create-input-names'>
                 <div className='c-servername'>
@@ -92,12 +94,12 @@ export default function Create({ open, setOpen }) {
                 </div>
                 <div>
                   <p><FontAwesomeIcon icon={faMicrochip}/>RAM:</p>
-                  <TextInput className="input i-small" placeholder="Type here to write..." value={ramValue} onChange={setRamValue} required/>
+                  <TextInput className="input i-small" value={ramValue} placeholder="..." onChange={(e) => setRamValue(e.currentTarget.value)} required/>
                   <p className='c-precision'>(in MB)</p>
                 </div>
                 <div>
                   <p><FontAwesomeIcon icon={faCloud}/>Port:</p>
-                  <TextInput className="input i-small" placeholder="Type here to write..." value={portValue} onChange={setPortValue} required/>
+                  <TextInput className="input i-small" value={portValue} placeholder="..." onChange={(e) => setPortValue(e.currentTarget.value)} required/>
                 </div>
                 <div>
                   <p><FontAwesomeIcon icon={faFile}/>Eula:</p>
@@ -109,7 +111,27 @@ export default function Create({ open, setOpen }) {
               </div>
               <div className='more-params'>
                 
-                <Button>Pute</Button>
+                <Accordion>
+                  <Accordion.Item label="More parameters...">
+                    <div className='accordion-container'>
+                      <div>
+                        <p>IP</p>
+                        <TextInput className="input i-small" value={IPValue} placeholder="Enter IP..." onChange={(e) => setIPValue(e.currentTarget.value)} required/>
+                      </div>
+                      <div>
+                        <p>Motd</p>
+                        <TextInput className="input" placeholder="Type here to write..." value={MotdValue} onChange={(e) => setMotdValue(e.currentTarget.value)} required/>
+                      </div>
+                      <div>
+                        <p>Repertory</p>
+                        <p style={{color: "white"}}>non</p>
+                      </div>
+                    </div>
+                  </Accordion.Item>
+                </Accordion>
+                <div className='create-button'>
+                  <p><FontAwesomeIcon icon={faPlus}/>Create</p>
+                </div>
                 
               </div>
             </div>

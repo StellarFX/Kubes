@@ -10,25 +10,25 @@
 
 ## Table of content
 
-- [What is MSM?](#what-is-msm)
+- [What is Kubes?](#what-is-kubes)
 - [Installation](#installation)
 - [How to use?](#how-to-use)
 - [FAQ](#faq)
 
-## What is MSM?
+## What is Kubes?
 
-**M**inecraft **S**erver **M**anager is a simple Minecraft server manager & creator. It was created using [React](https://github.com/facebook/react), and powered by [Electron](https://github.com/electron/electron). Its purpose is to facilitate creation of Minecraft servers locally, and provides a dark, clean user interface to manage these.
+**Kubes** is a simple Minecraft server manager & creator. It was created using [React](https://github.com/facebook/react), and powered by [Electron](https://github.com/electron/electron). Its purpose is to facilitate creation of Minecraft servers locally, and provides a dark, clean user interface to manage these.
 
 ## Installation
 
-As its experimental state, MSM is (more or less) frequently updated in order to fix eventual bugs.
+As its experimental state, **Kubes** is (more or less) frequently updated in order to fix eventual bugs.
 For now, only **Windows** is supported, and we plan to deploy this for **macOS** and **Linux**
 
-In order to install, check out the [releases](https://github.com/SlyZ1/MSM/releases) page. We provide an installer, which you can use to install MSM. We also plan to provide an auto-updater in our software!
+In order to install, check out the [releases](https://github.com/SlyZ1/MSM/releases) page. We provide an installer, which you can use to install **Kubes**. We also plan to provide an auto-updater in our software!
 
 ## How to use?
 
-Even if MSM is quite simple of usage, we provide support to help users on our Discord!
+Even if Kubes is quite simple of usage, we provide support to help users on our Discord!
 
 todo
 

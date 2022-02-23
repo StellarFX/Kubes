@@ -35,6 +35,15 @@
                 filter: drop-shadow(3px 2px 1px #7547ff4d);
             }
 
+            display: flex;
+            align-items: center;
+
+            .close {
+                margin-left: auto;
+                margin-right: unset;
+                cursor: pointer;
+            }
+
             font-size: 2rem;
             font-weight: 700;
             margin-bottom: 1.5rem;
@@ -86,9 +95,7 @@
 
                 .input {
 
-                    .mantine-Select-dropdown {
-                        background-color: red;
-                    }
+                    
                     
                     select, input {
                         border-radius: 0;
@@ -137,15 +144,150 @@
                     color: #554c86;
                     margin-left: 0.7rem;
                     font-size: 1rem;
-                    font-weight: 300;
+                    font-weight: 500;
                     font-style: italic;
                     width: 4rem;
                 }
             }
 
             .more-params{
-                background: red;
                 width: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+
+                .input {
+                    
+                    select, input {
+                        border-radius: 0;
+                        background: #13121f;
+                        border: 0;
+                        border-bottom: solid 2px #5c596d;
+                        color: var(--main);
+
+                        &::placeholder{
+                            color: #585279;
+                        }
+                    }
+
+                    select {
+                        appearance: none !important;
+                        background-image: url("/arrow.svg");
+                        background-size: 12px;
+                        background-repeat: no-repeat;
+                        background-position: 90% 50%;
+                        width: 8rem;
+                        -webkit-appearance: none;
+
+                        option{
+                            border: none;
+                        }
+                    }
+
+                    
+                    
+                    .mantine-NativeSelect-rightSection {
+                        display: none;
+                    }
+
+                }
+
+                .mantine-Accordion-icon{
+                    color: #7467C1;
+                }
+
+                .mantine-Accordion-item{
+                    border-bottom: 1px solid #252030;
+                }
+
+                .mantine-Accordion-control{
+
+                    padding-bottom: 1.7rem;
+
+                    &:hover{
+                        background-color: unset;
+
+                        .mantine-Accordion-label{
+                            color: #9688e7;
+                        }
+                    }
+
+                    .mantine-Accordion-label{
+                        display: flex;
+                        font-family: 'Poppins', sans-serif;
+                        font-size: 1rem;
+                        color: #7467C1;
+                        transition: 0.2s;
+                    }
+                }
+
+                .mantine-Accordion-content{
+
+                    padding-left: 0.9rem;
+
+                    .mantine-Accordion-contentInner{
+                        padding: 0;
+                        padding-bottom: 1rem;
+                    }
+
+                    .accordion-container{
+                        display: flex;
+                        flex-direction: column;
+
+                        div{
+                            display: flex;
+                            align-items: center;
+
+                            p{
+                                color:#7467C1;
+                                width: 8rem;
+                                margin: 1.2rem 0;
+                            }
+                        }
+
+                        .i-small{
+                            width: 7rem;
+
+                            input{
+                                text-align: center;
+                            }
+                        }
+                    }
+                }
+
+                .create-button{
+                    
+                    display: flex;
+                    justify-content: end;
+
+                    p{
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        padding: 0.7rem 1.7rem;
+                        border-radius: 100px;
+                        display: flex;
+                        align-items: center;
+                        background: var(--main);
+                        width: fit-content;
+                        border: 2px solid var(--main);
+                        transition: 0.3s;
+
+                        svg{
+                            margin-right: 1rem;
+                            font-size: 1.2rem;
+                        }
+
+                        &:hover,
+                        &:focus-visible{
+                            background-color: var(--mainTrans);
+                        }
+
+                        &:active{
+                            background-color: transparent;
+                        }
+                    }
+                }
             }
         }
 

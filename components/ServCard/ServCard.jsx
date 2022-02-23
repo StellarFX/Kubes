@@ -30,9 +30,6 @@ export default function ServCard(props) {
                 Inputed = false;
                 setPlaceHolder("Enter a name...");
                 setHolderValue("card-name-input-1");
-                setTimeout(()=> {
-                    checkHeight(e.target.value);
-                }, 100);
             }
             else{
                 if(Value.length <1){

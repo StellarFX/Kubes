@@ -119,3 +119,9 @@ body::-webkit-scrollbar{
 *::-webkit-scrollbar-corner {
   background-color: #15161e;
 }
+
+@font-face {
+  font-family: "Cocogoose";
+  src: url(../fonts/Cocogoose\ Pro-trial.ttf);
+  font-family: regular;
+}

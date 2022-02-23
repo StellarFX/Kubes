@@ -1,0 +1,33 @@
+.file-manager {
+
+    .top-bar {
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .title {
+            h3 {
+                margin-bottom: unset;
+            }
+
+            #path {
+                font-size: .75rem;
+                color: #baadce;
+            }
+        }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            width: 8rem;
+            gap: 1rem;
+        }
+
+    }
+
+    .folders-container {
+        width: 100%;
+        height: 100%;
+    }
+}

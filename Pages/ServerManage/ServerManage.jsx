@@ -14,6 +14,7 @@ import Console from '../Servs-Configs/Console/Console';
 import Configuration from '../Servs-Configs/Configuration/Configuration';
 import Players from '../Servs-Configs/Players/Players';
 import Whitelist from '../Servs-Configs/Whitelist/Whitelist';
+import FileManager from '../../components/FileManager/FileManager';
 
 function ServerManage(){
 
@@ -35,6 +36,7 @@ function ServerManage(){
                         <Route path="/configuration" element={<Configuration/>}/>
                         <Route path="/players" element={<Players/>}/>
                         <Route path="/whitelist" element={<Whitelist/>}/>
+                        <Route path="/files" element={<FileManager/>}/>
                     </Routes>
                 </div>
             </div>
