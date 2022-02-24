@@ -12,7 +12,7 @@
 }
 
 .loader img {
-    width: 10%;
+    width: 7%;
     animation: 1.5s cubic-bezier(.61,-0.01,.41,.99) infinite rotate;
 }
 

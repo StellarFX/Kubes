@@ -63,6 +63,13 @@ export default function Create({ open, setOpen }) {
     }, 200);
   }, []);
 
+  function serverCreate(){
+
+    //insert code
+    setOpenWithTransition(false);
+
+  }
+
   if(open) {
     return (
       <div className="create-server" style={{transition: ".2s", opacity: opacity}} onClick={() => setOpenWithTransition(false)}>
@@ -122,15 +129,11 @@ export default function Create({ open, setOpen }) {
                         <p>Motd</p>
                         <TextInput className="input" placeholder="Type here to write..." value={MotdValue} onChange={(e) => setMotdValue(e.currentTarget.value)} required/>
                       </div>
-                      <div>
-                        <p>Repertory</p>
-                        <p style={{color: "white"}}>non</p>
-                      </div>
                     </div>
                   </Accordion.Item>
                 </Accordion>
                 <div className='create-button'>
-                  <p><FontAwesomeIcon icon={faPlus}/>Create</p>
+                  <p onClick={() => serverCreate()}><FontAwesomeIcon icon={faPlus}/>Create</p>
                 </div>
                 
               </div>

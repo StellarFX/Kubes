@@ -31,9 +31,7 @@ export default function FileManager() {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <File type="file" name="Joe Mama" created={new Date()}/>
-                    </tr>
+                    <File type="file" name="Joe Mama" created={new Date()}/>
                 </tbody>
                 
             </table>
