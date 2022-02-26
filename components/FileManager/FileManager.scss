@@ -56,3 +56,76 @@
         }
     }
 }
+
+.editor-container{
+
+    height: 100%;
+
+    .editor-header{
+        padding: 1rem 0;
+        background: #262333;
+
+        svg{
+            margin-left: 1rem;
+            cursor: pointer;
+        }
+    }
+
+    .ace_editor{
+
+        .ace_scroller{
+            color: rgb(175, 175, 175);
+            .ace_content{
+                background-color: #0b0a11;
+
+                .ace_cursor{
+                    color: rgb(146, 139, 156);
+                }
+
+                .ace_print-margin{
+                    background: #211d2e;
+                }
+
+                .ace_active-line{
+                    background: rgba(0,0,0,0.4);
+                }
+
+                .ace_selection{
+                    background: #302c3b; 
+                }
+
+                .ace_selected-word{
+                    border: none;
+                    background: none;
+                }
+
+                .ace_text-layer{
+                    .ace_keyword{
+                        color: rgb(197, 87, 102); //rgb(197, 87, 102)
+                    }
+
+                    .ace_constant{
+                        color: rgb(221, 168, 69);
+                    }
+
+                    .ace_identifier{
+                        color: rgb(167, 139, 182);
+                    }
+
+                    .ace_string{
+                        color: rgb(133, 187, 116);
+                    }
+                }
+            }
+        }
+        
+        .ace_gutter-layer{
+            background-color: #0e0c14;
+
+            .ace_gutter-cell{
+                background-color: transparent;
+                color: rgb(78, 72, 87);
+            }
+        }
+    }
+}

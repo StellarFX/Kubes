@@ -1,10 +1,13 @@
-import React from 'react';
-import { faFileMedical as faFilePlus, faDownload, faFolderPlus, faArrowRotateRight } from '@fortawesome/free-solid-svg-icons';
+import React , {useState} from 'react';
+import { faFileMedical as faFilePlus, faDownload, faFolderPlus, faArrowRotateRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import File from './File';
 import './FileManager.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Checkbox } from '@mantine/core';
 import { randomId, useListState } from '@mantine/hooks';
+import AceEditor from "react-ace";
+import "ace-builds/src-noconflict/mode-java";
+import "ace-builds/src-noconflict/theme-github";
 
 let files = [{
     key: randomId(),
@@ -44,6 +47,8 @@ export default function FileManager() {
         return { "type": val.type, "name": val.name, "size": val.size, "created": val.created, "checked": false, key: val.key };
     });
 
+    
+
     const [checkboxes, checkboxesHandler] = useListState(checked);
     const allChecked = checkboxes.every((value) => value.checked);
     const indeterminate = checkboxes.some((value) => value.checked) && !allChecked;
@@ -54,14 +59,20 @@ export default function FileManager() {
         });
 
         console.log("You opened : " + file.name);
+
+        if(file.type == "file"){
+            setContentValue(1);
+        }
     }
 
     const items = checkboxes.map((val, index) => {
         return <File type={val.type} name={val.name} size={val.size} openFile={openFile} created={new Date(val.created)} fileKey={val.key} checked={val.checked} onChange={(e) => checkboxesHandler.setItemProp(index, 'checked', e.currentTarget.checked)} />
     });
 
+    const [contentValue, setContentValue] = useState(1);
+
     return (
-        <div className="file-manager">
+        contentValue == 0 ? <div className="file-manager">
             <div className="top-bar">
                 <div className="title">
                     <h3>File Manager</h3>
@@ -101,6 +112,23 @@ export default function FileManager() {
 
             </table>
         </div>
+
+        :
+
+        <div className='editor-container'>
+            <div className='editor-header'>
+                <FontAwesomeIcon icon={faArrowLeft} onClick={()=>setContentValue(0)}/>
+            </div>
+            <AceEditor
+            mode="java"
+            theme="github"
+            name="file-editor"
+            width='100%'
+            height='100%'
+            editorProps={{ $blockScrolling: false }}
+            />
+        </div>
+        
     );
 
 }
