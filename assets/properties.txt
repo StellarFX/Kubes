@@ -1,16 +1,4 @@
-import { render } from '@testing-library/react';
-import React, { useState, useEffect } from 'react';
-import './Configuration.scss';
-import { Textarea } from '@mantine/core';
-import '../../../assets/properties.txt';
-
-
-
-export default function Configuration(){
-
-    const [fileValue, setFile] = useState(
-
-        `#Minecraft server properties
+#Minecraft server properties
 generator-settings=
 op-permission-level=4
 resource-pack-hash=
@@ -46,20 +34,4 @@ max-tick-time=60000
 spawn-monsters=true
 view-distance=10
 generate-structures=true
-motd=A Minecraft Server`
-
-    );
-
-    return(
-
-        <div className='configurations-main-container'>
-            
-            <Textarea spellCheck="false" variant="unstyled" placeholder="Your email" radius="xs" value={fileValue} onChange={(e) => setFile(e.currentTarget.value)}/>
-
-        </div>
-
-    );
-
-    
-}
-
+motd=A Minecraft Server

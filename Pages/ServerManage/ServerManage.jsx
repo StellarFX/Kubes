@@ -12,6 +12,7 @@ import ServNavbar from '../../components/ServNavbar/ServNavbar.jsx';
 
 import Console from '../Servs-Configs/Console/Console';
 import Configuration from '../Servs-Configs/Configuration/Configuration';
+import Performances from '../Servs-Configs/Performances/Performances';
 import Players from '../Servs-Configs/Players/Players';
 import Whitelist from '../Servs-Configs/Whitelist/Whitelist';
 import FileManager from '../../components/FileManager/FileManager';
@@ -37,6 +38,7 @@ function ServerManage(){
                         <Route path="/players" element={<Players/>}/>
                         <Route path="/whitelist" element={<Whitelist/>}/>
                         <Route path="/files" element={<FileManager/>}/>
+                        <Route path="/performances" element={<Performances/>}/>
                     </Routes>
                 </div>
             </div>

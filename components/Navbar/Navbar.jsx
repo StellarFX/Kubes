@@ -51,7 +51,7 @@ export default function Navbar() {
                 </div>   
 
                 <div className="navbar-group">
-                    <div className="button" tabindex="1" onClick={() => setCreateOpen(!createOpen)}>
+                    <div className="button" tabIndex="1" onClick={() => setCreateOpen(!createOpen)}>
                         <p><FontAwesomeIcon icon={faPlus}/>Create</p>
                     </div>
 

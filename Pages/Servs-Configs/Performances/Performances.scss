@@ -1,0 +1,55 @@
+.performances-main-container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    .chart-content{
+        width: 60%;
+        min-width: 23rem;
+    }
+    .chart-container:first-of-type{
+        margin-bottom: 3rem;
+    }
+    
+    .chart-container{
+
+        padding-top: 2rem;
+        width: 100%; 
+
+        .ram-title,
+        .CPU-title{
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin:0;
+            margin-left: 2.3rem;
+
+            svg{
+                margin-right: 1.5rem;
+                color: var(--main);
+                filter: drop-shadow(3px 2px 1px #7547ff4d);
+            }
+        }
+
+        background-color: var(--dark);
+        border-radius: 20px;
+
+        .recharts-wrapper{
+    
+            .recharts-legend-wrapper{
+                display:none;
+            }
+    
+            .recharts-cartesian-grid-vertical{
+    
+                display: none;
+            }
+    
+            .recharts-xAxis,
+            .recharts-yAxis{
+                line{
+                    display:none;
+                }
+            }
+        }
+    }
+}

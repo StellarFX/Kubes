@@ -1,7 +1,28 @@
 .file {
-    display: flex;
+    display: table-row;
     height: 2rem;
     align-items: center;
     gap: 1rem;
     padding: 1rem 0;
+    background-color: #110f19;
+    border-bottom: 2px solid #262333;
+    border-top: 2px solid #262333;
+    color: white;
+
+    p {
+        margin: 0;
+        
+    }
+
+    .file-name{
+        &:hover{
+            text-decoration: underline;
+        }
+    }
+
+    td {
+        // border-left: 1px solid #262333;
+        // border-right: 1px solid #262333;
+        padding: 1rem;
+    }
 }

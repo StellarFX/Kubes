@@ -1,7 +1,6 @@
 import React from 'react';
 import ServCard from '../../components/ServCard/ServCard.jsx';
 import './Servers.scss';
-import { Button } from '@mantine/core';
 
 function Servers(){
 
