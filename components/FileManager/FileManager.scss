@@ -1,5 +1,6 @@
 .file-manager {
 
+    border-radius: 10px;
     height: 100%;
     background-color: #262333;
     overflow-y: auto;
@@ -49,13 +50,15 @@
         z-index: 99;
         position: relative;
 
-        th {
-            z-index: 100;
-            padding: 1rem;
-            top: 88.72px;
-            position: sticky;
-            background-color: #12111b;
-        }
+        thead{
+            th {
+                z-index: 200;
+                padding: 1rem;
+                top: 88.72px;
+                position: sticky;
+                background-color: #12111b;
+            }
+        }        
 
         tbody {
             .go-back{
@@ -64,7 +67,7 @@
                 gap: 1rem;
                 padding: 1rem 0;
                 align-items: center;
-                border-top: 2px solid #262333;
+                border-top: 1px solid #262333;
 
                 th{
                     background: #161420;
@@ -82,13 +85,20 @@
             }
         }
     }
+
+    .mantine-Dropzone-root{
+        background: #161420;
+        border: none;
+        height: 15rem;
+    }
 }
 
 .editor-container{
 
-    height: 75%;
+    height: 81%;
 
     .editor-header{
+        border-radius: 10px 10px 0 0;
         padding: 1rem 0;
         background: #262333;
         display: flex;
@@ -108,8 +118,15 @@
         }
     }
 
+    .ace-github{
+        .ace_gutter{
+            background: none;
+        }
+    }
+
     .ace_editor{
 
+        border-radius: 0 0 10px 10px;
         background: #161420;
 
         .ace_scroller{

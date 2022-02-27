@@ -1,12 +1,13 @@
 .file {
     display: table-row;
     height: 2rem;
+    max-height: 25px;
     align-items: center;
     gap: 1rem;
     padding: 1rem 0;
     background-color: #161420;
-    border-bottom: 2px solid #262333;
-    border-top: 2px solid #262333;
+    border-bottom: 1px solid #262333;
+    border-top: 1px solid #262333;
     color: white;
 
     p {
@@ -14,7 +15,13 @@
         
     }
 
+    .folder-icon{
+        color: rgb(58, 148, 223);
+    }
+
     .file-name{
+        width: fit-content;
+        text-overflow: ellipsis;
         font-size: 0.9rem;
         &:hover{
             text-decoration: underline;
@@ -22,7 +29,8 @@
     }
 
     .td-name{
-        display: flex;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     td {
@@ -30,4 +38,5 @@
         // border-right: 1px solid #262333;
         padding: 1rem;
     }
+
 }

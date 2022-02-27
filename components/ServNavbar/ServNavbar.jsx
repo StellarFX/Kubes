@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams } from "react-router-dom";
 import './ServNavbar.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTerminal, faCog, faUser, faList, faFolder, faChartBar } from '@fortawesome/free-solid-svg-icons';
+import { faTerminal, faCog, faUser, faList, faFolder, faChartColumn } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import { useEffect } from "react";
 
@@ -33,7 +33,7 @@ export default function ServNavbar(props) {
             <Link to={{pathname:`/server/${id}/players`}} id="players-snb"><FontAwesomeIcon icon={faUser}/><p>Players</p></Link>
             <Link to={{pathname:`/server/${id}/whitelist`}} id="whitelist-snb"><FontAwesomeIcon icon={faList}/><p>Whitelist</p></Link>
             <Link to={{pathname:`/server/${id}/files`}} id="files-snb"><FontAwesomeIcon icon={faFolder}/><p>Files</p></Link>
-            <Link to={{pathname:`/server/${id}/performances`}} id="performances-snb"><FontAwesomeIcon icon={faChartBar}/><p>Performances</p></Link>
+            <Link to={{pathname:`/server/${id}/performances`}} id="performances-snb"><FontAwesomeIcon icon={faChartColumn}/><p>Performances</p></Link>
         </div>
     );
 

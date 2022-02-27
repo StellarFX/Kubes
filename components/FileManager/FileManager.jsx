@@ -1,10 +1,11 @@
-import React , {useState} from 'react';
-import { faFileMedical as faFilePlus, faDownload, faFolderPlus, faArrowRotateRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import React , {useState, useEffect} from 'react';
+import { faFileMedical as faFilePlus, faDownload, faFolderPlus, faArrowRotateRight, faArrowLeft, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import File from './File';
 import './FileManager.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Checkbox } from '@mantine/core';
+import { Checkbox , Text , Group } from '@mantine/core';
 import { randomId, useListState } from '@mantine/hooks';
+import { Dropzone, FullScreenDropzone } from '@mantine/dropzone';
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-java";
 import "ace-builds/src-noconflict/theme-github";
@@ -35,6 +36,66 @@ let files = [{
     created: new Date().getTime()
 },{
     key: randomId(),
+    type: "folder",
+    name: "Joe Papi",
+    size: 4655614546541,
+    created: new Date().getTime()
+},{
+    key: randomId(),
+    type: "html",
+    name: "Joe Mama",
+    size: 4655614546541,
+    created: new Date().getTime()
+},{
+    key: randomId(),
+    type: "folder",
+    name: "Joe Papa",
+    size: 4655614546541,
+    created: new Date().getTime()
+},{
+    key: randomId(),
+    type: "js",
+    name: "Joe Katze",
+    size: 4655614546541,
+    created: new Date().getTime()
+},{
+    key: randomId(),
+    type: "js",
+    name: "Joe Doggo",
+    size: 4655614546541,
+    created: new Date().getTime()
+},{
+    key: randomId(),
+    type: "css",
+    name: "Joe Papi",
+    size: 4655614546541,
+    created: new Date().getTime()
+},{
+    key: randomId(),
+    type: "html",
+    name: "Joe Mama",
+    size: 4655614546541,
+    created: new Date().getTime()
+},{
+    key: randomId(),
+    type: "capou",
+    name: "Joe Papa",
+    size: 4655614546541,
+    created: new Date().getTime()
+},{
+    key: randomId(),
+    type: "folder",
+    name: "Joe Katze",
+    size: 4655614546541,
+    created: new Date().getTime()
+},{
+    key: randomId(),
+    type: "folder",
+    name: "Joe Doggo",
+    size: 4655614546541,
+    created: new Date().getTime()
+},{
+    key: randomId(),
     type: "css",
     name: "Joe Papi",
     size: 4655614546541,
@@ -47,11 +108,25 @@ let checked = files.map((val) => {
 
 export default function FileManager(props) {
 
+    
     const [editedFile, setEditedFile] = useState("");
-    const [pathFile, setPathFile] = useState("/"+props.server+"/");
     const [checkboxes, checkboxesHandler] = useListState(checked);
     const allChecked = checkboxes.every((value) => value.checked);
     const indeterminate = checkboxes.some((value) => value.checked) && !allChecked;
+
+    let managerPath = [props.server];
+    const [stringedPath, setPath] = useState("/"+props.server+"/");
+
+
+    function changePath(){
+        let path ="/";
+        for(let i = 0; i < managerPath.length; i++){
+            path=path+managerPath[i]+"/";
+        }
+        setPath(path);
+        console.log(managerPath, stringedPath, path);
+    }
+
 
     const items = checkboxes.map((val, index) => {
         return <File type={val.type} name={val.name} size={val.size} openFile={openFile} created={new Date(val.created)} fileKey={val.key} checked={val.checked} onChange={(e) => checkboxesHandler.setItemProp(index, 'checked', e.currentTarget.checked)} />
@@ -65,9 +140,7 @@ export default function FileManager(props) {
         console.log("You opened : " + file.name + " " + file.type);
         if(file.type == "folder"){
 
-            setPathFile(pathFile + file.name + "/");
-
-            files = [{
+            let files2 = [{
                 key: randomId(),
                 type: "properties",
                 name: "server",
@@ -87,18 +160,28 @@ export default function FileManager(props) {
                 created: new Date().getTime()
             }];
 
-            checked = files.map((val) => {
+            checked = files2.map((val) => {
                 return { "type": val.type, "name": val.name, "size": val.size, "created": val.created, "checked": false, key: val.key };
             });
 
             checkboxesHandler.setState(checked);
-
-            console.log(files, checked, items);
+            managerPath.push(file.name);
+            changePath();
         }
         else{
             setEditedFile(file.name + "." + file.type);
             setContentValue(1);
         }
+    }
+
+    function goBack(){
+        checked = files.map((val) => {
+            return { "type": val.type, "name": val.name, "size": val.size, "created": val.created, "checked": false, key: val.key };
+        });
+
+        checkboxesHandler.setState(checked);
+        managerPath.splice(managerPath.length, 1);
+        changePath();
     }
 
     
@@ -113,7 +196,7 @@ export default function FileManager(props) {
             <div className="top-bar">
                 <div className="title">
                     <h3>File Manager</h3>
-                    <span id="path">{pathFile}</span>
+                    <span id="path">{stringedPath}</span>
                 </div>
 
                 <div className="actions">
@@ -121,6 +204,7 @@ export default function FileManager(props) {
                     <FontAwesomeIcon icon={faFilePlus} />
                     <FontAwesomeIcon icon={faFolderPlus} />
                     <FontAwesomeIcon icon={faArrowRotateRight} />
+                    <FontAwesomeIcon icon={faTrashCan} />
                 </div>
             </div>
 
@@ -135,7 +219,7 @@ export default function FileManager(props) {
                             checked={allChecked}
                             onChange={() => checkboxesHandler.setState((current) => current.map((value) => ({ ...value, checked: !allChecked})))}/>
                         </th>
-                        <th width="10%">File type</th>
+                        <th width="10%">Type</th>
                         <th width="20%">Name</th>
                         <th width="10%">Size</th>
                         <th width="20%">Created at</th>
@@ -143,18 +227,24 @@ export default function FileManager(props) {
                 </thead>
                 <tbody>
                     <tr className='go-back'>
-                        <p>..</p>
+                        <p onClick={()=> goBack()}>..</p>
                         <th></th>
                         <th></th>
                         <th></th>
                         <th></th>
                     </tr>
                     {items}
-                    {items}
-                    {items}
+                    
                 </tbody>
 
             </table>
+            <Dropzone>
+                {()=>{
+                    <Group position="center" spacing="xl" style={{pointerEvents: 'none' }}>
+                        <Text size="xl" inline>Drop files here</Text>
+                    </Group>
+                }}
+            </Dropzone>
         </div>
 
         :
