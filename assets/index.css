@@ -107,17 +107,17 @@ body::-webkit-scrollbar{
 }
 
 *::-webkit-scrollbar-track {
-    background: #15161e;
+    background: #161420;
     border-radius: 100px;
 }
 
 *::-webkit-scrollbar-thumb {
-    background-color: #1e202a;
+    background-color: #262333;
     border-radius: 5px;
 }
 
 *::-webkit-scrollbar-corner {
-  background-color: #15161e;
+  background-color: transparent;
 }
 
 @font-face {

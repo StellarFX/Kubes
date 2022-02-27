@@ -3,6 +3,8 @@
     height: 100%;
     background-color: #262333;
     overflow-y: auto;
+    overflow-x: auto;
+    contain: strict;
 
     .top-bar {
 
@@ -23,7 +25,7 @@
 
             #path {
                 font-size: .75rem;
-                color: #baadce;
+                color: #7a6e8b;
             }
         }
 
@@ -52,31 +54,68 @@
             padding: 1rem;
             top: 88.72px;
             position: sticky;
-            background-color: #110f19;
+            background-color: #12111b;
+        }
+
+        tbody {
+            .go-back{
+                height: 2rem;
+                background-color: #161420;
+                gap: 1rem;
+                padding: 1rem 0;
+                align-items: center;
+                border-top: 2px solid #262333;
+
+                th{
+                    background: #161420;
+                }
+
+                p{
+                    margin: 0;
+                    margin-left: 1rem;
+                    padding: 1rem;
+                    font-size: 1rem;
+                    letter-spacing: 3px;
+                    cursor: pointer;
+                    text-align: center;
+                }
+            }
         }
     }
 }
 
 .editor-container{
 
-    height: 100%;
+    height: 75%;
 
     .editor-header{
         padding: 1rem 0;
         background: #262333;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
 
         svg{
-            margin-left: 1rem;
+            margin: 0 1rem;
             cursor: pointer;
+        }
+
+        .edited-file-name{
+            margin: 0;
+            font-size: .9rem;
+            color: #625972;
+            margin-right: 2rem;
         }
     }
 
     .ace_editor{
 
+        background: #161420;
+
         .ace_scroller{
             color: rgb(175, 175, 175);
             .ace_content{
-                background-color: #0b0a11;
+                background-color: #161420;
 
                 .ace_cursor{
                     color: rgb(146, 139, 156);
@@ -87,7 +126,11 @@
                 }
 
                 .ace_active-line{
-                    background: rgba(0,0,0,0.4);
+                    background: rgba(0,0,0,0.15);
+                }
+
+                .ace_indent-guide{
+                    opacity: 0.1;
                 }
 
                 .ace_selection{
@@ -100,16 +143,31 @@
                 }
 
                 .ace_text-layer{
-                    .ace_keyword{
-                        color: rgb(197, 87, 102); //rgb(197, 87, 102)
-                    }
-
+                    
                     .ace_constant{
-                        color: rgb(221, 168, 69);
+                        color: rgb(221, 150, 69);
                     }
 
-                    .ace_identifier{
-                        color: rgb(167, 139, 182);
+                    .ace_attribute-name{
+                        color: rgb(221, 189, 101);
+                    }
+
+                    .ace_identifier,
+                    .ace_tag-name{
+                        color: rgb(228, 101, 112);
+                    }
+
+                    .ace_storage,
+                    .ace_keyword,
+                    .ace_quasi{
+                        color: rgb(169, 99, 207);
+                        font-weight: bold;
+                    }
+
+                    .ace_function,
+                    .ace_operator,
+                    .ace_variable{
+                        color: rgb(102, 158, 223);
                     }
 
                     .ace_string{

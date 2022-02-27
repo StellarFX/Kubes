@@ -43,8 +43,8 @@ export default function File(props) {
                 {icon}
             </td>
 
-            <td>
-                <p className="file-name" onClick={() => { props.openFile(props.fileKey);}}>{props.name}</p>
+            <td className='td-name'>
+                <p className="file-name" onClick={() => { props.openFile(props.fileKey);}}>{props.type == "folder" ? props.name : props.name + "." + props.type}</p>
             </td>
 
             <td>

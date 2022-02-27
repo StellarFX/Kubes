@@ -4,7 +4,7 @@
     align-items: center;
     gap: 1rem;
     padding: 1rem 0;
-    background-color: #110f19;
+    background-color: #161420;
     border-bottom: 2px solid #262333;
     border-top: 2px solid #262333;
     color: white;
@@ -15,9 +15,14 @@
     }
 
     .file-name{
+        font-size: 0.9rem;
         &:hover{
             text-decoration: underline;
         }
+    }
+
+    .td-name{
+        display: flex;
     }
 
     td {

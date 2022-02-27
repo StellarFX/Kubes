@@ -49,7 +49,7 @@ const CPUdata = [
     },
     {
         name: 'Page B',
-        uv: 25
+        uv: 60
     },
     {
         name: 'Page C',
@@ -65,7 +65,7 @@ const CPUdata = [
     },
     {
         name: 'Page F',
-        uv: 6
+        uv: 64
     },
 ];
 

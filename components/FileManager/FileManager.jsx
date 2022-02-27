@@ -11,7 +11,7 @@ import "ace-builds/src-noconflict/theme-github";
 
 let files = [{
     key: randomId(),
-    type: "file",
+    type: "html",
     name: "Joe Mama",
     size: 4655614546541,
     created: new Date().getTime()
@@ -23,60 +23,97 @@ let files = [{
     created: new Date().getTime()
 },{
     key: randomId(),
-    type: "file",
+    type: "js",
     name: "Joe Katze",
     size: 4655614546541,
     created: new Date().getTime()
 },{
     key: randomId(),
-    type: "file",
+    type: "js",
     name: "Joe Doggo",
     size: 4655614546541,
     created: new Date().getTime()
 },{
     key: randomId(),
-    type: "file",
+    type: "css",
     name: "Joe Papi",
     size: 4655614546541,
     created: new Date().getTime()
 },]
 
-export default function FileManager() {
+let checked = files.map((val) => {
+    return { "type": val.type, "name": val.name, "size": val.size, "created": val.created, "checked": false, key: val.key };
+});
 
-    const checked = files.map((val) => {
-        return { "type": val.type, "name": val.name, "size": val.size, "created": val.created, "checked": false, key: val.key };
-    });
+export default function FileManager(props) {
 
-    
-
+    const [editedFile, setEditedFile] = useState("");
+    const [pathFile, setPathFile] = useState("/"+props.server+"/");
     const [checkboxes, checkboxesHandler] = useListState(checked);
     const allChecked = checkboxes.every((value) => value.checked);
     const indeterminate = checkboxes.some((value) => value.checked) && !allChecked;
+
+    const items = checkboxes.map((val, index) => {
+        return <File type={val.type} name={val.name} size={val.size} openFile={openFile} created={new Date(val.created)} fileKey={val.key} checked={val.checked} onChange={(e) => checkboxesHandler.setItemProp(index, 'checked', e.currentTarget.checked)} />
+    });
 
     function openFile(key){
         const file = checkboxes.find(arrayFile => {
             return arrayFile.key == key;
         });
 
-        console.log("You opened : " + file.name);
+        console.log("You opened : " + file.name + " " + file.type);
+        if(file.type == "folder"){
 
-        if(file.type == "file"){
+            setPathFile(pathFile + file.name + "/");
+
+            files = [{
+                key: randomId(),
+                type: "properties",
+                name: "server",
+                size: 4655614546541,
+                created: new Date().getTime()
+            },{
+                key: randomId(),
+                type: "bat",
+                name: "start",
+                size: 4655614546541,
+                created: new Date().getTime()
+            },{
+                key: randomId(),
+                type: "css",
+                name: "oyé",
+                size: 4655614546541,
+                created: new Date().getTime()
+            }];
+
+            checked = files.map((val) => {
+                return { "type": val.type, "name": val.name, "size": val.size, "created": val.created, "checked": false, key: val.key };
+            });
+
+            checkboxesHandler.setState(checked);
+
+            console.log(files, checked, items);
+        }
+        else{
+            setEditedFile(file.name + "." + file.type);
             setContentValue(1);
         }
     }
 
-    const items = checkboxes.map((val, index) => {
-        return <File type={val.type} name={val.name} size={val.size} openFile={openFile} created={new Date(val.created)} fileKey={val.key} checked={val.checked} onChange={(e) => checkboxesHandler.setItemProp(index, 'checked', e.currentTarget.checked)} />
-    });
+    
 
-    const [contentValue, setContentValue] = useState(1);
+    const [contentValue, setContentValue] = useState(0);
 
     return (
-        contentValue == 0 ? <div className="file-manager">
+
+        contentValue == 0 ? 
+
+        <div className="file-manager">
             <div className="top-bar">
                 <div className="title">
                     <h3>File Manager</h3>
-                    <span id="path">/</span>
+                    <span id="path">{pathFile}</span>
                 </div>
 
                 <div className="actions">
@@ -105,6 +142,13 @@ export default function FileManager() {
                     </tr>
                 </thead>
                 <tbody>
+                    <tr className='go-back'>
+                        <p>..</p>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
                     {items}
                     {items}
                     {items}
@@ -118,9 +162,10 @@ export default function FileManager() {
         <div className='editor-container'>
             <div className='editor-header'>
                 <FontAwesomeIcon icon={faArrowLeft} onClick={()=>setContentValue(0)}/>
+                <p className='edited-file-name'>{editedFile}</p>
             </div>
             <AceEditor
-            mode="java"
+            mode="javascript"
             theme="github"
             name="file-editor"
             width='100%'

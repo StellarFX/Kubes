@@ -37,7 +37,7 @@ function ServerManage(){
                         <Route path="/configuration" element={<Configuration/>}/>
                         <Route path="/players" element={<Players/>}/>
                         <Route path="/whitelist" element={<Whitelist/>}/>
-                        <Route path="/files" element={<FileManager/>}/>
+                        <Route path="/files" element={<FileManager server={id} />}/>
                         <Route path="/performances" element={<Performances/>}/>
                     </Routes>
                 </div>
