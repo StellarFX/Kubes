@@ -13,49 +13,49 @@ import "ace-builds/src-noconflict/theme-github";
 let files = [{
     key: randomId(),
     type: "html",
-    name: "Joe Mama",
-    size: 4655614546541,
+    name: "index",
+    size: 6541,
     created: new Date().getTime()
 },{
     key: randomId(),
     type: "folder",
-    name: "Joe Papa",
-    size: 4655614546541,
+    name: "assets",
+    size: 10841,
     created: new Date().getTime()
 },{
     key: randomId(),
     type: "js",
-    name: "Joe Katze",
-    size: 4655614546541,
+    name: "index",
+    size: 3541,
     created: new Date().getTime()
 },{
     key: randomId(),
     type: "js",
-    name: "Joe Doggo",
-    size: 4655614546541,
+    name: "navbar",
+    size: 8641,
     created: new Date().getTime()
 },{
     key: randomId(),
     type: "folder",
-    name: "Joe Papi",
-    size: 4655614546541,
+    name: "components",
+    size: 3741,
     created: new Date().getTime()
 },{
     key: randomId(),
     type: "html",
-    name: "Joe Mama",
-    size: 4655614546541,
+    name: "whitelist",
+    size: 2141,
     created: new Date().getTime()
 },{
     key: randomId(),
     type: "folder",
-    name: "Joe Papa",
-    size: 4655614546541,
+    name: "pages",
+    size: 9241,
     created: new Date().getTime()
 },{
     key: randomId(),
     type: "js",
-    name: "Joe Katze",
+    name: "whitelist",
     size: 4655614546541,
     created: new Date().getTime()
 },{

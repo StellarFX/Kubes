@@ -2,14 +2,14 @@ import './Whitelist.scss';
 import React, { useState } from 'react';
 import { faPlusCircle, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Select } from '@mantine/core';
+import { TextInput } from '@mantine/core';
 
 export default function Whitelist(){
   
   const inputStyle = {
 
     dropdown: {
-  
+      zIndex: "50000",
       backgroundColor: "#13121f",
       border: "none",
       borderRadius: "0",
@@ -33,26 +33,40 @@ export default function Whitelist(){
   
   }
 
-  let whitelistMembers = ["Wenwen23", "StellarFX", "TheNisse", "Slyz", "Wenwen23", "StellarFX", "TheNisse", "Slyz", "Wenwen23", "StellarFX", "TheNisse", "Slyz" ];
   
-  const [whiteList, setWhiteList] = useState([]);
-  let membersComponents = [];
-    
+  const [placeHolder, setPlaceHolder] = useState("Enter a name...")
+  const [chosenMember, setChosenMember] = useState("");
+  const [whitelistMembers, setWhitelistMembers] = useState(["Wenwen23", "StellarFX", "TheNisse", "Slyz"]);
+  const [membersComponents, setMembersComponents] = useState([]);
+  const [membersList, setMembersList] = useState(membersComponents);
 
-  for(let i = 0; i < whitelistMembers.length; i++){
-    membersComponents.push(
+  function whiteListAdd(){
+    if(whitelistMembers.indexOf(chosenMember) != -1){
+      setChosenMember("Please insert a none existing name.");
+    }
+    else{
+      setWhitelistMembers(whitelistMembers => [...whitelistMembers, chosenMember]);
+      setMembersComponents(membersComponents => [...membersComponents,
+        <div className='whitelist-members'>
+          <div className='white-face'></div>
+          <p id={chosenMember}>{chosenMember}</p>
+        </div>
+      ]);
+      setMembersList(membersComponents);
+    }
+    console.log(membersComponents, whitelistMembers);
+  }
+
+  
+
+  /*for(let i = 0; i < whitelistMembers.length; i++){
+    cool => [...cool,
       <div className='whitelist-members'>
         <div className='white-face'></div>
         <p id={whitelistMembers[i]}>{whitelistMembers[i]}</p>
       </div>
-    );
-    setWhiteList(whiteList.push(  //en développement c'est normal que ça marche pas
-      {value : whitelistMembers[i], label : whitelistMembers[i]}
-    ));
-    
-  }
-
-  const [membersList, setMembersList] = useState(membersComponents);
+    ];
+  }*/
 
     return(
 
@@ -65,9 +79,9 @@ export default function Whitelist(){
                     <FontAwesomeIcon icon={faPlusCircle} className='icon'/>
                     <p>Actions</p>
                 </div>
-                <Select zIndex={20000} className="select-whitelist" styles={inputStyle} placeholder="Select a member" required data={whiteList}/>
+                <TextInput className='whitelist-selector' placeholder={placeHolder} value={chosenMember} onChange={(e) => setChosenMember(e.currentTarget.value)}/>
                 <div className='whitelist-buttons-container'>
-                    <div className='whitelist-add' >
+                    <div className='whitelist-add' onClick={whiteListAdd}>
                         <FontAwesomeIcon icon={faPlus}/>
                         <p>Add</p>
                     </div>
