@@ -1,0 +1,39 @@
+.preferences {
+  .item {
+    width: 50%;
+  }
+  .input {                      
+                    select, input {
+                        border-radius: 0;
+                        background: #13121f;
+                        border: 0;
+                        border-bottom: solid 2px #5c596d;
+                        color: var(--main);
+
+                        &::placeholder{
+                            color: #585279;
+                        }
+                    }
+
+                    select {
+                        appearance: none !important;
+                        background-image: url("/arrow.svg");
+                        background-size: 12px;
+                        background-repeat: no-repeat;
+                        background-position: 90% 50%;
+                        width: 8rem;
+                        -webkit-appearance: none;
+
+                        option{
+                            border: none;
+                        }
+                    }
+
+                    
+                    
+                    .mantine-NativeSelect-rightSection {
+                        display: none;
+                    }
+
+                }
+}

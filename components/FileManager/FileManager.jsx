@@ -129,7 +129,7 @@ export default function FileManager(props) {
 
 
     const items = checkboxes.map((val, index) => {
-        return <File type={val.type} name={val.name} size={val.size} openFile={openFile} created={new Date(val.created)} fileKey={val.key} checked={val.checked} onChange={(e) => checkboxesHandler.setItemProp(index, 'checked', e.currentTarget.checked)} />
+        return <File type={val.type} name={val.name} size={val.size} openFile={openFile} created={new Date(val.created)} fileKey={val.key} checked={val.checked} onChange={(e) => CheckFile(val, index, e, val.checked)} />
     });
 
     function openFile(key){
@@ -174,6 +174,27 @@ export default function FileManager(props) {
         }
     }
 
+    const checkedStyle = {
+      color: "white",
+      display: "initial"
+    };
+
+    const uncheckedStyle = {
+      display: "none"
+    }
+
+    const [optionsStyle, setOptionsStyle] = useState(uncheckedStyle);
+
+    function CheckFile(val, index, e, value){
+      checkboxesHandler.setItemProp(index, 'checked', e.currentTarget.checked);
+      if(value == false){
+        setOptionsStyle(checkedStyle);
+      }
+      if(value == true){
+        setOptionsStyle(uncheckedStyle);
+      }
+    }
+  
     function goBack(){
         checked = files.map((val) => {
             return { "type": val.type, "name": val.name, "size": val.size, "created": val.created, "checked": false, key: val.key };
@@ -184,7 +205,17 @@ export default function FileManager(props) {
         changePath();
     }
 
-    
+    function headChecker(){
+      checkboxesHandler.setState((current) => current.map((value) => ({
+        ...value, checked: !allChecked
+      })))        
+      if(allChecked == false){
+        setOptionsStyle(checkedStyle);
+      }
+      if(allChecked == true){
+        setOptionsStyle(uncheckedStyle);
+      }
+    }
 
     const [contentValue, setContentValue] = useState(0);
 
@@ -199,7 +230,7 @@ export default function FileManager(props) {
                     <span id="path">{stringedPath}</span>
                 </div>
 
-                <div className="actions">
+                <div className="actions" style={optionsStyle}>
                     <FontAwesomeIcon icon={faDownload} />
                     <FontAwesomeIcon icon={faFilePlus} />
                     <FontAwesomeIcon icon={faFolderPlus} />
@@ -217,7 +248,7 @@ export default function FileManager(props) {
                             color="violet" 
                             indeterminate={indeterminate} 
                             checked={allChecked}
-                            onChange={() => checkboxesHandler.setState((current) => current.map((value) => ({ ...value, checked: !allChecked})))}/>
+                            onChange={() => headChecker()}/>
                         </th>
                         <th width="10%">Type</th>
                         <th width="20%">Name</th>
