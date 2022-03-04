@@ -37,25 +37,16 @@ export default function Whitelist(){
   const [placeHolder, setPlaceHolder] = useState("Enter a name...")
   const [chosenMember, setChosenMember] = useState("");
   const [whitelistMembers, setWhitelistMembers] = useState(["Wenwen23", "StellarFX", "TheNisse", "Slyz"]);
-  const [membersComponents, setMembersComponents] = useState([]);
+  const [membersComponents, setMembersComponents] = useState(whitelistMembers.map((m) => {
+  
+    return {value: m, label: m}
+  
+  }));
   const [membersList, setMembersList] = useState(membersComponents);
 
-  function whiteListAdd(){
-    if(whitelistMembers.indexOf(chosenMember) != -1){
-      setChosenMember("Please insert a none existing name.");
-    }
-    else{
-      setWhitelistMembers(whitelistMembers => [...whitelistMembers, chosenMember]);
-      setMembersComponents(membersComponents => [...membersComponents,
-        <div className='whitelist-members'>
-          <div className='white-face'></div>
-          <p id={chosenMember}>{chosenMember}</p>
-        </div>
-      ]);
-      setMembersList(membersComponents);
-    }
-    console.log(membersComponents, whitelistMembers);
-  }
+
+
+  
 
   
 
