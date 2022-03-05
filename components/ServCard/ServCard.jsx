@@ -148,7 +148,7 @@ export default function ServCard(props) {
                 
             </div>
 
-            <Link to={{pathname:`/server/${Name}/console`}}className="manage-button" tabindex="1">
+            <Link to={{pathname:`/server/${Name}/console`}}className="manage-button" tabIndex="1">
                 <p>Manage</p>
             </Link>
         </div>

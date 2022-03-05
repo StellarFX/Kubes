@@ -8,7 +8,7 @@ export default function Players(){
     return(
 
         <div className='players-main-container'>
-            <PlayerCompo name="Wenwen23"/>
+            <PlayerCompo name="Wenwen23333333333333"/>
             <PlayerCompo name="Wenwen22"/>
             <PlayerCompo name="Slyz"/>
             <PlayerCompo name="StellarFX"/>

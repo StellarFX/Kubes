@@ -42,6 +42,12 @@
                 margin-left: auto;
                 margin-right: unset;
                 cursor: pointer;
+                font-size: 1.5rem;
+                margin-bottom: auto;
+
+                &:active{
+                    transform: translateY(1.5px);
+                }
             }
 
             font-size: 2rem;

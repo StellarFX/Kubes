@@ -1,0 +1,85 @@
+.ace-github{
+    .ace_gutter{
+        background: none;
+    }
+}
+
+.ace_editor{
+
+    border-radius: 10px;
+    background: #161420;
+
+    .ace_scroller{
+        color: rgb(175, 175, 175);
+        .ace_content{
+            background-color: #161420;
+
+            .ace_cursor{
+                color: rgb(146, 139, 156);
+            }
+
+            .ace_print-margin{
+                background: #211d2e;
+            }
+
+            .ace_active-line{
+                background: rgba(0,0,0,0.15);
+            }
+
+            .ace_indent-guide{
+                opacity: 0.1;
+            }
+
+            .ace_selection{
+                background: #302c3b; 
+            }
+
+            .ace_selected-word{
+                border: none;
+                background: none;
+            }
+
+            .ace_text-layer{
+                
+                .ace_constant{
+                    color: rgb(221, 150, 69);
+                }
+
+                .ace_attribute-name{
+                    color: rgb(221, 189, 101);
+                }
+
+                .ace_identifier,
+                .ace_tag-name{
+                    color: rgb(228, 101, 112);
+                }
+
+                .ace_storage,
+                .ace_keyword,
+                .ace_quasi{
+                    color: rgb(169, 99, 207);
+                    font-weight: bold;
+                }
+
+                .ace_function,
+                .ace_operator,
+                .ace_variable{
+                    color: rgb(102, 158, 223);
+                }
+
+                .ace_string{
+                    color: rgb(133, 187, 116);
+                }
+            }
+        }
+    }
+    
+    .ace_gutter-layer{
+        background-color: #0e0c14;
+
+        .ace_gutter-cell{
+            background-color: transparent;
+            color: rgb(78, 72, 87);
+        }
+    }
+}

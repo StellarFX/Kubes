@@ -2,7 +2,7 @@
     width: 100%;
     height: 100%;
     display: flex;
-    background: var(--dark);
+    // background: var(--dark);
     padding: 1rem;
     overflow-x: hidden;
     overflow-y: auto;
@@ -27,6 +27,7 @@
                 color: rgb(218, 218, 218);
                 font-family: 'Source Code Pro', monospace;
                 font-size: 0.8rem;
+                padding: 0;
             }
         }
     }

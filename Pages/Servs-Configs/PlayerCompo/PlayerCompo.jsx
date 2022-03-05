@@ -26,7 +26,7 @@ function PlayerCompo(props) {
                     <p><FontAwesomeIcon className='status-icon' icon={faGavel} />Ban</p>
                 </div>
                 <div className={banIpClass[banIp]} onClick={() => { setBanIp(Math.abs(banIp - 1))}}>
-                    <p><FontAwesomeIcon className='status-icon' icon={faGavel} />Ban IP</p>
+                    <p><FontAwesomeIcon className='status-icon' icon={faGavel} />Ban&nbsp;IP</p>
                 </div>
             </div>
 

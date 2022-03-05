@@ -1,14 +1,12 @@
-import React , {useState, useEffect} from 'react';
-import { faFileMedical as faFilePlus, faDownload, faFolderPlus, faArrowRotateRight, faArrowLeft, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import React , {useState, useEffect, useRef, useCallback} from 'react';
+import { faFileMedical as faFilePlus, faPen, faFolderPlus, faArrowRotateRight, faTrashCan, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import File from './File';
 import './FileManager.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Checkbox , Text , Group } from '@mantine/core';
 import { randomId, useListState } from '@mantine/hooks';
 import { Dropzone, FullScreenDropzone } from '@mantine/dropzone';
-import AceEditor from "react-ace";
-import "ace-builds/src-noconflict/mode-java";
-import "ace-builds/src-noconflict/theme-github";
+import AceEditor from '../AceEditor/AceEditor';
 
 let files = [{
     key: randomId(),
@@ -42,7 +40,7 @@ let files = [{
     created: new Date().getTime()
 },{
     key: randomId(),
-    type: "html",
+    type: "java",
     name: "whitelist",
     size: 2141,
     created: new Date().getTime()
@@ -78,7 +76,7 @@ let files = [{
     created: new Date().getTime()
 },{
     key: randomId(),
-    type: "capou",
+    type: "py",
     name: "Joe Papa",
     size: 4655614546541,
     created: new Date().getTime()
@@ -96,7 +94,7 @@ let files = [{
     created: new Date().getTime()
 },{
     key: randomId(),
-    type: "css",
+    type: "properties",
     name: "Joe Papi",
     size: 4655614546541,
     created: new Date().getTime()
@@ -112,11 +110,12 @@ export default function FileManager(props) {
     const [editedFile, setEditedFile] = useState("");
     const [checkboxes, checkboxesHandler] = useListState(checked);
     const allChecked = checkboxes.every((value) => value.checked);
+    const everyChecked = checkboxes.filter((val) => { if(val.checked) { return val; } });
     const indeterminate = checkboxes.some((value) => value.checked) && !allChecked;
+    const [checkedNumber, setCheckedNumber] = useState(0);
 
     let managerPath = [props.server];
     const [stringedPath, setPath] = useState("/"+props.server+"/");
-
 
     function changePath(){
         let path ="/";
@@ -124,12 +123,10 @@ export default function FileManager(props) {
             path=path+managerPath[i]+"/";
         }
         setPath(path);
-        console.log(managerPath, stringedPath, path);
     }
 
-
     const items = checkboxes.map((val, index) => {
-        return <File type={val.type} name={val.name} size={val.size} openFile={openFile} created={new Date(val.created)} fileKey={val.key} checked={val.checked} onChange={(e) => CheckFile(val, index, e, val.checked)} />
+        return <File type={val.type} name={val.name} size={val.size} openFile={openFile} created={new Date(val.created)} key={val.key} fileKey={val.key} checked={val.checked} onChange={(e) => CheckFile(val, index, e, val.checked)} />
     });
 
     function openFile(key){
@@ -137,7 +134,6 @@ export default function FileManager(props) {
             return arrayFile.key == key;
         });
 
-        console.log("You opened : " + file.name + " " + file.type);
         if(file.type == "folder"){
 
             let files2 = [{
@@ -175,23 +171,51 @@ export default function FileManager(props) {
     }
 
     const checkedStyle = {
-      color: "white",
-      display: "initial"
+      display: "flex",
+      transform: "translateX(0%)",
+      transformOrigin: "center",
+      opacity: 1
     };
 
+    const checkedStyle2 = {
+        display: "flex",
+        transform: "translateX(-104%)",
+        transformOrigin: "center",
+        opacity: 1
+      };
+
     const uncheckedStyle = {
-      display: "none"
+      transform: "translateX(110%)",
+      transformOrigin: "center",
+      opacity: 0
     }
 
     const [optionsStyle, setOptionsStyle] = useState(uncheckedStyle);
+    const [penOptionsStyle, setPenOptionsStyle] = useState(uncheckedStyle);
 
     function CheckFile(val, index, e, value){
       checkboxesHandler.setItemProp(index, 'checked', e.currentTarget.checked);
       if(value == false){
-        setOptionsStyle(checkedStyle);
+        if(checkedNumber == 0){
+            setOptionsStyle(checkedStyle);
+            setPenOptionsStyle(checkedStyle);
+        }
+        if(checkedNumber == 1){
+            setOptionsStyle(checkedStyle2);
+            setPenOptionsStyle(uncheckedStyle);
+        }
+        setCheckedNumber(checkedNumber + 1);
       }
       if(value == true){
-        setOptionsStyle(uncheckedStyle);
+        if(checkedNumber == 1){
+            setOptionsStyle(uncheckedStyle);
+            setPenOptionsStyle(uncheckedStyle);
+        }
+        if(checkedNumber == 2){
+            setPenOptionsStyle(checkedStyle);
+            setOptionsStyle(checkedStyle);
+        }
+        setCheckedNumber(checkedNumber -1);
       }
     }
   
@@ -210,14 +234,35 @@ export default function FileManager(props) {
         ...value, checked: !allChecked
       })))        
       if(allChecked == false){
-        setOptionsStyle(checkedStyle);
+        setOptionsStyle(checkedStyle2);
+        setPenOptionsStyle(uncheckedStyle);
+        setCheckedNumber(checkboxes.length);
       }
       if(allChecked == true){
         setOptionsStyle(uncheckedStyle);
+        setCheckedNumber(0);
       }
     }
 
+    const [editorMode, setEditorMode] = useState("text");
+
+    const editor = useCallback((node) => {
+        if(node) {
+            setEditorMode(getModeForPath(editedFile)["name"]);
+        }
+    }, [editedFile]);
+
     const [contentValue, setContentValue] = useState(0);
+
+    function deleteFile(){
+        for(let i = 0; i < everyChecked.length; i++){
+            checkboxesHandler.setItemProp(checkboxes.indexOf(everyChecked[i]), 'checked', false);
+            checkboxes.splice(checkboxes.indexOf(everyChecked[i]), 1);
+            setOptionsStyle(uncheckedStyle);
+            setPenOptionsStyle(uncheckedStyle);
+            setCheckedNumber(0)
+        }
+    }
 
     return (
 
@@ -226,23 +271,21 @@ export default function FileManager(props) {
         <div className="file-manager">
             <div className="top-bar">
                 <div className="title">
-                    <h3>File Manager</h3>
+                    <h3>File&nbsp;Manager
+                        <FontAwesomeIcon icon={faArrowRotateRight} className="f-reload"/>
+                        <FontAwesomeIcon icon={faFilePlus} className="f-addfile"/>
+                        <FontAwesomeIcon icon={faFolderPlus} className="f-addfolder"/>
+                        <FontAwesomeIcon icon={faPen} className="f-rename" style={penOptionsStyle}/>
+                        <FontAwesomeIcon icon={faTrashCan} className="f-delete" style={optionsStyle} onClick={()=>deleteFile()}/>
+                    </h3>
                     <span id="path">{stringedPath}</span>
-                </div>
-
-                <div className="actions" style={optionsStyle}>
-                    <FontAwesomeIcon icon={faDownload} />
-                    <FontAwesomeIcon icon={faFilePlus} />
-                    <FontAwesomeIcon icon={faFolderPlus} />
-                    <FontAwesomeIcon icon={faArrowRotateRight} />
-                    <FontAwesomeIcon icon={faTrashCan} />
                 </div>
             </div>
 
             <table className="folders-container">
                 <thead>
                     <tr>
-                        <th width="5%">
+                        <th width="2%">
                             <Checkbox 
                             styles={{"input": { backgroundColor: "#262333", border: "1px solid #262333" }}} 
                             color="violet" 
@@ -250,22 +293,30 @@ export default function FileManager(props) {
                             checked={allChecked}
                             onChange={() => headChecker()}/>
                         </th>
-                        <th width="10%">Type</th>
-                        <th width="20%">Name</th>
-                        <th width="10%">Size</th>
-                        <th width="20%">Created at</th>
+                        <th width="5%">Type</th>
+                        <th width="10%">Name</th>
+                        <th width="5%">Size</th>
+                        <th width="10%">Created at</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {stringedPath == "/" + props.server + "/" ?
+                    
+                    <></>
+
+                    :
+
                     <tr className='go-back'>
-                        <p onClick={()=> goBack()}>..</p>
+                        <th><p onClick={()=> goBack()}>..</p></th>
                         <th></th>
                         <th></th>
                         <th></th>
                         <th></th>
                     </tr>
-                    {items}
-                    
+
+                    }
+
+                    {items[0].key == null ? <></> : items}
                 </tbody>
 
             </table>
@@ -279,21 +330,15 @@ export default function FileManager(props) {
         </div>
 
         :
-
+            
         <div className='editor-container'>
             <div className='editor-header'>
-                <FontAwesomeIcon icon={faArrowLeft} onClick={()=>setContentValue(0)}/>
+                <FontAwesomeIcon icon={faArrowLeft} onClick={() => setContentValue(0)}/>
                 <p className='edited-file-name'>{editedFile}</p>
             </div>
-            <AceEditor
-            mode="javascript"
-            theme="github"
-            name="file-editor"
-            width='100%'
-            height='100%'
-            editorProps={{ $blockScrolling: false }}
-            />
+            <AceEditor editedFile={editedFile} value="Pute"/>
         </div>
+        
         
     );
 

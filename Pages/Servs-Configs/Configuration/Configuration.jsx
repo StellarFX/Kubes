@@ -3,8 +3,7 @@ import React, { useState, useEffect } from 'react';
 import './Configuration.scss';
 import { Textarea } from '@mantine/core';
 import '../../../assets/properties.txt';
-
-
+import AceEditor from '/components/AceEditor/AceEditor';
 
 export default function Configuration(){
 
@@ -54,8 +53,8 @@ motd=A Minecraft Server`
 
         <div className='configurations-main-container'>
             
-            <Textarea spellCheck="false" variant="unstyled" placeholder="Your email" radius="xs" value={fileValue} onChange={(e) => setFile(e.currentTarget.value)}/>
-
+            {/* <Textarea spellCheck="false" variant="unstyled" placeholder="Your email" radius="xs" value={fileValue} onChange={(e) => setFile(e.currentTarget.value)}/> */}
+            <AceEditor editedFile="server.properties" value={fileValue} onChange={(val) => setFileValue(val)}/>
         </div>
 
     );

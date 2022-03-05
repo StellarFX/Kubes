@@ -3,10 +3,7 @@ import {
     Routes,
     Route,
     useLocation} from "react-router-dom";
-import {
-    
-  } from "react-router-dom";
-import React from 'react';
+import React,  {useState} from 'react';
 import './ServerManage.scss';
 import ServNavbar from '../../components/ServNavbar/ServNavbar.jsx';
 
@@ -17,7 +14,18 @@ import Players from '../Servs-Configs/Players/Players';
 import Whitelist from '../Servs-Configs/Whitelist/Whitelist';
 import FileManager from '../../components/FileManager/FileManager';
 
+import { faCheck, faTimes, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 function ServerManage(){
+
+    const [status, setStatus] = useState(1);
+    const online = <div className="serv-status-online"><FontAwesomeIcon className='status-icon' icon={faCheck}/><p>Online</p></div>;
+    const offline = <div className="serv-status-offline"><FontAwesomeIcon className='status-icon' icon={faTimes}/><p>Offline</p></div>;
+    const starting = <div className="serv-status-starting"><FontAwesomeIcon className='status-icon' icon={faEllipsisH}/><p>Starting</p></div>;
+    const loading = <div className="serv-status-starting"><FontAwesomeIcon className='status-icon' icon={faEllipsisH}/><p>Loading</p></div>;
+    const empty = <div className="serv-status-empty"><FontAwesomeIcon className='status-icon' icon={faTimes}/><p>Empty</p></div>;
+    const statusChanger = [offline, online, starting, loading, empty];
 
     const { id } = useParams();
 
@@ -27,6 +35,7 @@ function ServerManage(){
         <div className='page-main-container'>
             <div className='page-title-container'>
                 <p className='page-title'>{id}</p>
+                {statusChanger[status]}
             </div>
             <div className='page-content' id="servmanage-content">
                 <ServNavbar config={location}/>

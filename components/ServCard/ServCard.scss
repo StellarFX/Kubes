@@ -4,10 +4,10 @@
         outline: none;
         transition-duration: 0.3s;
     }
-    height: 67%;
+    height: 100%;
     width: 80%;
     max-width: 33rem;
-    max-height: 20rem;
+    max-height: 18rem;
     min-width: 20rem;
     min-height: 17rem;
 
@@ -124,6 +124,7 @@
         cursor: default;
         display: flex;
         margin-left: 2px;
+        margin-bottom: 0.5rem;
 
         div{
             display: flex;
