@@ -45,7 +45,7 @@ max-tick-time=60000
 spawn-monsters=true
 view-distance=10
 generate-structures=true
-motd=A Minecraft Server`
+motd=Server built with Kubes!`
 
     );
 

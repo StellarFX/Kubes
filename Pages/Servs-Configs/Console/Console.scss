@@ -116,7 +116,7 @@
                 min-width: 6rem;
                 max-width: 6.5rem;
                 transform: none;
-                transition: 0.3s;
+                transition: 0.1s;
                 p{
                     margin: 0;
                     display: flex;
@@ -130,12 +130,8 @@
                     margin-right: 1.5rem;
                 }
 
-                &:hover{
-                    transform: scale(110%, 110%);
-                }
-
                 &:active{
-                    transform: scale(115%, 115%);
+                    transform: translateY(2px);
                 }
 
             }

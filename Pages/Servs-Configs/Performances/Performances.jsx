@@ -4,13 +4,10 @@ import { faPercentage } from '@fortawesome/free-solid-svg-icons';
 import './Performances.scss';
 import {
     ComposedChart,
-    Line,
-    Area,
     Bar,
     XAxis,
     YAxis,
     CartesianGrid,
-    Tooltip,
     Legend,
     ResponsiveContainer,
 } from 'recharts';

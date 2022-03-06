@@ -1,0 +1,102 @@
+.darken-background{
+    z-index: 1000;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.226);
+
+    
+}
+
+.file-popup{
+    z-index: 1001;
+    background-color: #0c0b16;
+    width: 20rem;
+    height: fit-content;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+
+    .popup-title{
+        margin-left: 1.5rem;
+        font-weight: 700;
+
+        svg{
+            margin-right: 1rem;
+            color: var(--main);
+            filter: drop-shadow(3px 2px 1px #7547ff4d);
+        }
+    }
+
+    .inputs{  
+        padding: 0 1.5rem;
+        display: flex;
+        align-items: end;
+        margin-top: 0.5rem;
+
+        input {
+            border-radius: 0;
+            background: #13121f;
+            border: 0;
+            border-bottom: solid 2px #5c596d;
+            color: var(--main);
+
+            &::placeholder{
+                color: #585279;
+            }
+        } 
+
+        .extension{
+            width: 4rem;
+        }
+
+        .file-name{
+            width: 8rem;
+        }
+
+        .folder-name{
+            width: 10rem;
+        }
+            
+        .mantine-NativeSelect-rightSection {
+            display: none;
+        }
+
+        p{
+            margin: 0 0.5rem;
+        }
+    }
+
+    .buttons{
+        display: flex;
+        justify-content: end;
+        padding: 0 1.5rem;
+        margin-top: 1rem;
+        margin-bottom: 1.5rem;
+
+        span{
+            font-family: "Poppins", sans-serif;
+            font-weight: 400;
+        }
+
+        .ok{
+            background-color: var(--main);
+        }
+
+        .cancel{
+            color: var(--red);
+            border: 1.75px solid #d11d1d;
+            background-color: transparent;
+
+            span{
+                font-weight: 600;
+            }
+        }
+    }
+}

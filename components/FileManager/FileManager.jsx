@@ -1,6 +1,7 @@
 import React , {useState, useEffect, useRef, useCallback} from 'react';
 import { faFileMedical as faFilePlus, faPen, faFolderPlus, faArrowRotateRight, faTrashCan, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import File from './File';
+import FilePopUp from '../FilePopUp/FilePopUp';
 import './FileManager.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Checkbox , Text , Group } from '@mantine/core';
@@ -106,7 +107,10 @@ let checked = files.map((val) => {
 
 export default function FileManager(props) {
 
-    
+    const [popUp, setPopUp] = useState(false);
+    const [renamedFile, setRenamedFile] = useState();
+    const [fileAction, setFileAction] = useState("");
+
     const [editedFile, setEditedFile] = useState("");
     const [checkboxes, checkboxesHandler] = useListState(checked);
     const allChecked = checkboxes.every((value) => value.checked);
@@ -170,6 +174,11 @@ export default function FileManager(props) {
         }
     }
 
+    const borderStyle = {
+        borderTopRightRadius : "10px",
+        borderBottomRightRadius: "10px"
+    }
+
     const checkedStyle = {
       display: "flex",
       transform: "translateX(0%)",
@@ -192,13 +201,16 @@ export default function FileManager(props) {
 
     const [optionsStyle, setOptionsStyle] = useState(uncheckedStyle);
     const [penOptionsStyle, setPenOptionsStyle] = useState(uncheckedStyle);
+    const [folderStyle, setFolderStyle] = useState(borderStyle);
 
     function CheckFile(val, index, e, value){
+        console.log(checkboxes[index].key);
       checkboxesHandler.setItemProp(index, 'checked', e.currentTarget.checked);
       if(value == false){
         if(checkedNumber == 0){
             setOptionsStyle(checkedStyle);
             setPenOptionsStyle(checkedStyle);
+            setFolderStyle(null);
         }
         if(checkedNumber == 1){
             setOptionsStyle(checkedStyle2);
@@ -210,6 +222,7 @@ export default function FileManager(props) {
         if(checkedNumber == 1){
             setOptionsStyle(uncheckedStyle);
             setPenOptionsStyle(uncheckedStyle);
+            setFolderStyle(borderStyle);
         }
         if(checkedNumber == 2){
             setPenOptionsStyle(checkedStyle);
@@ -237,10 +250,12 @@ export default function FileManager(props) {
         setOptionsStyle(checkedStyle2);
         setPenOptionsStyle(uncheckedStyle);
         setCheckedNumber(checkboxes.length);
+        setFolderStyle(null);
       }
       if(allChecked == true){
         setOptionsStyle(uncheckedStyle);
         setCheckedNumber(0);
+        setFolderStyle(borderStyle);
       }
     }
 
@@ -256,12 +271,77 @@ export default function FileManager(props) {
 
     function deleteFile(){
         for(let i = 0; i < everyChecked.length; i++){
+            /*console.log(checkboxes[i].key);
+            console.log(files.filter((val)=>{if(val.key == checkboxes[i].key){return val;}}));
+            console.log(files);
+
+            files.splice(files.indexOf(files.filter((val)=>{if(val.key == checkboxes[i].key){return val;}})[0]), 1);
+
+            console.log(files);*/
             checkboxesHandler.setItemProp(checkboxes.indexOf(everyChecked[i]), 'checked', false);
             checkboxes.splice(checkboxes.indexOf(everyChecked[i]), 1);
+
+
             setOptionsStyle(uncheckedStyle);
             setPenOptionsStyle(uncheckedStyle);
-            setCheckedNumber(0)
+            setFolderStyle(borderStyle);
+            setCheckedNumber(0);
         }
+    }
+
+    function OpenRename(){
+        setRenamedFile(everyChecked[0]);
+        if(renamedFile.type == "folder"){
+            setFileAction("Rename folder");
+        }
+        else{
+            setFileAction("Rename file");
+        }
+        setPopUp(true);
+    }
+
+    function RenameFile(name, extension){
+        checkboxesHandler.setItemProp(checkboxes.indexOf(renamedFile), 'name', name);
+        if(extension != "folder"){
+            checkboxesHandler.setItemProp(checkboxes.indexOf(renamedFile), 'type', extension);
+        }
+        setPopUp(false);
+    }
+
+    function OpenCreate(type){
+        if(type == "folder"){
+            setFileAction("Create folder");
+            setRenamedFile(
+                {type: "folder", name: ""}
+            );
+        }
+        else{
+            setFileAction("Create file");
+            setRenamedFile(
+                {type: "", name: ""}
+            );
+        }
+
+        setPopUp(true);
+    }
+
+    function CreateFile(name, type){
+        checkboxes.push(
+
+            { "type": type.replaceAll(".", ""), "name": name.replaceAll(".", ""), "size": 0, "created": new Date().getTime(), "checked": false, key: randomId() }
+
+        )
+
+        files.push(
+
+            { "type": type.replaceAll(".", ""), "name": name.replaceAll(".", ""), "size": 0, "created": new Date().getTime(), "checked": false, key: randomId() }
+
+        );
+
+        console.log({ "type": type, "name": name, "size": 0, "created": new Date().getTime(), "checked": false, key: randomId() });
+        console.log(checkboxes);
+
+        setPopUp(false);
     }
 
     return (
@@ -269,13 +349,20 @@ export default function FileManager(props) {
         contentValue == 0 ? 
 
         <div className="file-manager">
+            {
+                popUp == true ?
+
+                <FilePopUp action={fileAction} type={renamedFile.type} name={renamedFile.name} rename={RenameFile} create={CreateFile} close={()=>setPopUp(false)}/>
+                : <></>
+            }
+            
             <div className="top-bar">
                 <div className="title">
                     <h3>File&nbsp;Manager
                         <FontAwesomeIcon icon={faArrowRotateRight} className="f-reload"/>
-                        <FontAwesomeIcon icon={faFilePlus} className="f-addfile"/>
-                        <FontAwesomeIcon icon={faFolderPlus} className="f-addfolder"/>
-                        <FontAwesomeIcon icon={faPen} className="f-rename" style={penOptionsStyle}/>
+                        <FontAwesomeIcon icon={faFilePlus} className="f-addfile" onClick={()=>OpenCreate("file")}/>
+                        <FontAwesomeIcon icon={faFolderPlus} className="f-addfolder" style={folderStyle} onClick={()=>OpenCreate("folder")}/>
+                        <FontAwesomeIcon icon={faPen} className="f-rename" style={penOptionsStyle} onClick={()=>OpenRename()}/>
                         <FontAwesomeIcon icon={faTrashCan} className="f-delete" style={optionsStyle} onClick={()=>deleteFile()}/>
                     </h3>
                     <span id="path">{stringedPath}</span>
