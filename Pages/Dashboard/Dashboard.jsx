@@ -61,7 +61,7 @@ function Dashboard() {
                 <div className='arrow'></div>
               </div>
                 
-              <p className='ip' tabindex="1">{IP}</p>
+              <p className='ip' tabIndex="1">{IP}</p>
             </div>
           </div>
         </div>

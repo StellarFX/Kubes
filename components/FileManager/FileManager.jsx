@@ -111,12 +111,12 @@ export default function FileManager(props) {
     const [renamedFile, setRenamedFile] = useState();
     const [fileAction, setFileAction] = useState("");
 
+    const [currentFileList, setCurrentFileList] = useState(files);
     const [editedFile, setEditedFile] = useState("");
     const [checkboxes, checkboxesHandler] = useListState(checked);
     const allChecked = checkboxes.every((value) => value.checked);
     const everyChecked = checkboxes.filter((val) => { if(val.checked) { return val; } });
     const indeterminate = checkboxes.some((value) => value.checked) && !allChecked;
-    const [checkedNumber, setCheckedNumber] = useState(0);
 
     let managerPath = [props.server];
     const [stringedPath, setPath] = useState("/"+props.server+"/");
@@ -164,6 +164,7 @@ export default function FileManager(props) {
                 return { "type": val.type, "name": val.name, "size": val.size, "created": val.created, "checked": false, key: val.key };
             });
 
+            setCurrentFileList(files2);
             checkboxesHandler.setState(checked);
             managerPath.push(file.name);
             changePath();
@@ -174,124 +175,78 @@ export default function FileManager(props) {
         }
     }
 
+  
+
     const borderStyle = {
         borderTopRightRadius : "10px",
         borderBottomRightRadius: "10px"
     }
-
     const checkedStyle = {
       display: "flex",
       transform: "translateX(0%)",
       transformOrigin: "center",
       opacity: 1
     };
-
     const checkedStyle2 = {
         display: "flex",
         transform: "translateX(-104%)",
         transformOrigin: "center",
         opacity: 1
       };
-
     const uncheckedStyle = {
       transform: "translateX(110%)",
       transformOrigin: "center",
       opacity: 0
     }
-
     const [optionsStyle, setOptionsStyle] = useState(uncheckedStyle);
     const [penOptionsStyle, setPenOptionsStyle] = useState(uncheckedStyle);
     const [folderStyle, setFolderStyle] = useState(borderStyle);
 
+  
+
     function CheckFile(val, index, e, value){
-        console.log(checkboxes[index].key);
+      console.log(checkboxes[index].key);
       checkboxesHandler.setItemProp(index, 'checked', e.currentTarget.checked);
-      if(value == false){
-        if(checkedNumber == 0){
-            setOptionsStyle(checkedStyle);
-            setPenOptionsStyle(checkedStyle);
-            setFolderStyle(null);
-        }
-        if(checkedNumber == 1){
-            setOptionsStyle(checkedStyle2);
-            setPenOptionsStyle(uncheckedStyle);
-        }
-        setCheckedNumber(checkedNumber + 1);
-      }
-      if(value == true){
-        if(checkedNumber == 1){
-            setOptionsStyle(uncheckedStyle);
-            setPenOptionsStyle(uncheckedStyle);
-            setFolderStyle(borderStyle);
-        }
-        if(checkedNumber == 2){
-            setPenOptionsStyle(checkedStyle);
-            setOptionsStyle(checkedStyle);
-        }
-        setCheckedNumber(checkedNumber -1);
-      }
     }
+  
   
     function goBack(){
         checked = files.map((val) => {
             return { "type": val.type, "name": val.name, "size": val.size, "created": val.created, "checked": false, key: val.key };
         });
-
+        setCurrentFileList(files);
         checkboxesHandler.setState(checked);
         managerPath.splice(managerPath.length, 1);
         changePath();
     }
+  
 
     function headChecker(){
       checkboxesHandler.setState((current) => current.map((value) => ({
         ...value, checked: !allChecked
-      })))        
-      if(allChecked == false){
-        setOptionsStyle(checkedStyle2);
-        setPenOptionsStyle(uncheckedStyle);
-        setCheckedNumber(checkboxes.length);
-        setFolderStyle(null);
-      }
-      if(allChecked == true){
-        setOptionsStyle(uncheckedStyle);
-        setCheckedNumber(0);
-        setFolderStyle(borderStyle);
-      }
+      })))
     }
+  
 
     const [editorMode, setEditorMode] = useState("text");
-
     const editor = useCallback((node) => {
         if(node) {
             setEditorMode(getModeForPath(editedFile)["name"]);
         }
     }, [editedFile]);
-
     const [contentValue, setContentValue] = useState(0);
+  
 
     function deleteFile(){
         for(let i = 0; i < everyChecked.length; i++){
-            /*console.log(checkboxes[i].key);
-            console.log(files.filter((val)=>{if(val.key == checkboxes[i].key){return val;}}));
-            console.log(files);
-
-            files.splice(files.indexOf(files.filter((val)=>{if(val.key == checkboxes[i].key){return val;}})[0]), 1);
-
-            console.log(files);*/
             checkboxesHandler.setItemProp(checkboxes.indexOf(everyChecked[i]), 'checked', false);
             checkboxes.splice(checkboxes.indexOf(everyChecked[i]), 1);
-
-
-            setOptionsStyle(uncheckedStyle);
-            setPenOptionsStyle(uncheckedStyle);
-            setFolderStyle(borderStyle);
-            setCheckedNumber(0);
         }
     }
 
     function OpenRename(){
         setRenamedFile(everyChecked[0]);
-        if(renamedFile.type == "folder"){
+        if(everyChecked[0].type == "folder"){
             setFileAction("Rename folder");
         }
         else{
@@ -299,6 +254,7 @@ export default function FileManager(props) {
         }
         setPopUp(true);
     }
+  
 
     function RenameFile(name, extension){
         checkboxesHandler.setItemProp(checkboxes.indexOf(renamedFile), 'name', name);
@@ -306,9 +262,16 @@ export default function FileManager(props) {
             checkboxesHandler.setItemProp(checkboxes.indexOf(renamedFile), 'type', extension);
         }
         setPopUp(false);
+        checkboxesHandler.setItemProp(checkboxes.indexOf(renamedFile), 'checked', false);
     }
 
+  
     function OpenCreate(type){
+        for(let i = 0; i < everyChecked.length; i++){
+
+            checkboxesHandler.setItemProp(checkboxes.indexOf(everyChecked[i]), 'checked', false);
+          
+        }
         if(type == "folder"){
             setFileAction("Create folder");
             setRenamedFile(
@@ -332,7 +295,7 @@ export default function FileManager(props) {
 
         )
 
-        files.push(
+        currentFileList.push(
 
             { "type": type.replaceAll(".", ""), "name": name.replaceAll(".", ""), "size": 0, "created": new Date().getTime(), "checked": false, key: randomId() }
 
@@ -340,9 +303,38 @@ export default function FileManager(props) {
 
         console.log({ "type": type, "name": name, "size": 0, "created": new Date().getTime(), "checked": false, key: randomId() });
         console.log(checkboxes);
-
         setPopUp(false);
     }
+
+
+    function reloadFiles(){
+
+        checked = currentFileList.map((val) => {
+                return { "type": val.type, "name": val.name, "size": val.size, "created": val.created, "checked": false, key: val.key };
+            });
+
+        checkboxesHandler.setState(checked);
+    }
+  
+
+  useEffect(()=>{
+    if(everyChecked.length == 0){
+        setOptionsStyle(uncheckedStyle);
+        setPenOptionsStyle(uncheckedStyle);
+        setFolderStyle(borderStyle);
+    }
+    if(everyChecked.length == 1){
+        setOptionsStyle(checkedStyle);
+        setPenOptionsStyle(checkedStyle);
+        setFolderStyle(null);
+    }
+    if(everyChecked.length >= 2){
+        setOptionsStyle(checkedStyle2);
+        setPenOptionsStyle(uncheckedStyle);
+        setFolderStyle(null);
+    }
+    
+  }, [everyChecked.length]);
 
     return (
 
@@ -359,7 +351,7 @@ export default function FileManager(props) {
             <div className="top-bar">
                 <div className="title">
                     <h3>File&nbsp;Manager
-                        <FontAwesomeIcon icon={faArrowRotateRight} className="f-reload"/>
+                        <FontAwesomeIcon icon={faArrowRotateRight} className="f-reload" onClick={()=>reloadFiles()}/>
                         <FontAwesomeIcon icon={faFilePlus} className="f-addfile" onClick={()=>OpenCreate("file")}/>
                         <FontAwesomeIcon icon={faFolderPlus} className="f-addfolder" style={folderStyle} onClick={()=>OpenCreate("folder")}/>
                         <FontAwesomeIcon icon={faPen} className="f-rename" style={penOptionsStyle} onClick={()=>OpenRename()}/>

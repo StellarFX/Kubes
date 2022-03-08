@@ -10,7 +10,7 @@
     box-sizing: border-box;
     border-right: 1px solid #262333; 
 
-    @media screen and (max-width: 1010px) {
+    @media screen and (max-width: 1090px) {
         min-width: fit-content;
     }
 
@@ -25,7 +25,7 @@
     }
 
     .navbar-overflow{
-        @media screen and (min-width: 1011px){
+        @media screen and (min-width: 1091px){
             overflow-y: auto;
             overflow-x: hidden;
         }
@@ -50,11 +50,11 @@
             .icon{
                 width: 4rem;
     
-                @media screen and (max-width: 1010px) {
+                @media screen and (max-width: 1090px) {
                     width: 4rem;
                 }
     
-                @media screen and (min-width: 1011px) {
+                @media screen and (min-width: 1091px) {
                     margin: 1.5rem 0;
                 }
             }
@@ -177,7 +177,7 @@
             border-bottom: unset;
         }
 
-        @media screen and (max-width: 1010px) {
+        @media screen and (max-width: 1090px) {
 
             $gap: 8vh;
             justify-content: center;
