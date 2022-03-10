@@ -2,6 +2,7 @@ import React , {useState, useEffect, useRef, useCallback} from 'react';
 import { faFileMedical as faFilePlus, faPen, faFolderPlus, faArrowRotateRight, faTrashCan, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import File from './File';
 import FilePopUp from '../FilePopUp/FilePopUp';
+import DeletePopup from '../DeletePopup/DeletePopup';
 import './FileManager.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Checkbox , Text , Group } from '@mantine/core';
@@ -110,6 +111,8 @@ export default function FileManager(props) {
     const [popUp, setPopUp] = useState(false);
     const [renamedFile, setRenamedFile] = useState();
     const [fileAction, setFileAction] = useState("");
+    const [deleteW, setDeleteW] = useState(false);
+    const [deleteA, setDeleteA] = useState("");
 
     const [currentFileList, setCurrentFileList] = useState(files);
     const [editedFile, setEditedFile] = useState("");
@@ -244,6 +247,21 @@ export default function FileManager(props) {
         }
     }
 
+    function openDeleteW(){
+        if(everyChecked.length >= 1){
+            setDeleteA("ces fichiers");
+        }
+        if(everyChecked.length == 1){
+            if(everyChecked[0].type == "folder"){
+                setDeleteA(everyChecked[0].name);  
+            }
+            else{
+                setDeleteA(everyChecked[0].name + "." + everyChecked[0].type);  
+            }
+        }
+        setDeleteW(true);
+    }
+
     function OpenRename(){
         setRenamedFile(everyChecked[0]);
         if(everyChecked[0].type == "folder"){
@@ -293,7 +311,7 @@ export default function FileManager(props) {
 
             { "type": type.replaceAll(".", ""), "name": name.replaceAll(".", ""), "size": 0, "created": new Date().getTime(), "checked": false, key: randomId() }
 
-        )
+        );
 
         currentFileList.push(
 
@@ -347,6 +365,17 @@ export default function FileManager(props) {
                 <FilePopUp action={fileAction} type={renamedFile.type} name={renamedFile.name} rename={RenameFile} create={CreateFile} close={()=>setPopUp(false)}/>
                 : <></>
             }
+            {
+
+                deleteW == true ?
+
+                <DeletePopup name={deleteA} close={()=>setDeleteW(false)} delete={deleteFile}/>
+
+                :
+
+                <></>
+              
+            }
             
             <div className="top-bar">
                 <div className="title">
@@ -355,7 +384,7 @@ export default function FileManager(props) {
                         <FontAwesomeIcon icon={faFilePlus} className="f-addfile" onClick={()=>OpenCreate("file")}/>
                         <FontAwesomeIcon icon={faFolderPlus} className="f-addfolder" style={folderStyle} onClick={()=>OpenCreate("folder")}/>
                         <FontAwesomeIcon icon={faPen} className="f-rename" style={penOptionsStyle} onClick={()=>OpenRename()}/>
-                        <FontAwesomeIcon icon={faTrashCan} className="f-delete" style={optionsStyle} onClick={()=>deleteFile()}/>
+                        <FontAwesomeIcon icon={faTrashCan} className="f-delete" style={optionsStyle} onClick={()=>openDeleteW()}/>
                     </h3>
                     <span id="path">{stringedPath}</span>
                 </div>
@@ -375,7 +404,7 @@ export default function FileManager(props) {
                         <th width="5%">Type</th>
                         <th width="10%">Name</th>
                         <th width="5%">Size</th>
-                        <th width="10%">Created at</th>
+                        <th width="10%">Created&nbsp;at</th>
                     </tr>
                 </thead>
                 <tbody>

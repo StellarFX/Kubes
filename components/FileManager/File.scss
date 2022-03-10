@@ -23,19 +23,27 @@
         width: fit-content;
         text-overflow: ellipsis;
         font-size: 0.9rem;
-        &:hover{
-            text-decoration: underline;
-        }
+        overflow: hidden;
     }
 
     .td-name{
         overflow: hidden;
-        text-overflow: ellipsis;
+        display: grid;
+        div{
+            overflow: hidden;
+            &:hover{
+                text-decoration: underline;
+            }
+            display: flex;
+            align-items: center;
+            p:not(.file-name){
+                margin:0;
+                font-size: 0.9rem;
+            }
+        }
     }
 
     td {
-        // border-left: 1px solid #262333;
-        // border-right: 1px solid #262333;
         padding: 1rem;
     }
 

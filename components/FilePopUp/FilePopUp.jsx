@@ -3,7 +3,6 @@ import './FilePopUp.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen } from '@fortawesome/free-solid-svg-icons';
 import { Input, Button } from '@mantine/core';
-import { hasUncaughtExceptionCaptureCallback } from 'process';
 
 export default function FilePopUp(props){
 

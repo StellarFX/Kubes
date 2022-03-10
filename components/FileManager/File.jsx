@@ -44,7 +44,15 @@ export default function File(props) {
             </td>
 
             <td className='td-name'>
-                <p className="file-name" onClick={() => { props.openFile(props.fileKey);}}>{props.type == "folder" ? props.name : props.name + "." + props.type}</p>
+                <div onClick={() => { props.openFile(props.fileKey);}}>
+                    <p className="file-name">{props.name}</p>
+                    { props.type == "folder" ? <></> :
+                    <>
+                        <p>.</p>
+                        <p className="file-ext">{props.type}</p>
+                    </>
+                    }
+                </div>
             </td>
 
             <td className='td-size'>
