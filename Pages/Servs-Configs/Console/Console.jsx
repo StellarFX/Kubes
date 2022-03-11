@@ -2,13 +2,14 @@ import React from 'react';
 import "./Console.scss";
 import { faPowerOff, faRedoAlt, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Terminal from '/components/Terminal/terminal';
 
 export default function Console(){
 
     return(
         <div className="console-main-container">
             <div className="console-container">
-
+                <Terminal/>
             </div>
 
             <div className="console-bottom">
