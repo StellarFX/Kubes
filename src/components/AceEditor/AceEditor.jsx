@@ -24,7 +24,7 @@ export default function CustomAceEditor(props) {
             ref={editor}
             theme="github"
             name="file-editor"
-            width='100%'
+            width={props.setWidth}
             height='100%'
             fontSize={14}
             value={props.value}

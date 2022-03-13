@@ -52,6 +52,7 @@
     
                 @media screen and (max-width: 1090px) {
                     width: 4rem;
+                    margin-top: 1rem;
                 }
     
                 @media screen and (min-width: 1091px) {
@@ -179,7 +180,7 @@
 
         @media screen and (max-width: 1090px) {
 
-            $gap: 8vh;
+            $gap: 7.5vh;
             justify-content: center;
             gap: $gap;
 
