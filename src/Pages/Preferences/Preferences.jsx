@@ -15,11 +15,11 @@ function Preferences() {
           <div className='item-content infos'>
             <div>
               <span>Version:</span>
-              <span>Stable 1.0.0 (cc0861f)</span>
+              <span>Stable&nbsp;1.0.0&nbsp;(cc0861f)</span>
             </div>
             <div>
               <span>Host:</span>
-              <span>Windows 10 64-Bit (10.0.19043)</span>
+              <span>Windows&nbsp;10&nbsp;64-Bit&nbsp;(10.0.19043)</span>
             </div>
            
           </div>

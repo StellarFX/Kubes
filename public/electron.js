@@ -6,6 +6,8 @@ function createWindow() {
     const win = new BrowserWindow({
         width: 1280,
         height: 720,
+        minHeight: 540,
+        minWidth: 960,
         frame: false,
         titleBarStyle: 'hidden',
         transparent: true,

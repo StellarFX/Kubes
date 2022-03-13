@@ -45,6 +45,8 @@ code {
   color: white;
   display: flex;
   justify-content: center;
+  overflow: hidden;
+  position: absolute;
 }
 
 body::-webkit-scrollbar{
