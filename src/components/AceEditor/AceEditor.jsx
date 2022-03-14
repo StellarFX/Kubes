@@ -25,7 +25,7 @@ export default function CustomAceEditor(props) {
             theme="github"
             name="file-editor"
             width={props.setWidth}
-            height='100%'
+            height={props.setHeight}
             fontSize={14}
             value={props.value}
             editorProps={{ $blockScrolling: false }}

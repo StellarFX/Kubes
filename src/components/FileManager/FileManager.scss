@@ -176,6 +176,10 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        width: 100%;
+        overflow: hidden;
+        contain: strict;
+        height: 2rem;
 
         svg{
             margin: 0 1rem;
@@ -187,6 +191,9 @@
             font-size: .9rem;
             color: #625972;
             margin-right: 2rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 90%;
         }
     }
 

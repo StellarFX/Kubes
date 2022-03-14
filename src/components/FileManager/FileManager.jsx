@@ -116,7 +116,7 @@ export default function FileManager(props) {
     const [deleteA, setDeleteA] = useState("");
 
     const [currentFileList, setCurrentFileList] = useState(files);
-    const [editedFile, setEditedFile] = useState("");
+    const [editedFile, setEditedFile] = useState({});
     const [checkboxes, checkboxesHandler] = useListState(checked);
     const allChecked = checkboxes.every((value) => value.checked);
     const everyChecked = checkboxes.filter((val) => { if(val.checked) { return val; } });
@@ -174,7 +174,7 @@ export default function FileManager(props) {
             changePath();
         }
         else{
-            setEditedFile(file.name + "." + file.type);
+            setEditedFile({name: file.name, type: file.type});
             setContentValue(1);
         }
     }
@@ -467,9 +467,11 @@ export default function FileManager(props) {
         <div className='editor-container'>
             <div className='editor-header'>
                 <FontAwesomeIcon icon={faArrowLeft} onClick={() => setContentValue(0)}/>
-                <p className='edited-file-name'>{editedFile}</p>
+                <p className='edited-file-name'>{editedFile(name)}</p>
+                <p>.</p>
+                <p>{editedFile(type)}</p>
             </div>
-            <AceEditor editedFile={editedFile} value="Pute" setWidth="100%"/>
+            <AceEditor editedFile={editedFile} value="Pute" setWidth="100%" setHeight='110%'/>
         </div>
         
         
