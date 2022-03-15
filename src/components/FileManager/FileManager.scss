@@ -176,17 +176,37 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        width: 100%;
+        overflow: hidden;
+        contain: strict;
+        height: 2rem;
 
         svg{
             margin: 0 1rem;
             cursor: pointer;
         }
 
+        .edited-div{
+            display: flex;
+            justify-content: end;
+            overflow: hidden;
+        }
+
         .edited-file-name{
+            
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 90%;
+        }
+
+        p{
             margin: 0;
             font-size: .9rem;
             color: #625972;
-            margin-right: 2rem;
+
+            &:last-of-type{
+                margin-right: 2rem;
+            }
         }
     }
 
