@@ -430,6 +430,10 @@ export default function FileManager(props) {
                         borderRadius: "30px"
                     },
                     dropzone: {
+                        position: 'absolute',
+                        marginTop: '2rem',
+                        height: 'calc(100% - 5rem)',
+                        width: 'calc(100% - 3rem)',
                         backgroundColor: "#16142075"
                     },
                     reject: {
