@@ -4,6 +4,7 @@
   "main": "public/electron.js",
   "private": true,
   "dependencies": {
+    "@electron/remote": "^2.0.8",
     "@fortawesome/fontawesome-free-regular": "^5.0.13",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-regular-svg-icons": "^6.0.0",

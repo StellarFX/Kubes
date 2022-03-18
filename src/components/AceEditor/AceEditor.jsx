@@ -13,7 +13,7 @@ export default function CustomAceEditor(props) {
 
     const editor = useCallback((node) => {
         if (node) {
-            setEditorMode(getModeForPath(props.editedFile)["name"]);
+            setEditorMode(getModeForPath(props.editedFile['Editedname'] + "." + props.editedFile['Editedtype'])["name"]);
         }
     }, [props.editedFile]);
 
