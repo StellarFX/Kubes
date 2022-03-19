@@ -13,11 +13,11 @@ export default function TitleBar() {
     }
     
     function maximize(){
-    
+        ipcRenderer.send("maximize-window");
     }
     
     function close(){
-    
+        ipcRenderer.send("close-window");
     }
 
     return (
@@ -27,10 +27,10 @@ export default function TitleBar() {
                     <FontAwesomeIcon icon={faMinus} onClick={ () => miminize() } />
                 </div>  
                 <div className='action square'>
-                    <FontAwesomeIcon icon={faSquare}/>
+                    <FontAwesomeIcon icon={faSquare} onClick={ () => maximize() } />
                 </div> 
                 <div className='action cross'>
-                    <FontAwesomeIcon icon={faX}/>
+                    <FontAwesomeIcon icon={faX} onClick={ () => close() } />
                 </div> 
             </div>
         </div>

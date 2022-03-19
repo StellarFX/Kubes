@@ -21,6 +21,19 @@ function createWindow() {
         win.minimize();
     });
 
+    ipcMain.on("maximize-window", () => {
+        if(!win.isMaximized()){
+            win.maximize();
+        }
+        else{
+            win.unmaximize();
+        }
+    });
+
+    ipcMain.on("close-window", () => {
+        win.close();
+    });
+
     // and load the index.html of the app.
     // win.loadFile("index.html");
     win.loadURL(

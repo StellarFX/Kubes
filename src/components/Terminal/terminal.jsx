@@ -59,7 +59,7 @@ export default function Terminal() {
             } else if(key.key === '\x7F') {
                 if(currentLine !== '$ ') {
                     currentLine = currentLine.slice(0, -1);
-                    terminal.write('\b \b');  
+                    terminal.write('\b \b');
                 }
                               
             } else {
