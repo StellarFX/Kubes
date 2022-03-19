@@ -11,6 +11,7 @@ function createWindow() {
         frame: false,
         titleBarStyle: 'hidden',
         transparent: true,
+        simpleFullscreen: true,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false
@@ -24,10 +25,12 @@ function createWindow() {
     ipcMain.handle("maximize-window", () => {
         if(!win.isMaximized()){
             win.maximize();
+            win.resizable = false;
             return true;
         }
         else{
             win.unmaximize();
+            win.resizable = true;
             return false;
         }
     });

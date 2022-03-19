@@ -121,6 +121,7 @@
                 transition-duration: 0.3s;
                 font-size: 1rem;
                 width: fit-content;
+                -webkit-user-drag: none;
     
                 svg {
                     font-size: 1.25rem;

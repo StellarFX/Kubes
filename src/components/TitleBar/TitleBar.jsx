@@ -9,6 +9,7 @@ const { ipcRenderer } = window.require('electron');
 export default function TitleBar() {
 
     const [Style, setStyle] = useState("1.8rem");
+    const [Drag, setDrag] = useState("drag");
 
     function miminize(){
         ipcRenderer.send("minimize-window");
@@ -21,13 +22,13 @@ export default function TitleBar() {
         if(status == true){
             main.style.borderRadius = "0px";
             setStyle("0rem");
+            setDrag("no-drag");
         }
         else{
             main.style.borderRadius = "30px";
             setStyle("1.8rem");
+            setDrag("drag");
         }
-
-        console.log(main, status);
     }
     
     function close(){
@@ -35,16 +36,16 @@ export default function TitleBar() {
     }
 
     return (
-        <div className="titleBar">
+        <div className="titleBar" style={{WebkitAppRegion: Drag}}>
             <div className='actions' style={{marginRight: Style}}>
-                <div className='action'>
-                    <FontAwesomeIcon icon={faMinus} onClick={ () => miminize() } />
+                <div className='action' onClick={ () => miminize() }>
+                    <FontAwesomeIcon icon={faMinus}/>
                 </div>  
-                <div className='action square'>
-                    <FontAwesomeIcon icon={faSquare} onClick={ () => maximize() } />
+                <div className='action square' onClick={ () => maximize()}>
+                    <FontAwesomeIcon icon={faSquare}/>
                 </div> 
-                <div className='action cross'>
-                    <FontAwesomeIcon icon={faX} onClick={ () => close() } />
+                <div className='action cross' onClick={ () => close() }>
+                    <FontAwesomeIcon icon={faX}/>
                 </div> 
             </div>
         </div>
