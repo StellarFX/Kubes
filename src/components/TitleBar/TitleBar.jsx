@@ -6,6 +6,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ipcRenderer } from 'electron';
 
 export default function TitleBar() {
+    /*const win = remote.getCurrentWindow();
+
+    function miminize(){
+        win.miminize();
+    }
+    
+    function maximize(){
+    
+    }
+    
+    function close(){
+    
+    }*/
 
     function closeWindow() {
 
@@ -17,7 +30,7 @@ export default function TitleBar() {
         <div className="titleBar">
             <div className='actions'>
                 <div className='action'>
-                    <FontAwesomeIcon icon={faMinus}/>
+                    <FontAwesomeIcon icon={faMinus} /*onClick={()=>miminize()}*//>
                 </div>  
                 <div className='action square'>
                     <FontAwesomeIcon icon={faSquare}/>

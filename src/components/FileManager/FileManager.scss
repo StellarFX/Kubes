@@ -186,14 +186,27 @@
             cursor: pointer;
         }
 
+        .edited-div{
+            display: flex;
+            justify-content: end;
+            overflow: hidden;
+        }
+
         .edited-file-name{
-            margin: 0;
-            font-size: .9rem;
-            color: #625972;
-            margin-right: 2rem;
+            
             overflow: hidden;
             text-overflow: ellipsis;
             max-width: 90%;
+        }
+
+        p{
+            margin: 0;
+            font-size: .9rem;
+            color: #625972;
+
+            &:last-of-type{
+                margin-right: 2rem;
+            }
         }
     }
 

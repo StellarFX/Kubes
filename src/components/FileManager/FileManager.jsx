@@ -174,7 +174,7 @@ export default function FileManager(props) {
             changePath();
         }
         else{
-            setEditedFile({name: file.name, type: file.type});
+            setEditedFile({'Editedname': file.name, 'Editedtype': file.type});
             setContentValue(1);
         }
     }
@@ -430,6 +430,10 @@ export default function FileManager(props) {
                         borderRadius: "30px"
                     },
                     dropzone: {
+                        position: 'absolute',
+                        marginTop: '2rem',
+                        height: 'calc(100% - 5rem)',
+                        width: 'calc(100% - 3rem)',
                         backgroundColor: "#16142075"
                     },
                     reject: {
@@ -467,9 +471,11 @@ export default function FileManager(props) {
         <div className='editor-container'>
             <div className='editor-header'>
                 <FontAwesomeIcon icon={faArrowLeft} onClick={() => setContentValue(0)}/>
-                <p className='edited-file-name'>{editedFile(name)}</p>
-                <p>.</p>
-                <p>{editedFile(type)}</p>
+                <div className='edited-div'>
+                    <p className='edited-file-name'>{editedFile['Editedname']}</p>
+                    <p>.</p>
+                    <p>{editedFile['Editedtype']}</p>
+                </div>
             </div>
             <AceEditor editedFile={editedFile} value="Pute" setWidth="100%" setHeight='110%'/>
         </div>
