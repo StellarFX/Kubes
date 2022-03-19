@@ -21,12 +21,14 @@ function createWindow() {
         win.minimize();
     });
 
-    ipcMain.on("maximize-window", () => {
+    ipcMain.handle("maximize-window", () => {
         if(!win.isMaximized()){
             win.maximize();
+            return true;
         }
         else{
             win.unmaximize();
+            return false;
         }
     });
 

@@ -12,8 +12,18 @@ export default function TitleBar() {
         ipcRenderer.send("minimize-window");
     }
     
-    function maximize(){
-        ipcRenderer.send("maximize-window");
+    async function maximize(){
+        let status = await ipcRenderer.invoke("maximize-window");
+        let main = document.getElementById("main");
+
+        if(status == true){
+            main.style.borderRadius = "0px";
+        }
+        else{
+            main.style.borderRadius = "30px";
+        }
+
+        console.log(main, status);
     }
     
     function close(){
