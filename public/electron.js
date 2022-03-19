@@ -1,9 +1,8 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
 const isDev = require('electron-is-dev');
 const path = require('path');
-
 function createWindow() {
-    // Create the browser window.
+    // Create the browser window
     const win = new BrowserWindow({
         width: 1280,
         height: 720,
@@ -14,7 +13,12 @@ function createWindow() {
         transparent: true,
         webPreferences: {
             nodeIntegration: true,
+            contextIsolation: false
         },
+    });
+
+    ipcMain.on("minimize-window", () => {
+        win.minimize();
     });
 
     // and load the index.html of the app.
@@ -29,6 +33,8 @@ function createWindow() {
         win.webContents.openDevTools({ mode: 'detach' });
     }
 }
+
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

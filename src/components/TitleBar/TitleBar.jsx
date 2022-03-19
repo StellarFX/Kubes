@@ -3,13 +3,13 @@ import './TitleBar.scss';
 import { faMinus, faX } from '@fortawesome/free-solid-svg-icons';
 import { faSquare } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { ipcRenderer } from 'electron';
+
+const { ipcRenderer } = window.require('electron');
 
 export default function TitleBar() {
-    /*const win = remote.getCurrentWindow();
 
     function miminize(){
-        win.miminize();
+        ipcRenderer.send("minimize-window");
     }
     
     function maximize(){
@@ -18,19 +18,13 @@ export default function TitleBar() {
     
     function close(){
     
-    }*/
-
-    function closeWindow() {
-
-        ipcRenderer.send("close-window");
-
     }
 
     return (
         <div className="titleBar">
             <div className='actions'>
                 <div className='action'>
-                    <FontAwesomeIcon icon={faMinus} /*onClick={()=>miminize()}*//>
+                    <FontAwesomeIcon icon={faMinus} onClick={ () => miminize() } />
                 </div>  
                 <div className='action square'>
                     <FontAwesomeIcon icon={faSquare}/>
