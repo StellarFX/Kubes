@@ -1,4 +1,4 @@
-import React from 'react';
+import React , { useState } from 'react';
 import './TitleBar.scss';
 import { faMinus, faX } from '@fortawesome/free-solid-svg-icons';
 import { faSquare } from '@fortawesome/free-regular-svg-icons';
@@ -7,6 +7,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const { ipcRenderer } = window.require('electron');
 
 export default function TitleBar() {
+
+    const [Style, setStyle] = useState("1.8rem");
 
     function miminize(){
         ipcRenderer.send("minimize-window");
@@ -18,9 +20,11 @@ export default function TitleBar() {
 
         if(status == true){
             main.style.borderRadius = "0px";
+            setStyle("0rem");
         }
         else{
             main.style.borderRadius = "30px";
+            setStyle("1.8rem");
         }
 
         console.log(main, status);
@@ -32,7 +36,7 @@ export default function TitleBar() {
 
     return (
         <div className="titleBar">
-            <div className='actions'>
+            <div className='actions' style={{marginRight: Style}}>
                 <div className='action'>
                     <FontAwesomeIcon icon={faMinus} onClick={ () => miminize() } />
                 </div>  
