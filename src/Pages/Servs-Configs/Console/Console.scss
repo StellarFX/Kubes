@@ -60,6 +60,7 @@
         height: 25rem;
         background: var(--dark);
         padding: 1rem;
+        contain: strict;
     }
 
     .console-bottom{
