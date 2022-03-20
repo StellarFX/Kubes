@@ -14,7 +14,9 @@
         .title-icon{
             font-size: 40px;
             color: var(--main);
-            filter: drop-shadow(3px 2px 1px #7547ff4d);
+            filter: drop-shadow(2px 1.5px 0.5px #7547ff4d);
+            width: 7%;
+            transform: scale(2);
         }
 
         .title{
