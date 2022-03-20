@@ -1,11 +1,13 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const isDev = require('electron-is-dev');
 const path = require('path');
+
 function createWindow() {
     // Create the browser window
     const win = new BrowserWindow({
         width: 1280,
         height: 720,
+        icon: path.join(__dirname, 'Icon-01.png'),
         minHeight: 540,
         minWidth: 960,
         frame: false,
