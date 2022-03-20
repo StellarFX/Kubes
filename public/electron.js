@@ -1,6 +1,8 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const isDev = require('electron-is-dev');
 const path = require('path');
+const fs = require('fs');
+import "../src/backend/repertory.js";
 
 function createWindow() {
     // Create the browser window
@@ -23,6 +25,8 @@ function createWindow() {
     ipcMain.on("minimize-window", () => {
         win.minimize();
     });
+
+    
 
     ipcMain.handle("maximize-window", () => {
         if(!win.isMaximized()){
@@ -53,8 +57,6 @@ function createWindow() {
         win.webContents.openDevTools({ mode: 'detach' });
     }
 }
-
-
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
