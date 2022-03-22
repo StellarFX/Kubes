@@ -2,7 +2,8 @@ const { app, BrowserWindow, ipcMain } = require('electron')
 const isDev = require('electron-is-dev');
 const path = require('path');
 const fs = require('fs');
-import "../src/backend/repertory.js";
+
+let dir = "D:/Users/Baptiste/Documents/Dev/Repertory";
 
 function createWindow() {
     // Create the browser window
@@ -24,9 +25,7 @@ function createWindow() {
 
     ipcMain.on("minimize-window", () => {
         win.minimize();
-    });
-
-    
+    });    
 
     ipcMain.handle("maximize-window", () => {
         if(!win.isMaximized()){
@@ -57,11 +56,15 @@ function createWindow() {
         win.webContents.openDevTools({ mode: 'detach' });
     }
 }
-
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(createWindow);
+app.whenReady().then(()=>{
+    if(!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+    }
+    createWindow();
+});
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
