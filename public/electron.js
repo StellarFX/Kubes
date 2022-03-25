@@ -3,7 +3,11 @@ const isDev = require('electron-is-dev');
 const path = require('path');
 const fs = require('fs');
 
-let dir = "D:/Users/Baptiste/Documents/Dev/Repertory";
+var datas = fs.readFileSync(require.resolve('./data.json'));
+var infos = JSON.parse(datas);
+
+let dir = infos.directory;
+console.log(dir);
 
 function createWindow() {
     // Create the browser window
@@ -79,4 +83,8 @@ app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
         createWindow();
     }
+});
+
+ipcMain.on("change-path", (e, path)=>{
+    dir = path;
 });
