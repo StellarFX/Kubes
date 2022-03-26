@@ -20,11 +20,19 @@ async function AskDefaultPath(win){
 
     let resultingPath = result.filePaths[0].replaceAll('\\','/');
 
-    if(!fs.existsSync(resultingPath.concat("/Kubes")) || resultingPath.slice(-6) != "/Kubes") {
-        fs.mkdirSync(resultingPath.concat("/Kubes"));
-    }
+    console.log(resultingPath.slice(-6));
 
-    defaultPath = resultingPath.concat("/Kubes");
+    if(!fs.existsSync(resultingPath.concat("/Kubes")) && resultingPath.slice(-6) != "/Kubes") {
+        fs.mkdirSync(resultingPath.concat("/Kubes"));
+        defaultPath = resultingPath.concat("/Kubes");
+    }
+    if(resultingPath.slice(-6) == "/Kubes"){
+        defaultPath = resultingPath;
+    }
+    else if(fs.existsSync(resultingPath.concat("/Kubes"))){
+        defaultPath = resultingPath.concat("/Kubes");
+    }
+    
     infos["initial-path"] = defaultPath;
     infos["initialized"] = true;
     infos["directory"] = defaultPath;
