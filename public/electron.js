@@ -20,7 +20,7 @@ async function AskDefaultPath(win){
 
     let resultingPath = result.filePaths[0].replaceAll('\\','/');
 
-    if(!fs.existsSync(resultingPath.concat("/Kubes"))) {
+    if(!fs.existsSync(resultingPath.concat("/Kubes")) || resultingPath.slice(-6) != "/Kubes") {
         fs.mkdirSync(resultingPath.concat("/Kubes"));
     }
 
