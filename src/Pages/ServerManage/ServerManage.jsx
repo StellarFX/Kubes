@@ -17,6 +17,8 @@ import FileManager from '../../components/FileManager/FileManager';
 import { faCheck, faTimes, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+const { ipcRenderer } = window.require('electron');
+
 function ServerManage(){
 
     const [status, setStatus] = useState(1);
@@ -31,11 +33,16 @@ function ServerManage(){
 
     const location = useLocation().pathname.replaceAll("/", "").substring(6 +id.length);
 
+    function removeServer(){
+        ipcRenderer.send("remove-server", id);
+    }
+
     return(
         <div className='page-main-container'>
             <div className='page-title-container'>
                 <p className='page-title'>{id}</p>
                 {statusChanger[status]}
+                <p className="remove-server" onClick={()=>{removeServer()}}>Remove server</p>
             </div>
             <div className='page-content' id="servmanage-content">
                 <ServNavbar config={location}/>

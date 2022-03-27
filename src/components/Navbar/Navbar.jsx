@@ -17,22 +17,22 @@ export default function Navbar() {
         }
         if(location.pathname.slice(0,7) === "/server"){
             document.getElementById("servers-nb").classList.add('active');
-            addComplete();
+            addComplete("servers-nb");
         }
         else{
             document.getElementById(location.pathname.substring(1) + "-nb")?.classList?.add('active');
-            addComplete();
+            addComplete(location.pathname.substring(1) + "-nb");
         }
         if(location.pathname === "/server" || location.pathname === "/server/"){
             window.location = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/servers";
         }
     }, [location]);  
 
-    function addComplete(){
+    function addComplete(name){
         setTimeout(() => {
             document.getElementsByClassName("completed")[0]?.classList.remove('completed');
-            document.getElementsByClassName("active")[0].classList.add('completed');
-        }, 2000);
+            document.getElementsByClassName(name)[0].classList.add('completed');
+        }, 200);
     }
 
     return(

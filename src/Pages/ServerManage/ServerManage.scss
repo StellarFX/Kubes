@@ -40,6 +40,22 @@
     .serv-status-empty{
         background: rgb(136, 136, 136);
     }
+
+    .remove-server{
+        margin:0;
+        color: var(--red);
+        font-size: 0.9rem;
+        margin-left: auto;
+        transition: 0s;
+
+        &:hover{
+            text-decoration: underline;
+        }
+
+        &:active{
+            transform: translateY(1px);
+        }
+    }
 }
 
 #servmanage-content{

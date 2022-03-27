@@ -45,9 +45,17 @@ function Servers(){
                 <p className='folder-path'>{folderPath}</p>
             </div>
             <div className='page-content' id="servers-content">
+                { items.length > 0 ? 
+                
                 <div className='servers-grid'>
                     {items}
                 </div>
+                
+                :
+                
+                <p className='no-servs'>There are no servers here.</p>
+                
+                }
             </div>
         </div>
     );
