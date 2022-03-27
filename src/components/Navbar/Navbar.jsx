@@ -32,7 +32,7 @@ export default function Navbar() {
         setTimeout(() => {
             document.getElementsByClassName("completed")[0]?.classList.remove('completed');
             document.getElementsByClassName("active")[0].classList.add('completed');
-        }, 100);
+        }, 2000);
     }
 
     return(

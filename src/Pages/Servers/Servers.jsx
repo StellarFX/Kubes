@@ -1,10 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ServCard from '../../components/ServCard/ServCard.jsx';
 import './Servers.scss';
 
+const { ipcRenderer } = window.require('electron');
+
 function Servers(){
 
-    const folderPath = "C:/Users/User/Documents/Servers_File";
+    const [initialized, setInitialized] = useState(false);
+    const [folderPath, setFolderPath] = useState("");
+    const [ServersList, setServersList] = useState([]);
+    const items = ServersList.map((serv)=>{
+
+        return(
+            <>
+                <ServCard status="1" name={serv["name"]} dir={serv["path"]}/>
+            </>
+        )
+
+    });
+
+    async function InitializePath() {
+
+        let path = await ipcRenderer.invoke("initialize-path");
+        setFolderPath(path);
+        setInitialized(true);
+        scanServers();
+    };
+
+    async function scanServers(){
+        let list = await ipcRenderer.invoke("scan-servers");
+        setServersList(list);
+    }
+
+    if(initialized == false){
+        InitializePath();
+    }
+
 
     return(
         <div className='page-main-container'>
@@ -15,14 +46,7 @@ function Servers(){
             </div>
             <div className='page-content' id="servers-content">
                 <div className='servers-grid'>
-                    <ServCard status="0"/>
-                    <ServCard status="1"/>
-                    <ServCard status="2"/>
-                    <ServCard status="4"/>
-                    <ServCard status="3"/>
-                    <ServCard status="0"/>
-                    <ServCard status="1"/>
-                    <ServCard status="1"/>
+                    {items}
                 </div>
             </div>
         </div>

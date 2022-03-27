@@ -32,7 +32,7 @@ export default function Terminal() {
 
         fitAddon.fit();
 
-        window.addEventListener('resize', () => {
+        window.addEventListener('resize', function TerminalSize(){
             fitAddon.fit();
         });
 

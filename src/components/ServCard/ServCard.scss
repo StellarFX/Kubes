@@ -4,7 +4,7 @@
         outline: none;
         transition-duration: 0.3s;
     }
-    height: 100%;
+    height: fit-content;
     width: 80%;
     max-width: 33rem;
     max-height: 18rem;
@@ -29,6 +29,7 @@
     }
 
     .card-title-container{
+        overflow: hidden;
         display: flex;
         justify-content: space-between;
         align-items: center;

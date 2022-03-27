@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './ServCard.scss';
 
+const { ipcRenderer } = window.require('electron');
+
 export default function ServCard(props) {
 
     // ------------------------------ <Essentials ------------------------------
@@ -13,26 +15,42 @@ export default function ServCard(props) {
     const Port = "25250";
     const onlineUsers = 0;
     const availablePlaces = 50;
-    const [Name, setName] = useState(JSON.stringify(Math.random() * 1000).replaceAll(".", "").slice(0,4));
+    const [Name, setName] = useState(props.name);
+    const [directory, setDirectory] = useState(props.dir);
 
     // ------------------------------ Essentials> ------------------------------
 
     // ----------------- <Title -----------------
 
+    async function sendRename(value, dir, name){
+        let response = await ipcRenderer.invoke('rename-server', {'Newname':value, 'Oldname': name, 'path': dir});
+
+        if(response = "renamed"){
+            setDirectory(dir.slice(0, dir.length-name.length).concat(value));
+            setName(value);
+            setSelector(0);
+            Inputed = false;
+            setPlaceHolder("Enter a name...");
+            setHolderValue("card-name-input-1");
+            return "renamed";
+        }
+        else{
+            setPlaceHolder("Please enter a valid name.");
+            value = "";
+            setHolderValue("card-name-input-2");
+        }
+        
+    }
+
     function inputResponse(e){
         let Value = e.target.value.replaceAll(" ", "");
-        
+        const rg1 = /^[^\\\/\:\"\?\<\>\|]+$/i;
         if(e.key === 'Enter'){
-            if(Value.length >= 1 && document.getElementById(e.target.value) == undefined && Value.length <= 35){
-                setName(e.target.value);
-                name = e.target.value;
-                setSelector(0);
-                Inputed = false;
-                setPlaceHolder("Enter a name...");
-                setHolderValue("card-name-input-1");
+            if(rg1.test(Value) && document.getElementById(e.target.value) == undefined && Value.length <= 35){
+                sendRename(e.target.value, directory, Name);
             }
             else{
-                if(Value.length <1){
+                if(!rg1.test(Value)){
                     setPlaceHolder("Please enter a valid name.");
                 }
                 if(document.getElementById(e.target.value) != undefined){
@@ -46,28 +64,31 @@ export default function ServCard(props) {
                 setHolderValue("card-name-input-2");
             }
         }
+        if(e.key === "Escape"){
+            setSelector(0);
+            Inputed = false;
+            setPlaceHolder("Enter a name...");
+            setHolderValue("card-name-input-1");
+        }
     }
 
+    const [displaying, setDisplay] = useState("flex");
+
     function setInput(){
-        setDots("");
         setDisplay("initial");
         setSelector(1);
         Inputed = true;
     }
 
     function clicking(){
-        let container = document.getElementsByClassName('name-container');
+        let container = document.getElementById(Name);
         
-        if(Inputed === true){
+        if(Inputed === true && container != undefined){
 
-            for(let i = 0; i < container.length; i++){
-
-                if(container[i].childNodes[0].className == holderValue && document.activeElement != container[i].childNodes[0]){
-                    
-                    setSelector(0);
-                    setPlaceHolder("Enter a name...");
-                    setHolderValue("card-name-input-1");
-                }
+            if(container.childNodes[0].className == holderValue && document.activeElement != container.childNodes[0]){
+                setSelector(0);
+                setPlaceHolder("Enter a name...");
+                setHolderValue("card-name-input-1");
             }
         }
     }
@@ -76,18 +97,6 @@ export default function ServCard(props) {
         clicking();
     });
 
-    /*function checkHeight(value){
-        let card = document.getElementsByClassName('card-name');
-        // let cont = document.getElementById('snc');
-        for(let i = 0; i < card.length; i++){
-            if(card[i] === document.getElementById(value) && card[i].clientHeight > 60){
-                setDots('...');
-                setDisplay('flex');
-            }
-        }
-    }*/
-
-    var name = Name;
     var Inputed = false;
 
     const [selector,setSelector] = useState(0); // 0: Affiche le titre -- 1: Affiche l'input pour le titre
@@ -95,7 +104,7 @@ export default function ServCard(props) {
     const [holderValue, setHolderValue] = useState("card-name-input-1");
     const [placeHolder, setPlaceHolder] = useState("Enter a name...");
 
-    const p = <p className="card-name" onClick={(event) => setInput()} id={Name}>{Name}</p>;
+    const p = <p className="card-name" onClick={()=>{setInput()}} id={Name}>{Name}</p>;
     const input= <input type="text" className={holderValue} placeholder={placeHolder} onKeyDown={(event) => inputResponse(event)} autoFocus></input>;
     const doms = [p, input];
 
@@ -112,8 +121,7 @@ export default function ServCard(props) {
 
     // ----------------- Status> -----------------
 
-    const [dots, setDots] = useState("");
-    const [displaying, setDisplay] = useState("flex");
+    
 
     
 
@@ -126,7 +134,7 @@ export default function ServCard(props) {
 
             <div className="card-title-container">
 
-                <div className='name-container' id="snc" style={{display: displaying}}>
+                <div className='name-container' id={Name} style={{display: displaying}}>
                     {doms[selector]}
                 </div>
 

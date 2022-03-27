@@ -10,24 +10,16 @@ function Preferences() {
   const [initialized, setInitialized] = useState(false);
 
   async function InitializePath() {
-    console.log("hello", initialized);
-    // `current` points to the mounted file input element
-    /*inputFile.current.click();*/
     let path = await ipcRenderer.invoke("initialize-path");
     setInputValue(path);
-    console.log(path);
   };
 
   if(initialized == false){
     setInitialized(true);
     InitializePath();
   }
-  
 
   async function onButtonClick() {
-    console.log("coucou");
-    // `current` points to the mounted file input element
-    /*inputFile.current.click();*/
     let path = await ipcRenderer.invoke("change-path", inputValue);
     setInputValue(path);
   };
@@ -54,7 +46,7 @@ function Preferences() {
         </div>
         
         <div className='item'>
-          <span className="title">- Default server path:</span>
+          <span className="title">- Servers folder path:</span>
           <div className='item-content'>
             <TextInput value={inputValue} onChange={(e) => setInputValue(e.currentTarget.value)} id="server-path" className="input directory-path" placeholder="C:/Poggers/Documents/Kubes Servers/" required />
             <span className="button" data-type="change-default-server-path" onClick={()=>{onButtonClick()}}>

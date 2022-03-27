@@ -1,5 +1,5 @@
 #servers-content{
-    @media screen and (max-width : 1105px){
+    @media screen and (max-width : 1340px){
         .servers-grid{
             grid-template-columns: 0;
             display: flex;
@@ -8,7 +8,7 @@
         }
     }
 
-    @media screen and (min-width: 1104px){
+    @media screen and (min-width: 1339px){
         .servers-grid{
             grid-gap: 2rem;
         }
@@ -37,5 +37,6 @@
         margin: 0;
         color: #57536d;
         font-size: 0.9rem;
+        -webkit-user-select:text;
     }
 }

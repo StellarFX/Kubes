@@ -3,6 +3,7 @@ const isDev = require('electron-is-dev');
 const path = require('path');
 const fs = require('fs');
 const { JsonInput } = require('@mantine/core');
+const methods = require('../backend/manage-servers');
 
 var datas = fs.readFileSync(require.resolve('./data.json'));
 var infos = JSON.parse(datas);
@@ -18,19 +19,20 @@ async function AskDefaultPath(win){
         buttonLabel: 'Select default server path'
     });
 
+    if(result.canceled){
+        AskDefaultPath(win);
+    }
+
     let resultingPath = result.filePaths[0].replaceAll('\\','/');
 
-    console.log(resultingPath.slice(-6));
-
-    if(!fs.existsSync(resultingPath.concat("/Kubes")) && resultingPath.slice(-6) != "/Kubes") {
-        fs.mkdirSync(resultingPath.concat("/Kubes"));
+    if(resultingPath.slice(-6) != "/Kubes"){
+        createDirIfNotExist(resultingPath.concat("/Kubes"));
+        createDirIfNotExist(resultingPath.concat("/Kubes/Servers"));
         defaultPath = resultingPath.concat("/Kubes");
     }
-    if(resultingPath.slice(-6) == "/Kubes"){
+    else{
+        createDirIfNotExist(resultingPath.concat("/Servers"));
         defaultPath = resultingPath;
-    }
-    else if(fs.existsSync(resultingPath.concat("/Kubes"))){
-        defaultPath = resultingPath.concat("/Kubes");
     }
     
     infos["initial-path"] = defaultPath;
@@ -44,10 +46,18 @@ async function AskDefaultPath(win){
 
 }
 
-
+function createDirIfNotExist(path) {
+    if (!fs.existsSync(path)) {
+        fs.mkdirSync(path);
+        return false;
+    }
+    else{
+        return true;
+    }
+}
 
 function createWindow() {
-    // Create the browser window
+
     const win = new BrowserWindow({
         width: 1280,
         height: 720,
@@ -62,15 +72,9 @@ function createWindow() {
             nodeIntegration: true,
             contextIsolation: false
         },
-    });
+    });    
 
-    if(infos["initialized"] == false){
-        AskDefaultPath(win);
-    }
 
-    ipcMain.handle("initialize-path", async ()=>{
-        return dir;
-    });
 
     ipcMain.on("minimize-window", () => {
         win.minimize();
@@ -93,6 +97,12 @@ function createWindow() {
         win.close();
     });
 
+
+
+    if(infos["initialized"] == false){
+        AskDefaultPath(win);
+    } 
+
     ipcMain.handle("change-path", async (e, path)=>{
         const result = await dialog.showOpenDialog(win, {
             properties: ['openDirectory'],
@@ -112,30 +122,43 @@ function createWindow() {
         }
     });
 
-    // and load the index.html of the app.
-    // win.loadFile("index.html");
     win.loadURL(
         isDev
             ? 'http://localhost:3000'
             : `file://${path.join(__dirname, '../build/index.html')}`
     );
-    // Open the DevTools.
+
     if (isDev) {
         win.webContents.openDevTools({ mode: 'detach' });
     }
 }
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
+
+
+
+ipcMain.handle("scan-servers", async()=>{
+
+    let list = methods.scan(dir);
+    return list;
+});
+
+ipcMain.handle("initialize-path", async ()=>{
+    return dir;
+});
+
+ipcMain.handle('rename-server',async (e, data)=>{
+
+    let response = methods.rename(data);
+    return response;
+
+});
+
+
 
 
 app.whenReady().then(()=>{
     createWindow();
 });
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit();
