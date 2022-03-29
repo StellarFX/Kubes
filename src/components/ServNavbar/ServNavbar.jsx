@@ -18,7 +18,6 @@ export default function ServNavbar(props) {
         }
         if(document.getElementById(props.config+"-snb") !== undefined){
             document.getElementById(props.config+"-snb")?.classList.add('serv-active');
-            console.log(props.config)
         }
         else{
             window.location = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/server/" + id + "/console";

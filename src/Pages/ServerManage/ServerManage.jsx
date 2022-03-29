@@ -31,7 +31,7 @@ function ServerManage(){
 
     const { id } = useParams();
 
-    const location = useLocation().pathname.replaceAll("/", "").substring(6 +id.length);
+    const location = decodeURI(useLocation().pathname).replaceAll("/", "").substring(6 +id.length);
 
     function removeServer(){
         ipcRenderer.send("remove-server", id);

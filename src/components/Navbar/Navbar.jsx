@@ -31,7 +31,7 @@ export default function Navbar() {
     function addComplete(name){
         setTimeout(() => {
             document.getElementsByClassName("completed")[0]?.classList.remove('completed');
-            document.getElementsByClassName(name)[0].classList.add('completed');
+            document.getElementById(name).classList.add('completed');
         }, 200);
     }
 
