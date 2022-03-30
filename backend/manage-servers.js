@@ -2,6 +2,7 @@ const { app, dialog } = require('electron');
 const isDev = require('electron-is-dev');
 const path = require('path');
 const fs = require('fs');
+var PropertiesReader = require('properties-reader');
 const { JsonInput } = require('@mantine/core');
 
 var methods = {}
@@ -45,41 +46,44 @@ methods.rename = (data)=>{
     return "renamed";
 }
 
-methods.remove = (id)=>{
+methods.remove = (path)=>{
+
+    fs.rmdirSync(path, { recursive: true });
+} 
+
+methods.readContent = (id)=>{
     let path = "";
+
     for(let i = 0; i < allDirs.length; i++){
-        if(allDirs[i]["name"] == id){
+        if(allDirs[i]['name'] == id){
             path = allDirs[i]['path'];
         }
     }
 
-    fs.rmdirSync(path, { recursive: true });
-
-    /*deleteFile(path, 0);*/
-} 
-
-function deleteFile(path, i){
-
+    let properties = "";
+    let userList = {};
+    let whitelist = {};
+    let banned = {};
+    let bannedIp = {};
     
+    fs.readdirSync(path).forEach((file)=>{
 
-    /*fs.readdirSync(path).forEach((file)=>{
-
-        if(fs.lstatSync(path.concat("/" + file)).isDirectory() && fs.readdirSync(path.concat("/" + file)) != []){
-            deleteFile(path.concat("/" + file), i+1);
+        if(file.slice(-11) == ".properties"){
+            console.log(Object.entries(PropertiesReader(path.concat("/"+file)).getAllProperties()));
+            for(const [key, value] of Object.entries(PropertiesReader(path.concat("/"+file)).getAllProperties())){
+                console.log(key)
+                properties = properties.concat(key+"="+value+"\n");
+            }
         }
-        else{
-            fs.unlinkSync(path.concat("/" + file));
+
+        if(file == "usercache.json"){
+            userList = JSON.parse(fs.readFileSync(path.concat("/"+file)));
         }
 
     });
+    console.log(properties);
 
-    if(i ==0){
-        fs.readdirSync(path).forEach((file)=>{
-            fs.unlinkSync(path.concat("/"+file));
-        });
-        fs.unlinkSync(path);
-    }*/
-
+    return {'path': path, 'properties': properties, 'users': userList};
 }
 
 module.exports = methods;

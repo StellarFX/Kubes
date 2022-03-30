@@ -2,7 +2,9 @@ import {
     useParams,
     Routes,
     Route,
-    useLocation} from "react-router-dom";
+    useLocation,
+    useNavigate
+} from "react-router-dom";
 import React,  {useState} from 'react';
 import './ServerManage.scss';
 import ServNavbar from '../../components/ServNavbar/ServNavbar.jsx';
@@ -30,11 +32,29 @@ function ServerManage(){
     const statusChanger = [offline, online, starting, loading, empty];
 
     const { id } = useParams();
-
     const location = decodeURI(useLocation().pathname).replaceAll("/", "").substring(6 +id.length);
+    const navigate = useNavigate();
+
+    const [initialized, setInitialized] = useState(false);
+
+    const [servPath, setServPath] = useState("");
+    const [properties, setProperties] = useState();
+
+    async function ReadContent() {
+      let content = await ipcRenderer.invoke("read-server", id);
+      setServPath(content['path']);
+      setProperties(content['properties']);
+      console.log(content);
+    };
+  
+    if(initialized == false){
+      setInitialized(true);
+      ReadContent();
+    }
 
     function removeServer(){
-        ipcRenderer.send("remove-server", id);
+        navigate("/dashboard");
+        ipcRenderer.send("remove-server", servPath);
     }
 
     return(
@@ -50,7 +70,7 @@ function ServerManage(){
                     <p className="config-name">{location.charAt(0).toUpperCase() + location.slice(1)}</p> 
                     <Routes>
                         <Route path="/console" element={<Console/>}/>
-                        <Route path="/configuration" element={<Configuration/>}/>
+                        <Route path="/configuration" element={<Configuration properties={properties}/>}/>
                         <Route path="/players" element={<Players/>}/>
                         <Route path="/whitelist" element={<Whitelist/>}/>
                         <Route path="/files" element={<FileManager server={id} />}/>

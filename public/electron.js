@@ -152,9 +152,15 @@ ipcMain.handle('rename-server',async (e, data)=>{
 
 });
 
-ipcMain.on("remove-server", (e, id)=>{
+ipcMain.handle('read-server', async (e, id)=>{
 
-    methods.remove(id);
+    return methods.readContent(id);
+
+});
+
+ipcMain.on("remove-server", (e, path)=>{
+
+    methods.remove(path);
 
 });
 
