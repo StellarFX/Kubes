@@ -3,22 +3,20 @@ import React from 'react';
 import PlayerCompo from '../PlayerCompo/PlayerCompo';
 
 
-export default function Players(){
+export default function Players(props){
+
+    const playerList = props.userlist.map((user)=>{
+
+        return(
+            <PlayerCompo name={user['name']}/>
+        )
+
+    })
 
     return(
 
         <div className='players-main-container'>
-            <PlayerCompo name="Wenwen23333333333333"/>
-            <PlayerCompo name="Wenwen22"/>
-            <PlayerCompo name="Slyz"/>
-            <PlayerCompo name="StellarFX"/>
-            <PlayerCompo name="TheNisse"/>
-            <PlayerCompo name="OuiNon"/>
-            <PlayerCompo name="Peut-être"/>
-            <PlayerCompo name="Nanpassur"/>
-            <PlayerCompo name="Sisi"/>
-            <PlayerCompo name="tg"/>
-            <PlayerCompo name="ahokraciste"/>
+            {playerList}
         </div>
 
     );

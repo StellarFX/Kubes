@@ -39,12 +39,21 @@ function ServerManage(){
 
     const [servPath, setServPath] = useState("");
     const [properties, setProperties] = useState();
+    const [whitelist, setWhitelist] = useState();
+    const [userList, setUserList] = useState();
+    const [banned, setBanned] = useState();
+    const [bannedIp, setBannedIp] = useState();
+    const [ops, setOps] = useState();
 
     async function ReadContent() {
       let content = await ipcRenderer.invoke("read-server", id);
       setServPath(content['path']);
       setProperties(content['properties']);
-      console.log(content);
+      setWhitelist(content['whitelist']);
+      setUserList(content['users']);
+      setBanned(content['banned']);
+      setBannedIp(content['banned-ip']);
+      setOps(content['ops']);
     };
   
     if(initialized == false){
@@ -71,8 +80,8 @@ function ServerManage(){
                     <Routes>
                         <Route path="/console" element={<Console/>}/>
                         <Route path="/configuration" element={<Configuration properties={properties}/>}/>
-                        <Route path="/players" element={<Players/>}/>
-                        <Route path="/whitelist" element={<Whitelist/>}/>
+                        <Route path="/players" element={<Players userlist={userList} banned={banned} bannedip={bannedIp} ops={ops} />}/>
+                        <Route path="/whitelist" element={<Whitelist whitelist={whitelist} />}/>
                         <Route path="/files" element={<FileManager server={id} />}/>
                         <Route path="/performances" element={<Performances/>}/>
                     </Routes>

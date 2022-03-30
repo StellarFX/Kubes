@@ -1,9 +1,6 @@
-const { app, dialog } = require('electron');
-const isDev = require('electron-is-dev');
 const path = require('path');
 const fs = require('fs');
 var PropertiesReader = require('properties-reader');
-const { JsonInput } = require('@mantine/core');
 
 var methods = {}
 let allDirs = [];
@@ -65,6 +62,7 @@ methods.readContent = (id)=>{
     let whitelist = {};
     let banned = {};
     let bannedIp = {};
+    let ops = {};
     
     fs.readdirSync(path).forEach((file)=>{
 
@@ -80,10 +78,25 @@ methods.readContent = (id)=>{
             userList = JSON.parse(fs.readFileSync(path.concat("/"+file)));
         }
 
-    });
-    console.log(properties);
+        if(file == "whitelist.json"){
+            whitelist = JSON.parse(fs.readFileSync(path.concat("/"+file)));
+        }
 
-    return {'path': path, 'properties': properties, 'users': userList};
+        if(file == "banned-players.json"){
+            banned = JSON.parse(fs.readFileSync(path.concat("/"+file)));
+        }
+
+        if(file == "banned-ips.json"){
+            bannedIp = JSON.parse(fs.readFileSync(path.concat("/"+file)));
+        }
+
+        if(file == "ops.json"){
+            ops = JSON.parse(fs.readFileSync(path.concat("/"+file)));
+        }
+
+    });
+
+    return {'path': path, 'properties': properties.substring(0, properties.length-2), 'users': userList, 'banned': banned, 'whitelist': whitelist, 'banned-ip': bannedIp, 'ops': ops};
 }
 
 module.exports = methods;

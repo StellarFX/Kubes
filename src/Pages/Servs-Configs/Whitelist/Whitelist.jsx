@@ -4,7 +4,7 @@ import { faPlusCircle, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { TextInput, Dialog } from '@mantine/core';
 
-export default function Whitelist() {
+export default function Whitelist(props) {
 
   const inputStyle = {
 
@@ -36,7 +36,9 @@ export default function Whitelist() {
 
   const [placeHolder, setPlaceHolder] = useState("Enter a name...")
   const [chosenMember, setChosenMember] = useState("");
-  const [whitelistMembers, setWhitelistMembers] = useState(["Wenwen23", "StellarFX", "TheNisse", "Slyz"]);
+  const [whitelistMembers, setWhitelistMembers] = useState(props.whitelist);
+
+  console.log(props.whitelist);
 
   const [customDialogOpened, setCustomDialogOpened] = useState(false);
   const [customDialogStyle, setCustomDialogStyle] = useState({});
