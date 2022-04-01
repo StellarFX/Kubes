@@ -82,7 +82,7 @@ function ServerManage(){
                         <Route path="/configuration" element={<Configuration properties={properties}/>}/>
                         <Route path="/players" element={<Players userlist={userList} banned={banned} bannedip={bannedIp} ops={ops} />}/>
                         <Route path="/whitelist" element={<Whitelist whitelist={whitelist} />}/>
-                        <Route path="/files" element={<FileManager server={id} />}/>
+                        <Route path="/files" element={<FileManager server={id} path={servPath}/>}/>
                         <Route path="/performances" element={<Performances/>}/>
                     </Routes>
                 </div>

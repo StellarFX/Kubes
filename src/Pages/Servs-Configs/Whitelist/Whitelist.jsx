@@ -38,8 +38,6 @@ export default function Whitelist(props) {
   const [chosenMember, setChosenMember] = useState("");
   const [whitelistMembers, setWhitelistMembers] = useState(props.whitelist);
 
-  console.log(props.whitelist);
-
   const [customDialogOpened, setCustomDialogOpened] = useState(false);
   const [customDialogStyle, setCustomDialogStyle] = useState({});
   const [customDialogContent, setCustomDialogContent] = useState("");

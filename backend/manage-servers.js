@@ -1,6 +1,8 @@
-const path = require('path');
+const Path = require('path');
 const fs = require('fs');
+const fastFolderSizeSync = require('fast-folder-size/sync');
 var PropertiesReader = require('properties-reader');
+const { randomId } = require('@mantine/hooks');
 
 var methods = {}
 let allDirs = [];
@@ -67,9 +69,7 @@ methods.readContent = (id)=>{
     fs.readdirSync(path).forEach((file)=>{
 
         if(file.slice(-11) == ".properties"){
-            console.log(Object.entries(PropertiesReader(path.concat("/"+file)).getAllProperties()));
             for(const [key, value] of Object.entries(PropertiesReader(path.concat("/"+file)).getAllProperties())){
-                console.log(key)
                 properties = properties.concat(key+"="+value+"\n");
             }
         }
@@ -96,7 +96,33 @@ methods.readContent = (id)=>{
 
     });
 
-    return {'path': path, 'properties': properties.substring(0, properties.length-2), 'users': userList, 'banned': banned, 'whitelist': whitelist, 'banned-ip': bannedIp, 'ops': ops};
+    return {'path': path, 'properties': properties.substring(0, properties.length-1), 'users': userList, 'banned': banned, 'whitelist': whitelist, 'banned-ip': bannedIp, 'ops': ops};
+}
+
+methods.fileManager = (path)=>{
+    let files = [];
+
+    if(fs.statSync(path).isDirectory()){
+        fs.readdirSync(path).forEach((file)=>{
+            const properties = fs.statSync(path.concat("/"+file));
+            let list = {
+                'name': file.substring(0, file.length - Path.extname(path.concat("/"+file)).length),
+                'created': properties.birthtime,
+                'key': randomId()
+            }
+            if(properties.isDirectory()){
+                list['type'] = "folder";
+                list['size'] = fastFolderSizeSync(path.concat("/"+file));
+            }
+            else{
+                list['type'] = Path.extname(path.concat("/"+file)).substring(1,Path.extname(path.concat("/"+file)).length);
+                list['size'] = properties.size;
+            }
+            files.push(list);
+        });
+    }
+
+    return files;
 }
 
 module.exports = methods;

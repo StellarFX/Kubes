@@ -136,9 +136,7 @@ function createWindow() {
 
 
 ipcMain.handle("scan-servers", async()=>{
-
-    let list = methods.scan(dir);
-    return list;
+    return methods.scan(dir);
 });
 
 ipcMain.handle("initialize-path", async ()=>{
@@ -146,22 +144,19 @@ ipcMain.handle("initialize-path", async ()=>{
 });
 
 ipcMain.handle('rename-server',async (e, data)=>{
-
-    let response = methods.rename(data);
-    return response;
-
+    return methods.rename(data);
 });
 
 ipcMain.handle('read-server', async (e, id)=>{
-
     return methods.readContent(id);
+});
 
+ipcMain.handle('file-manager', async (e, Path)=>{
+    return methods.fileManager(Path);
 });
 
 ipcMain.on("remove-server", (e, path)=>{
-
     methods.remove(path);
-
 });
 
 

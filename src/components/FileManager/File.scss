@@ -24,6 +24,7 @@
         text-overflow: ellipsis;
         font-size: 0.9rem;
         overflow: hidden;
+        white-space: nowrap;
     }
 
     .td-name{
@@ -41,6 +42,11 @@
                 font-size: 0.9rem;
             }
         }
+    }
+
+    .size,
+    .created{
+        color: #827c99;
     }
 
     td {

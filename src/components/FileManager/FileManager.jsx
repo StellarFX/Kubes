@@ -11,131 +11,63 @@ import { Dropzone, FullScreenDropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone
 import mime from '../../public/mime.json';
 import AceEditor from '../AceEditor/AceEditor';
 
-let files = [{
-    key: randomId(),
-    type: "html",
-    name: "indeqsdoksqdokpoqsdokŝdpqsdklpdsqkkdsksqdqsk,ldkmqsd,kdsqds,kx",
-    size: 6541,
-    created: new Date().getTime()
-},{
-    key: randomId(),
-    type: "folder",
-    name: "assets",
-    size: 10841,
-    created: new Date().getTime()
-},{
-    key: randomId(),
-    type: "js",
-    name: "index",
-    size: 3541,
-    created: new Date().getTime()
-},{
-    key: randomId(),
-    type: "js",
-    name: "navbar",
-    size: 8641,
-    created: new Date().getTime()
-},{
-    key: randomId(),
-    type: "folder",
-    name: "components",
-    size: 3741,
-    created: new Date().getTime()
-},{
-    key: randomId(),
-    type: "java",
-    name: "whitelist",
-    size: 2141,
-    created: new Date().getTime()
-},{
-    key: randomId(),
-    type: "folder",
-    name: "pages",
-    size: 9241,
-    created: new Date().getTime()
-},{
-    key: randomId(),
-    type: "js",
-    name: "whitelist",
-    size: 4655614546541,
-    created: new Date().getTime()
-},{
-    key: randomId(),
-    type: "js",
-    name: "Joe Doggo",
-    size: 4655614546541,
-    created: new Date().getTime()
-},{
-    key: randomId(),
-    type: "css",
-    name: "Joe Papi",
-    size: 4655614546541,
-    created: new Date().getTime()
-},{
-    key: randomId(),
-    type: "html",
-    name: "Joe Mama",
-    size: 4655614546541,
-    created: new Date().getTime()
-},{
-    key: randomId(),
-    type: "py",
-    name: "Joe Papa",
-    size: 4655614546541,
-    created: new Date().getTime()
-},{
-    key: randomId(),
-    type: "folder",
-    name: "Joe Katze",
-    size: 4655614546541,
-    created: new Date().getTime()
-},{
-    key: randomId(),
-    type: "folder",
-    name: "Joe Doggo",
-    size: 4655614546541,
-    created: new Date().getTime()
-},{
-    key: randomId(),
-    type: "properties",
-    name: "Joe Papi",
-    size: 4655614546541,
-    created: new Date().getTime()
-},]
-
-let checked = files.map((val) => {
-    return { "type": val.type, "name": val.name.replaceAll(" ", "\u00A0"), "size": val.size, "created": val.created, "checked": false, key: val.key };
-});
+const { ipcRenderer } = window.require('electron');
 
 export default function FileManager(props) {
+
+    let checked = [];
+
+    const [initialize, setInitialized] = useState(false);
+    const [files, setFiles] = useState([]);
+    const [checkboxes, checkboxesHandler] = useListState([]);
+
+    async function Initialize(){
+        let list = await ipcRenderer.invoke('file-manager', props.path);
+        setFiles(list);        
+    }
+
+    async function goInFolder(path){
+        let list = await ipcRenderer.invoke('file-manager', path);
+        setFiles(list);        
+    }
+
+    useEffect(()=>{
+        checked = files.map((val) => {
+            return { "type": val.type, "name": val.name, "size": val.size, "created": val.created, "checked": false, key: val.key };
+        });
+        checkboxesHandler.setState(checked);
+    },[files]);
+
+    if(!initialize){
+        setInitialized(true);
+        Initialize();
+    }
 
     const [popUp, setPopUp] = useState(false);
     const [renamedFile, setRenamedFile] = useState();
     const [fileAction, setFileAction] = useState("");
     const [deleteW, setDeleteW] = useState(false);
     const [deleteA, setDeleteA] = useState("");
-
-    const [currentFileList, setCurrentFileList] = useState(files);
     const [editedFile, setEditedFile] = useState({});
-    const [checkboxes, checkboxesHandler] = useListState(checked);
+    
     const allChecked = checkboxes.every((value) => value.checked);
     const everyChecked = checkboxes.filter((val) => { if(val.checked) { return val; } });
     const indeterminate = checkboxes.some((value) => value.checked) && !allChecked;
 
-    let managerPath = [props.server];
-    const [stringedPath, setPath] = useState("/"+props.server+"/");
-
-    function changePath(){
-        let path ="/";
-        for(let i = 0; i < managerPath.length; i++){
-            path=path+managerPath[i]+"/";
-        }
-        setPath(path);
-    }
+    const [managerPath, setManagerPath] = useState([props.server]);
+    const [path, setPath] = useState("/"+props.server+"/");
 
     const items = checkboxes.map((val, index) => {
         return <File type={val.type} name={val.name} size={val.size} openFile={openFile} created={new Date(val.created)} key={val.key} fileKey={val.key} checked={val.checked} onChange={(e) => CheckFile(val, index, e, val.checked)} />
     });
+
+    function changePath(array){
+        let p = "/";
+        for(let i = 0; i < array.length; i++){
+            p = p + array[i] + "/";
+        }
+        setPath(p);
+    }
 
     function openFile(key){
         const file = checkboxes.find(arrayFile => {
@@ -143,43 +75,15 @@ export default function FileManager(props) {
         });
 
         if(file.type == "folder"){
-
-            let files2 = [{
-                key: randomId(),
-                type: "properties",
-                name: "server",
-                size: 4655614546541,
-                created: new Date().getTime()
-            },{
-                key: randomId(),
-                type: "bat",
-                name: "start",
-                size: 4655614546541,
-                created: new Date().getTime()
-            },{
-                key: randomId(),
-                type: "css",
-                name: "oyé",
-                size: 4655614546541,
-                created: new Date().getTime()
-            }];
-
-            checked = files2.map((val) => {
-                return { "type": val.type, "name": val.name, "size": val.size, "created": val.created, "checked": false, key: val.key };
-            });
-
-            setCurrentFileList(files2);
-            checkboxesHandler.setState(checked);
-            managerPath.push(file.name);
-            changePath();
+            goInFolder(props.path + path.substring(1 + props.server.length, path.length) +file.name);
+            setManagerPath((managerPath) => [...managerPath, file.name]);
+            changePath([...managerPath, file.name]);
         }
         else{
             setEditedFile({'Editedname': file.name, 'Editedtype': file.type});
             setContentValue(1);
         }
     }
-
-  
 
     const borderStyle = {
         borderTopRightRadius : "10px",
@@ -196,7 +100,7 @@ export default function FileManager(props) {
         transform: "translateX(-104%)",
         transformOrigin: "center",
         opacity: 1
-      };
+    };
     const uncheckedStyle = {
       transform: "translateX(110%)",
       transformOrigin: "center",
@@ -209,19 +113,14 @@ export default function FileManager(props) {
   
 
     function CheckFile(val, index, e, value){
-      console.log(checkboxes[index].key);
       checkboxesHandler.setItemProp(index, 'checked', e.currentTarget.checked);
     }
   
   
     function goBack(){
-        checked = files.map((val) => {
-            return { "type": val.type, "name": val.name, "size": val.size, "created": val.created, "checked": false, key: val.key };
-        });
-        setCurrentFileList(files);
-        checkboxesHandler.setState(checked);
-        managerPath.splice(managerPath.length, 1);
-        changePath();
+        goInFolder(props.path + path.substring(1 + props.server.length, path.length - managerPath[managerPath.length-1].length -2));
+        setManagerPath(managerPath.slice(0, managerPath.length-1));
+        changePath(managerPath.slice(0, managerPath.length-1));
     }
   
 
@@ -266,7 +165,6 @@ export default function FileManager(props) {
         }
         setPopUp(true);
     }
-  
 
     function RenameFile(name, extension){
         checkboxesHandler.setItemProp(checkboxes.indexOf(renamedFile), 'name', name);
@@ -276,7 +174,6 @@ export default function FileManager(props) {
         setPopUp(false);
         checkboxesHandler.setItemProp(checkboxes.indexOf(renamedFile), 'checked', false);
     }
-
   
     function OpenCreate(type){
         for(let i = 0; i < everyChecked.length; i++){
@@ -306,23 +203,12 @@ export default function FileManager(props) {
             { "type": type.replaceAll(".", ""), "name": name.replaceAll(".", ""), "size": 0, "created": new Date().getTime(), "checked": false, key: randomId() }
 
         );
-
-        currentFileList.push(
-
-            { "type": type.replaceAll(".", ""), "name": name.replaceAll(".", ""), "size": 0, "created": new Date().getTime(), "checked": false, key: randomId() }
-
-        );
         setPopUp(false);
     }
 
-
     function reloadFiles(){
 
-        checked = currentFileList.map((val) => {
-                return { "type": val.type, "name": val.name, "size": val.size, "created": val.created, "checked": false, key: val.key };
-            });
-
-        checkboxesHandler.setState(checked);
+        goInFolder(props.path + path.substring(1 + props.server.length, path.length));
     }
   
 
@@ -344,10 +230,6 @@ export default function FileManager(props) {
     }
     
   }, [everyChecked.length]);
-
-    function getKeyByValue(object, value) {
-        return Object.keys(object).find(key => object[key] === value);
-    }
   
     return (
 
@@ -381,7 +263,7 @@ export default function FileManager(props) {
                         <FontAwesomeIcon icon={faPen} className="f-rename" style={penOptionsStyle} onClick={()=>OpenRename()}/>
                         <FontAwesomeIcon icon={faTrashCan} className="f-delete" style={optionsStyle} onClick={()=>openDeleteW()}/>
                     </h3>
-                    <span id="path">{stringedPath}</span>
+                    <span id="path">{path}</span>
                 </div>
             </div>
             <div className="file-list-container">
@@ -404,7 +286,7 @@ export default function FileManager(props) {
                         </tr>
                     </thead>
                     <tbody>
-                        {stringedPath == "/" + props.server + "/" ?
+                        {path == "/" + props.server + "/" ?
                         
                         <></>
 
@@ -420,7 +302,7 @@ export default function FileManager(props) {
 
                         }
 
-                        {items[0].key == null ? <></> : items}
+                        {/*items.length == 0 ? <></> : */items}
                     </tbody>
 
                 </table>
@@ -485,4 +367,4 @@ export default function FileManager(props) {
 
 }
 
-export { files };
+/*export { files };*/
