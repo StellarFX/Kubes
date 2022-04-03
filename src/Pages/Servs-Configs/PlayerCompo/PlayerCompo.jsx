@@ -9,9 +9,9 @@ function PlayerCompo(props) {
     const banClass = ["ban-player", "baned-player"];
     const banIpClass = ["banip-player", "banedip-player"];
 
-    const [op, setOp] = useState(0);
-    const [ban, setBan] = useState(0);
-    const [banIp, setBanIp] = useState(0);
+    const [op, setOp] = useState(props.op?1:0);
+    const [ban, setBan] = useState(props.banned?1:0);
+    const [banIp, setBanIp] = useState(props.bannedIp?1:0);
 
     return (
 

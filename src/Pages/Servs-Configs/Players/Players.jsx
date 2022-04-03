@@ -7,8 +7,30 @@ export default function Players(props){
 
     const playerList = props.userlist.map((user)=>{
 
+        let banned = false;
+        let bannedIp = false;
+        let oped = false;
+        
+        oped = props.ops.some((users)=>{
+            if(users["uuid"]== user['uuid']){
+                return true;
+            }
+        });
+        banned = props.banned.some((users)=>{
+            if(users["uuid"]== user['uuid']){
+                return true;
+            }
+        });
+        bannedIp = props.bannedip.some((users)=>{
+            if(users["uuid"]== user['uuid']){
+                return true;
+            }
+        });
+
+        console.log(oped);
+
         return(
-            <PlayerCompo name={user['name']}/>
+            <PlayerCompo name={user['name']} op={oped} banned={banned} bannedIp={bannedIp}/>
         )
 
     })

@@ -133,8 +133,6 @@ function createWindow() {
     }
 }
 
-
-
 ipcMain.handle("scan-servers", async()=>{
     return methods.scan(dir);
 });
