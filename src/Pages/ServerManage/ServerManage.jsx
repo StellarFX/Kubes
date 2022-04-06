@@ -5,7 +5,7 @@ import {
     useLocation,
     useNavigate
 } from "react-router-dom";
-import React,  {useState} from 'react';
+import React,  {useState,useEffect} from 'react';
 import './ServerManage.scss';
 import ServNavbar from '../../components/ServNavbar/ServNavbar.jsx';
 
@@ -79,7 +79,7 @@ function ServerManage(){
                     <p className="config-name">{location.charAt(0).toUpperCase() + location.slice(1)}</p> 
                     <Routes>
                         <Route path="/console" element={<Console/>}/>
-                        <Route path="/configuration" element={<Configuration properties={properties}/>}/>
+                        <Route path="/configuration" element={<Configuration properties={properties} path={servPath}/>}/>
                         <Route path="/players" element={<Players userlist={userList} banned={banned} bannedip={bannedIp} ops={ops} />}/>
                         <Route path="/whitelist" element={<Whitelist whitelist={whitelist} />}/>
                         <Route path="/files" element={<FileManager server={id} path={servPath}/>}/>

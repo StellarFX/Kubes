@@ -10,6 +10,8 @@ ace.config.set('basePath', "https://cdn.jsdelivr.net/npm/ace-builds@1.4.3/src-no
 export default function CustomAceEditor(props) {
 
     const [editorMode, setEditorMode] = useState("text");
+    var timer;
+    var typingInterval = 3500;
 
     const editor = useCallback((node) => {
         if (node) {
@@ -17,11 +19,19 @@ export default function CustomAceEditor(props) {
         }
     }, [props.editedFile]);
 
+    function onChange(newValue){
+        console.log(newValue);
+        clearTimeout(timer);
+        timer = setTimeout(props.change(newValue), typingInterval);
+
+    }
+
     return (
 
         <AceEditor
             mode={editorMode}
             ref={editor}
+            onChange={(val)=>{onChange(val)}}
             theme="github"
             name="file-editor"
             width={props.setWidth}

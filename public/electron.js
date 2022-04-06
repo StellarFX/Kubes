@@ -157,6 +157,10 @@ ipcMain.on("remove-server", (e, path)=>{
     methods.remove(path);
 });
 
+ipcMain.on("change-properties", (e, content, path)=>{
+    methods.changeProperties(content, path);
+});
+
 
 
 

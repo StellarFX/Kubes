@@ -1,5 +1,6 @@
 const Path = require('path');
 const fs = require('fs');
+const querys = require('querystring');
 const fastFolderSizeSync = require('fast-folder-size/sync');
 var PropertiesReader = require('properties-reader');
 const { randomId } = require('@mantine/hooks');
@@ -123,6 +124,33 @@ methods.fileManager = (path)=>{
     }
 
     return files;
+}
+
+methods.changeProperties = (content, path)=>{
+    let properties = "";
+
+    fs.readdirSync(path).forEach((file)=>{
+        if(file.substring(file.length-11,file.length)==".properties"){
+            properties = path.concat("/"+file);
+        }
+    });
+
+    let original = PropertiesReader(properties, {writer : { saveSections: true}});
+
+    dictedContent = querys.parse(content.replaceAll("\n","&"));
+
+    console.log(dictedContent);
+
+    for(const [key, value] of Object.entries(dictedContent)){
+
+        original.set(key, value);
+        console.log(key, value);
+    }
+    console.log(original, "o");
+
+    original.save(properties, (err)=>{
+        if(err) console.log(err);
+    });
 }
 
 module.exports = methods;
