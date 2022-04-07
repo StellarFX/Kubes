@@ -8,8 +8,6 @@ import { useEffect } from "react";
 
 export default function ServNavbar(props) {
 
-    
-
     const { id } = useParams();
 
     useEffect(() => {

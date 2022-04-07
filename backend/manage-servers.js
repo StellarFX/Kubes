@@ -71,7 +71,9 @@ methods.readContent = (id)=>{
 
         if(file.slice(-11) == ".properties"){
             for(const [key, value] of Object.entries(PropertiesReader(path.concat("/"+file)).getAllProperties())){
-                properties = properties.concat(key+"="+value+"\n");
+                if(key != "[]" && key != []){
+                    properties = properties.concat(key+"="+value+"\n");
+                }
             }
         }
 
@@ -135,18 +137,15 @@ methods.changeProperties = (content, path)=>{
         }
     });
 
-    let original = PropertiesReader(properties, {writer : { saveSections: true}});
+    let original = PropertiesReader(require.resolve("./example.properties"), {writer : { saveSections: true}});
 
     dictedContent = querys.parse(content.replaceAll("\n","&"));
 
     console.log(dictedContent);
 
     for(const [key, value] of Object.entries(dictedContent)){
-
-        original.set(key, value);
-        console.log(key, value);
+        original.set("."+key, value);
     }
-    console.log(original, "o");
 
     original.save(properties, (err)=>{
         if(err) console.log(err);

@@ -20,10 +20,9 @@ export default function CustomAceEditor(props) {
     }, [props.editedFile]);
 
     function onChange(newValue){
-        console.log(newValue);
         clearTimeout(timer);
-        timer = setTimeout(props.change(newValue), typingInterval);
-
+        timer = setTimeout(props.change, 3500, newValue);
+        console.log(timer);
     }
 
     return (
