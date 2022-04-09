@@ -20,8 +20,7 @@ methods.scan = (dir)=>{
             if(fs.lstatSync(path.concat("/" + file)).isDirectory()){
                 
                 let data =  fs.readdirSync(path.concat("/" + file));
-
-                if(data.includes("server.properties") && data.find(element => element.slice(-4) == ".jar") != undefined && data.find(element => element.slice(-4) == ".bat") != undefined){
+                if(data.filter(element => element.slice(-11) == ".properties" || element.slice(-4) == ".jar").length == 2 && data.includes('eula.txt')){
 
                     scanDirs.push({"path": path.concat("/" + file), "name": file});
                 }

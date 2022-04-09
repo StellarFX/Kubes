@@ -16,7 +16,7 @@ function PlayerCompo(props) {
     return (
 
         <div className='player-container'>
-            <div className="minecraft-face"></div>
+            <div className="minecraft-face" style={{backgroundImage: 'url(https://mc-heads.net/avatar/'+props.uuid+')'}}></div>
             <p className='player-name' title={props.name}>{props.name}</p>
             <div className='actions'>
                 <div className={opClass[op]} onClick={() => { setOp(Math.abs(op - 1)); }} >

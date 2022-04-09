@@ -27,10 +27,8 @@ export default function Players(props){
             }
         });
 
-        console.log(oped);
-
         return(
-            <PlayerCompo name={user['name']} op={oped} banned={banned} bannedIp={bannedIp}/>
+            <PlayerCompo name={user['name']} uuid={user['uuid']} op={oped} banned={banned} bannedIp={bannedIp}/>
         )
 
     })
