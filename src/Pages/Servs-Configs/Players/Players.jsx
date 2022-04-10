@@ -28,7 +28,7 @@ export default function Players(props){
         });
 
         return(
-            <PlayerCompo name={user['name']} uuid={user['uuid']} op={oped} banned={banned} bannedIp={bannedIp}/>
+            <PlayerCompo user={user} op={oped} banned={banned} bannedIp={bannedIp} path={props.path}/>
         )
 
     })

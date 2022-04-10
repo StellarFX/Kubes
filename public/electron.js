@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const { JsonInput } = require('@mantine/core');
 const methods = require('../backend/manage-servers');
+const writer = require('../backend/write-on-files');
 
 var datas = fs.readFileSync(require.resolve('./data.json'));
 var infos = JSON.parse(datas);
@@ -157,8 +158,15 @@ ipcMain.on("remove-server", (e, path)=>{
     methods.remove(path);
 });
 
+
+
+
 ipcMain.on("change-properties", (e, content, path)=>{
-    methods.changeProperties(content, path);
+    writer.changeProperties(content, path);
+});
+
+ipcMain.on("change-status", (e, data)=>{
+    writer.changeStatus(data);
 });
 
 

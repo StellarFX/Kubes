@@ -127,29 +127,5 @@ methods.fileManager = (path)=>{
     return files;
 }
 
-methods.changeProperties = (content, path)=>{
-    let properties = "";
-
-    fs.readdirSync(path).forEach((file)=>{
-        if(file.substring(file.length-11,file.length)==".properties"){
-            properties = path.concat("/"+file);
-        }
-    });
-
-    let original = PropertiesReader(require.resolve("./example.properties"), {writer : { saveSections: true}});
-
-    dictedContent = querys.parse(content.replaceAll("\n","&"));
-
-    console.log(dictedContent);
-
-    for(const [key, value] of Object.entries(dictedContent)){
-        original.set("."+key, value);
-    }
-
-    original.save(properties, (err)=>{
-        if(err) console.log(err);
-    });
-}
-
 module.exports = methods;
 

@@ -80,10 +80,10 @@ function ServerManage(){
                     <Routes>
                         <Route path="/console" element={<Console/>}/>
                         <Route path="/configuration" element={<Configuration properties={properties} path={servPath}/>}/>
-                        <Route path="/players" element={<Players userlist={userList} banned={banned} bannedip={bannedIp} ops={ops} />}/>
-                        <Route path="/whitelist" element={<Whitelist whitelist={whitelist} />}/>
+                        <Route path="/players" element={<Players userlist={userList} banned={banned} bannedip={bannedIp} ops={ops} path={servPath}/>}/>
+                        <Route path="/whitelist" element={<Whitelist whitelist={whitelist} path={servPath}/>}/>
                         <Route path="/files" element={<FileManager server={id} path={servPath}/>}/>
-                        <Route path="/performances" element={<Performances/>}/>
+                        <Route path="/performances" element={<Performances path={servPath}/> }/>
                     </Routes>
                 </div>
             </div>
