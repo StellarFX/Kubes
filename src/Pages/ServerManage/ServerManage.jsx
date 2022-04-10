@@ -38,27 +38,15 @@ function ServerManage(){
     const [initialized, setInitialized] = useState(false);
 
     const [servPath, setServPath] = useState("");
-    const [properties, setProperties] = useState();
-    const [whitelist, setWhitelist] = useState();
-    const [userList, setUserList] = useState();
-    const [banned, setBanned] = useState();
-    const [bannedIp, setBannedIp] = useState();
-    const [ops, setOps] = useState();
 
-    async function ReadContent() {
-      let content = await ipcRenderer.invoke("read-server", id);
-      setServPath(content['path']);
-      setProperties(content['properties']);
-      setWhitelist(content['whitelist']);
-      setUserList(content['users']);
-      setBanned(content['banned']);
-      setBannedIp(content['banned-ip']);
-      setOps(content['ops']);
+    async function scanPath() {
+      let path = await ipcRenderer.invoke("scan-server-path", id);
+      setServPath(path);
     };
   
     if(initialized == false){
       setInitialized(true);
-      ReadContent();
+      scanPath();
     }
 
     function removeServer(){
@@ -79,9 +67,9 @@ function ServerManage(){
                     <p className="config-name">{location.charAt(0).toUpperCase() + location.slice(1)}</p> 
                     <Routes>
                         <Route path="/console" element={<Console/>}/>
-                        <Route path="/configuration" element={<Configuration properties={properties} path={servPath}/>}/>
-                        <Route path="/players" element={<Players userlist={userList} banned={banned} bannedip={bannedIp} ops={ops} path={servPath}/>}/>
-                        <Route path="/whitelist" element={<Whitelist whitelist={whitelist} path={servPath}/>}/>
+                        <Route path="/configuration" element={<Configuration path={servPath}/>}/>
+                        <Route path="/players" element={<Players path={servPath}/>}/>
+                        <Route path="/whitelist" element={<Whitelist path={servPath}/>}/>
                         <Route path="/files" element={<FileManager server={id} path={servPath}/>}/>
                         <Route path="/performances" element={<Performances path={servPath}/> }/>
                     </Routes>

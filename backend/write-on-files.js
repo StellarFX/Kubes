@@ -33,11 +33,10 @@ writer.changeProperties = (content, path)=>{
 
 
 writer.changeStatus = (data)=>{
-    console.log(data['user']);
     let filePath = "";
 
     fs.readdirSync(data['path']).forEach((file)=>{
-        if(file = data['type'] + ".json"){
+        if(file === data['type'] + ".json"){
             filePath = data['path'].concat("/"+file);
         }
     });
@@ -45,30 +44,23 @@ writer.changeStatus = (data)=>{
     var rawFile = fs.readFileSync(filePath);
     let fileContent = JSON.parse(rawFile);
 
-    console.log(fileContent);
-
     response = fileContent.some((users)=>{
-        console.log(users["uuid"], users['name'], ":", data['user']["uuid"]);
         if(users["uuid"] === data['user']["uuid"]){
             
             return true;
         }
     });
 
-    console.log(response);
-
     if(response != true){
         fileContent.push({"uuid":data['user']['uuid'], 'name': data['user']['name'], "level":4, "bypassesPlayerLimit":false});
     }
     else{
-        const index = fileContent.indexOf({"uuid":data['user']['uuid'], 'name': data['user']['name'], "level":4, "bypassesPlayerLimit":false});
+        let index = fileContent.findIndex((element)=>element['uuid'] === data['user']['uuid']);
         if(index != -1){
             fileContent.splice(index, 1);
         }
         
     }
-
-    console.log(fileContent);
 
     fs.writeFileSync(filePath, JSON.stringify(fileContent));
 

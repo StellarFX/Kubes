@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import './PlayerCompo.scss';
 import { faStar, faGavel } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,6 +14,12 @@ function PlayerCompo(props) {
     const [op, setOp] = useState(props.op?1:0);
     const [ban, setBan] = useState(props.banned?1:0);
     const [banIp, setBanIp] = useState(props.bannedIp?1:0);
+
+    useEffect(()=>{
+        setOp(props.op?1:0);
+        setBan(props.banned?1:0);
+        setBanIp(props.bannedIp?1:0);
+    },[props.op])
 
     function opSomeone(){
         ipcRenderer.send("change-status", {"user":props.user, "type":"ops", "path":props.path});

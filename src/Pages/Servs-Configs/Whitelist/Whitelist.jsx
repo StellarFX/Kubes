@@ -4,6 +4,8 @@ import { faPlusCircle, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { TextInput, Dialog } from '@mantine/core';
 
+const { ipcRenderer } = window.require('electron');
+
 export default function Whitelist(props) {
 
   const inputStyle = {
@@ -33,10 +35,24 @@ export default function Whitelist(props) {
 
   }
 
+  const [initialized, setInitialized] = useState(false);
+
+  const [whitelistMembers, setWhitelistMembers] = useState([]);
+
+    async function scanWhitelist() {
+      let whitelist = await ipcRenderer.invoke("scan-whitelist", props.path);
+      setWhitelistMembers(whitelist);
+    };
+  
+    if(initialized == false){
+      setInitialized(true);
+      scanWhitelist();
+    }
+
 
   const [placeHolder, setPlaceHolder] = useState("Enter a name...")
   const [chosenMember, setChosenMember] = useState("");
-  const [whitelistMembers, setWhitelistMembers] = useState(props.whitelist);
+  
 
   const [customDialogOpened, setCustomDialogOpened] = useState(false);
   const [customDialogStyle, setCustomDialogStyle] = useState({});
@@ -47,8 +63,8 @@ export default function Whitelist(props) {
     return (
 
       <div className='whitelist-members'>
-        <div className='white-face'></div>
-        <p id={m}>{m}</p>
+        <div className='white-face' style={{backgroundImage:'url(https://mc-heads.net/avatar/'+m['uuid']+')'}}></div>
+        <p id={m['name']}>{m['name']}</p>
       </div>
 
     );

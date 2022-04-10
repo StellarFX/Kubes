@@ -146,10 +146,6 @@ ipcMain.handle('rename-server',async (e, data)=>{
     return methods.rename(data);
 });
 
-ipcMain.handle('read-server', async (e, id)=>{
-    return methods.readContent(id);
-});
-
 ipcMain.handle('file-manager', async (e, Path)=>{
     return methods.fileManager(Path);
 });
@@ -158,6 +154,22 @@ ipcMain.on("remove-server", (e, path)=>{
     methods.remove(path);
 });
 
+
+ipcMain.handle('scan-server-path', async (e, id)=>{
+    return methods.scanPath(id);
+});
+
+ipcMain.handle('scan-players', async (e, path)=>{
+    return methods.scanPlayers(path);
+});
+
+ipcMain.handle('scan-whitelist', async (e, path)=>{
+    return methods.scanWhitelist(path);
+});
+
+ipcMain.handle('scan-properties', async (e, path)=>{
+    return methods.scanProperties(path);
+});
 
 
 

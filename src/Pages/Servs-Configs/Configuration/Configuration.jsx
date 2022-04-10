@@ -7,7 +7,19 @@ const { ipcRenderer } = window.require('electron');
 
 export default function Configuration(props){
 
-    const [fileValue, setFileValue] = useState(props.properties);
+    const [initialized, setInitialized] = useState(false);
+
+    const [fileValue, setFileValue] = useState("");
+
+    async function scanProperties() {
+      let value = await ipcRenderer.invoke("scan-properties", props.path);
+      setFileValue(value);
+    };
+  
+    if(initialized == false){
+      setInitialized(true);
+      scanProperties();
+    }
 
     function changeValue(value){
         ipcRenderer.send("change-properties", value, props.path);

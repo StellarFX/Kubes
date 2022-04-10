@@ -79,7 +79,7 @@
             }
 
             .white-face{
-                background-image: url(https://www.cewe.fr/cdn/c2/xx/c2xxdkdGN0oxNWViZ283amNXVDNZTmRJUkRxMTA4WkFYSmNxME9mbmcxUT0);
+                
                 background-size: cover;
                 background-position: center;
                 min-width: 2.2rem;
@@ -87,13 +87,15 @@
                 min-height: 2.2rem;
                 max-height: 2.2rem;
                 border-radius: 100px;
-                margin-right: 3rem;
+                margin-right: 1.5rem;
             }
 
             p{
                 margin: 0;
                 font-size: 1.3rem;
                 color: white;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
         }
     }

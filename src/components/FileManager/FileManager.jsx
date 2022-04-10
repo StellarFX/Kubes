@@ -26,9 +26,10 @@ export default function FileManager(props) {
         setFiles(list);        
     }
 
-    async function goInFolder(path){
+    async function goInFolder(path, value){
         let list = await ipcRenderer.invoke('file-manager', path);
-        setFiles(list);        
+        setFiles(list);  
+        changePath(value);      
     }
 
     useEffect(()=>{
@@ -75,9 +76,8 @@ export default function FileManager(props) {
         });
 
         if(file.type == "folder"){
-            goInFolder(props.path + path.substring(1 + props.server.length, path.length) +file.name);
+            goInFolder(props.path + path.substring(1 + props.server.length, path.length) +file.name, [...managerPath, file.name]);
             setManagerPath((managerPath) => [...managerPath, file.name]);
-            changePath([...managerPath, file.name]);
         }
         else{
             setEditedFile({'Editedname': file.name, 'Editedtype': file.type});
@@ -118,9 +118,8 @@ export default function FileManager(props) {
   
   
     function goBack(){
-        goInFolder(props.path + path.substring(1 + props.server.length, path.length - managerPath[managerPath.length-1].length -2));
+        goInFolder(props.path + path.substring(1 + props.server.length, path.length - managerPath[managerPath.length-1].length -2), managerPath.slice(0, managerPath.length-1));
         setManagerPath(managerPath.slice(0, managerPath.length-1));
-        changePath(managerPath.slice(0, managerPath.length-1));
     }
   
 
@@ -208,7 +207,7 @@ export default function FileManager(props) {
 
     function reloadFiles(){
 
-        goInFolder(props.path + path.substring(1 + props.server.length, path.length));
+        goInFolder(props.path + path.substring(1 + props.server.length, path.length), managerPath);
     }
   
 

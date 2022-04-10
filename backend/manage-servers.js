@@ -50,7 +50,7 @@ methods.remove = (path)=>{
     fs.rmdirSync(path, { recursive: true });
 } 
 
-methods.readContent = (id)=>{
+methods.scanPath = (id)=>{
     let path = "";
 
     for(let i = 0; i < allDirs.length; i++){
@@ -59,7 +59,9 @@ methods.readContent = (id)=>{
         }
     }
 
-    let properties = "";
+    return path;
+
+    /*let properties = "";
     let userList = {};
     let whitelist = {};
     let banned = {};
@@ -76,9 +78,7 @@ methods.readContent = (id)=>{
             }
         }
 
-        if(file == "usercache.json"){
-            userList = JSON.parse(fs.readFileSync(path.concat("/"+file)));
-        }
+        
 
         if(file == "whitelist.json"){
             whitelist = JSON.parse(fs.readFileSync(path.concat("/"+file)));
@@ -98,7 +98,73 @@ methods.readContent = (id)=>{
 
     });
 
-    return {'path': path, 'properties': properties.substring(0, properties.length-1), 'users': userList, 'banned': banned, 'whitelist': whitelist, 'banned-ip': bannedIp, 'ops': ops};
+    return {'path': path, 'properties': properties.substring(0, properties.length-1), 'users': userList, 'banned': banned, 'whitelist': whitelist, 'banned-ip': bannedIp, 'ops': ops};*/
+}
+
+methods.scanProperties = (path)=>{
+
+    let properties = "";
+    fs.readdirSync(path).forEach((file)=>{
+
+        if(file.slice(-11) == ".properties"){
+            for(const [key, value] of Object.entries(PropertiesReader(path.concat("/"+file)).getAllProperties())){
+                if(key != "[]" && key != []){
+                    properties = properties.concat(key+"="+value+"\n");
+                }
+            }
+        }
+
+    });
+
+    return properties;
+}
+
+methods.scanPlayers = (path)=>{
+
+    let banned = {};
+    let bannedIp = {};
+    let ops = {};
+    let userList = {};
+
+    fs.readdirSync(path).forEach((file)=>{
+
+        if(file == "usercache.json"){
+            userList = JSON.parse(fs.readFileSync(path.concat("/"+file)));
+        }
+
+        if(file == "banned-players.json"){
+            banned = JSON.parse(fs.readFileSync(path.concat("/"+file)));
+        }
+
+        if(file == "banned-ips.json"){
+            bannedIp = JSON.parse(fs.readFileSync(path.concat("/"+file)));
+        }
+
+        if(file == "ops.json"){
+            ops = JSON.parse(fs.readFileSync(path.concat("/"+file)));
+        }
+
+    });
+
+    console.log(ops);
+
+    return { 'users': userList, 'banned': banned, 'banned-ip': bannedIp, 'ops': ops}
+    
+}
+
+methods.scanWhitelist = (path)=>{
+
+    let whitelist = {};
+
+    fs.readdirSync(path).forEach((file)=>{
+
+        if(file == "whitelist.json"){
+            whitelist = JSON.parse(fs.readFileSync(path.concat("/"+file)));
+        }
+
+    });
+
+    return whitelist;
 }
 
 methods.fileManager = (path)=>{
