@@ -26,10 +26,10 @@ export default function FileManager(props) {
         setFiles(list);        
     }
 
-    async function goInFolder(path, value){
+    async function goInFolder(path, array){
         let list = await ipcRenderer.invoke('file-manager', path);
         setFiles(list);  
-        changePath(value);      
+        changePath(array);      
     }
 
     useEffect(()=>{

@@ -48,8 +48,6 @@ export default function Players(props){
             }
         });
 
-        console.log(oped, user['name']);
-
         return(
             <PlayerCompo user={user} op={oped} banned={banned} bannedIp={bannedIp} path={props.path}/>
         )

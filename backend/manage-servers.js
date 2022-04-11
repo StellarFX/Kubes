@@ -60,45 +60,6 @@ methods.scanPath = (id)=>{
     }
 
     return path;
-
-    /*let properties = "";
-    let userList = {};
-    let whitelist = {};
-    let banned = {};
-    let bannedIp = {};
-    let ops = {};
-    
-    fs.readdirSync(path).forEach((file)=>{
-
-        if(file.slice(-11) == ".properties"){
-            for(const [key, value] of Object.entries(PropertiesReader(path.concat("/"+file)).getAllProperties())){
-                if(key != "[]" && key != []){
-                    properties = properties.concat(key+"="+value+"\n");
-                }
-            }
-        }
-
-        
-
-        if(file == "whitelist.json"){
-            whitelist = JSON.parse(fs.readFileSync(path.concat("/"+file)));
-        }
-
-        if(file == "banned-players.json"){
-            banned = JSON.parse(fs.readFileSync(path.concat("/"+file)));
-        }
-
-        if(file == "banned-ips.json"){
-            bannedIp = JSON.parse(fs.readFileSync(path.concat("/"+file)));
-        }
-
-        if(file == "ops.json"){
-            ops = JSON.parse(fs.readFileSync(path.concat("/"+file)));
-        }
-
-    });
-
-    return {'path': path, 'properties': properties.substring(0, properties.length-1), 'users': userList, 'banned': banned, 'whitelist': whitelist, 'banned-ip': bannedIp, 'ops': ops};*/
 }
 
 methods.scanProperties = (path)=>{
@@ -146,8 +107,6 @@ methods.scanPlayers = (path)=>{
 
     });
 
-    console.log(ops);
-
     return { 'users': userList, 'banned': banned, 'banned-ip': bannedIp, 'ops': ops}
     
 }
@@ -155,6 +114,7 @@ methods.scanPlayers = (path)=>{
 methods.scanWhitelist = (path)=>{
 
     let whitelist = {};
+    let userList = {};
 
     fs.readdirSync(path).forEach((file)=>{
 
@@ -162,9 +122,13 @@ methods.scanWhitelist = (path)=>{
             whitelist = JSON.parse(fs.readFileSync(path.concat("/"+file)));
         }
 
+        if(file == "usercache.json"){
+            userList = JSON.parse(fs.readFileSync(path.concat("/"+file)));
+        }
+
     });
 
-    return whitelist;
+    return {'whitelist':whitelist, 'userlist':userList};
 }
 
 methods.fileManager = (path)=>{
