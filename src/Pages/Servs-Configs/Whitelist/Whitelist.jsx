@@ -113,15 +113,17 @@ export default function Whitelist(props) {
   }
 
   function whiteListRemove() {
+    let user = {};
     let check = whitelistMembers.some((users)=>{
       if(users['uuid'] === chosenMember){
+        user = users;
         return true;
       }
     });
 
     if (check) {
       var array = [...whitelistMembers];
-      array.splice(whitelistMembers.indexOf({'uuid': chosenMember, 'name': userDict[chosenMember], 'level': 4, "bypassesPlayerLimit":false}), 1);
+      array.splice(whitelistMembers.indexOf(user), 1);
       setWhitelistMembers(array);
       toggleDialog("", {}, false);
 
@@ -136,7 +138,11 @@ export default function Whitelist(props) {
 
     <div className='whitelist-main-container'>
       <div className='whitelist-container'>
-        {membersList}
+        {membersList.length === 0?
+        
+          <p className='no-one'>Looks like there is no one here...</p>
+        
+        :membersList}
       </div>
       <div className='whitelist-action-container'>
         <div className='action-title-container'>

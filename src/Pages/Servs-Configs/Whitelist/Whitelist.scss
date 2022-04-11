@@ -65,6 +65,15 @@
         border-radius: 10px;
         padding-top: 0;
 
+        .no-one{
+            text-align: center;
+            color: #4b4664;
+            font-weight: 600;
+            font-size: 1.5rem;
+            margin-top: 50%;
+            transform: translateY(-50%);
+        }
+
         .whitelist-members{
             margin: 0 2rem;
             display: flex;
