@@ -162,6 +162,10 @@ ipcMain.handle('import', async (e,data)=>{
     return methods.import(data);
 });
 
+ipcMain.handle('readFileContent', async (e,path)=>{
+    return methods.readFileContent(path);
+});
+
 
 ipcMain.handle('scan-server-path', async (e, id)=>{
     return dir.concat("/Servers/"+id);
@@ -191,6 +195,10 @@ ipcMain.on("change-status", (e, data)=>{
 
 ipcMain.on('rename-file', (e, data)=>{
     writer.renameFile(data);
+});
+
+ipcMain.on('changeFileContent', (e,content, path)=>{
+    writer.changeFileContent(content,path);
 });
 
 

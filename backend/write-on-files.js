@@ -1,7 +1,7 @@
 const Path = require('path');
 const fs = require('fs');
 const querys = require('querystring');
-var PropertiesReader = require('properties-reader');
+const languageEncoding = require('detect-file-encoding-and-language');
 
 var writer = {};
 
@@ -14,19 +14,15 @@ writer.changeProperties = (content, path)=>{
         }
     });
 
-    let original = PropertiesReader(require.resolve("./example.properties"), {writer : { saveSections: true}});
+    fs.writeFileSync(properties, content, { encoding: "utf-8"});
+}
 
-    dictedContent = querys.parse(content.replaceAll("\n","&"));
-
-    for(const [key, value] of Object.entries(dictedContent)){
-        if(key != "[]" && key != []){
-            original.set("."+key, value);
+writer.changeFileContent = (content, path)=>{
+    languageEncoding(path).then((fileInfo)=>{
+        if(fileInfo.encoding !== undefined){
+            fs.writeFileSync(path, content, { encoding: fileInfo.encoding.toLowerCase()});
         }
-    }
-
-    original.save(properties, (err)=>{
-        if(err) console.log(err);
-    });
+    })
 }
 
 

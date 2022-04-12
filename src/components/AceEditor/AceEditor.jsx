@@ -11,7 +11,6 @@ export default function CustomAceEditor(props) {
 
     const [editorMode, setEditorMode] = useState("text");
     var timer;
-    var typingInterval = 3500;
 
     const editor = useCallback((node) => {
         if (node) {

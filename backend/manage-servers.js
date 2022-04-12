@@ -2,8 +2,8 @@ const Path = require('path');
 const fs = require('fs');
 const querys = require('querystring');
 const fastFolderSizeSync = require('fast-folder-size/sync');
-var PropertiesReader = require('properties-reader');
 const { randomId } = require('@mantine/hooks');
+const languageEncoding = require('detect-file-encoding-and-language');
 
 var methods = {}
 let allDirs = [];
@@ -64,7 +64,6 @@ methods.create = (data)=>{
 }
 
 methods.import = async (data)=>{
-    console.log(data['destinationPath']);
     if(fs.lstatSync(data['pathOrigin']).isDirectory()){
         fs.mkdirSync(data['destinationPath']);
         fs.readdirSync(data['pathOrigin']).forEach((file)=>{
@@ -80,17 +79,26 @@ methods.import = async (data)=>{
     return 'success';
 }
 
+methods.readFileContent = async (path)=>{
+
+    let resp = await languageEncoding(path).then((fileInfo) => {
+        if(fileInfo.encoding !== undefined){
+            return fs.readFileSync(path, fileInfo.encoding.toLowerCase());
+        }
+    }).catch(err => console.log(err));
+
+    return resp;
+}
+
+//regler probl des files sans extensions
+
 methods.scanProperties = (path)=>{
 
     let properties = "";
     fs.readdirSync(path).forEach((file)=>{
 
         if(file.slice(-11) == ".properties"){
-            for(const [key, value] of Object.entries(PropertiesReader(path.concat("/"+file)).getAllProperties())){
-                if(key != "[]" && key != []){
-                    properties = properties.concat(key+"="+value+"\n");
-                }
-            }
+            properties = fs.readFileSync(path.concat("/"+file), "utf-8");
         }
 
     });

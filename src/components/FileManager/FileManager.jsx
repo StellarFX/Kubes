@@ -61,6 +61,8 @@ export default function FileManager(props) {
     const [deleteW, setDeleteW] = useState(false);
     const [deleteA, setDeleteA] = useState("");
     const [editedFile, setEditedFile] = useState({});
+
+    const [fileContent, setFileContent] = useState("");
     
     const allChecked = checkboxes.every((value) => value.checked);
     const everyChecked = checkboxes.filter((val) => { if(val.checked) { return val; } });
@@ -81,7 +83,7 @@ export default function FileManager(props) {
         setPath(p);
     }
 
-    function openFile(key){
+    async function openFile(key){
         const file = checkboxes.find(arrayFile => {
             return arrayFile.key == key;
         });
@@ -91,6 +93,9 @@ export default function FileManager(props) {
             setManagerPath((managerPath) => [...managerPath, file.name]);
         }
         else{
+            let base = props.path.substring(0, props.path.length - (props.server.length + 1)) + path;
+            let resp = await ipcRenderer.invoke("readFileContent", base + file.name + "." + file.type);
+            setFileContent(resp);
             setEditedFile({'Editedname': file.name, 'Editedtype': file.type});
             setContentValue(1);
         }
@@ -149,13 +154,14 @@ export default function FileManager(props) {
             checkboxesHandler.setItemProp(checkboxes.indexOf(everyChecked[i]), 'checked', false);
             checkboxes.splice(checkboxes.indexOf(everyChecked[i]), 1);
             let base = props.path.substring(0, props.path.length - (props.server.length + 1)) + path;
-            
-            if(everyChecked[i]['type'] === 'folder'){
+
+            if(everyChecked[i]['type'] === 'folder' || everyChecked[i]['type'] === ''){
                 resp = await ipcRenderer.invoke('remove', base + everyChecked[i]['name']);
             }
             else{
                 resp = await ipcRenderer.invoke('remove', base + everyChecked[i]['name'] + "." + everyChecked[i]['type']);
             }
+            
         }
         if(resp === "success"){
             reloadFiles();
@@ -251,6 +257,11 @@ export default function FileManager(props) {
     function reloadFiles(){
 
         goInFolder(props.path + path.substring(1 + props.server.length, path.length), managerPath);
+    }
+
+    function changeFileValue(value){
+        let base = props.path.substring(0, props.path.length - (props.server.length + 1)) + path;
+        ipcRenderer.send("changeFileContent", value, base + editedFile['Editedname'] + "." + editedFile['Editedtype']);
     }
   
 
@@ -407,7 +418,7 @@ export default function FileManager(props) {
                         <div className='dropzone-content'>
                             <svg className="svg-inline--fa dropzone-icon" id="Layer_1" height="512" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path fill="currentColor" d="m19 0h-6a5.006 5.006 0 0 0 -5 5v.1a5.009 5.009 0 0 0 -4 4.9v.1a5.009 5.009 0 0 0 -4 4.9v4a5.006 5.006 0 0 0 5 5h6a5.006 5.006 0 0 0 5-5v-.1a5.009 5.009 0 0 0 4-4.9v-.1a5.009 5.009 0 0 0 4-4.9v-4a5.006 5.006 0 0 0 -5-5zm-17 15a3 3 0 0 1 3-3h6a2.988 2.988 0 0 1 2.638 1.6l-3.455 3.463-.475-.479a1.992 1.992 0 0 0 -2.708-.111l-4.621 3.96a2.96 2.96 0 0 1 -.379-1.433zm12 4a3 3 0 0 1 -3 3h-6a2.971 2.971 0 0 1 -1.118-.221l4.406-3.779.476.481a2 2 0 0 0 2.828 0l2.408-2.413zm4-5a3 3 0 0 1 -2 2.816v-1.816a5.006 5.006 0 0 0 -5-5h-5a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3zm4-5a3 3 0 0 1 -2 2.816v-1.816a5.006 5.006 0 0 0 -5-5h-5a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3zm-18 6a1 1 0 1 1 1 1 1 1 0 0 1 -1-1z"/></svg>
                             <p>Click here to add files!</p>    
-                            <p className='precision'>(folders are only accepted by drag & drop)</p>
+                            <p className='precision'>(Folders are only accepted by drag & drop)</p>
                         </div>
                         )
                     }}
@@ -428,7 +439,7 @@ export default function FileManager(props) {
                     <p>{editedFile['Editedtype']}</p>
                 </div>
             </div>
-            <AceEditor editedFile={editedFile} value="Pute" setWidth="100%" setHeight='110%'/>
+            <AceEditor editedFile={editedFile} value={fileContent} change={changeFileValue} setWidth="100%" setHeight='110%'/>
         </div>
         
         
