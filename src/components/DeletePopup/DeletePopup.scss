@@ -16,11 +16,25 @@
     z-index: 1001;
     transform: translate(-50%, -50%);
     background-color: #0c0b16;
+    padding: 1rem 1.5rem 1.5rem 1.5rem;
+    border-radius: 10px;
+    width: 15rem;
 
     .confirmation{
+        margin: 0;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
 
-        
-      
+        svg{
+            margin-right: 1rem;
+            color: var(--main);
+            filter: drop-shadow(3px 2px 1px #7547ff4d);
+        }
+    }
+
+    .d-buttons{
+        display: flex;
+        justify-content: flex-end;
     }
   
 }

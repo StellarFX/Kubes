@@ -31,7 +31,7 @@ methods.scan = (dir)=>{
     return allDirs;
 }
 
-methods.rename = (data)=>{
+methods.renameServer = (data)=>{
 
     var newPath = data['path'].slice(0, data['path'].length-data['Oldname'].length).concat(data['Newname']);
 
@@ -42,24 +42,42 @@ methods.rename = (data)=>{
         }
     }
     let renaming = fs.renameSync(data['path'], newPath);
-    return "renamed";
 }
 
 methods.remove = (path)=>{
 
-    fs.rmdirSync(path, { recursive: true });
-} 
+    fs.rmSync(path, { recursive: true });
+    return "success";
+}
 
-methods.scanPath = (id)=>{
-    let path = "";
-
-    for(let i = 0; i < allDirs.length; i++){
-        if(allDirs[i]['name'] == id){
-            path = allDirs[i]['path'];
+methods.create = (data)=>{
+    if(!fs.existsSync(data['path'])){
+        if(data['type'] === "folder"){
+            fs.mkdirSync(data['path']);
+        }
+        else if(data['type'] === 'file'){
+            fs.writeFileSync(data['path'], "");
         }
     }
 
-    return path;
+    return "success";
+}
+
+methods.import = async (data)=>{
+    console.log(data['destinationPath']);
+    if(fs.lstatSync(data['pathOrigin']).isDirectory()){
+        fs.mkdirSync(data['destinationPath']);
+        fs.readdirSync(data['pathOrigin']).forEach((file)=>{
+            methods.import({
+                'pathOrigin': data['pathOrigin'].concat("/"+file),
+                'destinationPath': data['destinationPath'].concat('/'+file)
+            });
+        });
+    }
+    else{
+        fs.writeFileSync(data['destinationPath'], fs.readFileSync(data['pathOrigin']));
+    }
+    return 'success';
 }
 
 methods.scanProperties = (path)=>{

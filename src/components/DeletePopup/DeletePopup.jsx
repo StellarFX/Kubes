@@ -6,6 +6,10 @@ import { Input, Button } from '@mantine/core';
 
 export default function DeletePopup(props){
 
+    function confirm(){
+        props.close();
+        props.delete();
+    }
 
     return(
 
@@ -15,6 +19,9 @@ export default function DeletePopup(props){
 
             <div className="delete-container">
                 <p className="confirmation"><FontAwesomeIcon icon={faTrashCan}/>Are you sure you want to remove {props.name} ?</p>
+                <div className='d-buttons'>
+                    <Button className='ok' onClick={confirm}>Ok</Button>
+                </div>
             </div>
         </>
       

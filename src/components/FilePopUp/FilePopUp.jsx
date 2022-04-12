@@ -11,7 +11,6 @@ export default function FilePopUp(props){
 
     function isValidFileName(text) {
         const rg1 = /^[^\\\/\:\"\?\<\>\|]+$/i;
-        console.table([rg1.test(text)]);
         return rg1.test(text);
     }
 

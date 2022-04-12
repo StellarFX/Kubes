@@ -19,12 +19,21 @@
         color: rgb(58, 148, 223);
     }
 
+    svg{
+        font-size: 1rem;
+    }
+
     .file-name{
         width: fit-content;
         text-overflow: ellipsis;
         font-size: 0.9rem;
         overflow: hidden;
         white-space: nowrap;
+    }
+
+    td {
+        padding: 1rem;
+        font-size: 0.9rem;
     }
 
     .td-name{
@@ -49,8 +58,6 @@
         color: #827c99;
     }
 
-    td {
-        padding: 1rem;
-    }
+    
 
 }

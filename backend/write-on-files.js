@@ -1,9 +1,7 @@
 const Path = require('path');
 const fs = require('fs');
 const querys = require('querystring');
-const fastFolderSizeSync = require('fast-folder-size/sync');
 var PropertiesReader = require('properties-reader');
-const { randomId } = require('@mantine/hooks');
 
 var writer = {};
 
@@ -62,7 +60,17 @@ writer.changeStatus = (data)=>{
         
     }
 
-    fs.writeFileSync(filePath, JSON.stringify(fileContent));
+    fs.writeFile(filePath, JSON.stringify(fileContent), (err)=>{
+        if(err) throw err;
+    });
+
+}
+
+writer.renameFile = (data)=>{
+
+    fs.rename(data["oldPath"], data['newPath'], (err)=>{
+        if(err) throw err;
+    });
 
 }
 

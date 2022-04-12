@@ -3,7 +3,7 @@
     border-radius: 10px;
     height: 100%;
     background-color: #262333;
-    contain: content;
+    contain: strict;
 
     .top-bar {
 
@@ -111,6 +111,7 @@
                 padding: 1rem 0;
                 align-items: center;
                 border-top: 1px solid #262333;
+                border-bottom: 1px solid #262333;
 
                 th{
                     background: #161420;
@@ -162,6 +163,12 @@
         font-weight: 300;
         margin: 0.5rem 0;
         color: lighten(#262333, 15%);
+    }
+
+    .precision{
+        margin: 0;
+        font-size: 0.9rem;
+        font-weight: 500;
     }
 }
 

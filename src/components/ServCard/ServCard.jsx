@@ -23,22 +23,15 @@ export default function ServCard(props) {
     // ----------------- <Title -----------------
 
     async function sendRename(value, dir, name){
-        let response = await ipcRenderer.invoke('rename-server', {'Newname':value, 'Oldname': name, 'path': dir});
+        ipcRenderer.send('rename-server', {'Newname':value, 'Oldname': name, 'path': dir});
 
-        if(response = "renamed"){
-            setDirectory(dir.slice(0, dir.length-name.length).concat(value));
-            setName(value);
-            setSelector(0);
-            Inputed = false;
-            setPlaceHolder("Enter a name...");
-            setHolderValue("card-name-input-1");
-            return "renamed";
-        }
-        else{
-            setPlaceHolder("Please enter a valid name.");
-            value = "";
-            setHolderValue("card-name-input-2");
-        }
+        setDirectory(dir.slice(0, dir.length-name.length).concat(value));
+        setName(value);
+        setSelector(0);
+        Inputed = false;
+        setPlaceHolder("Enter a name...");
+        setHolderValue("card-name-input-1");
+         return "renamed";
         
     }
 

@@ -49,9 +49,11 @@ function ServerManage(){
       scanPath();
     }
 
-    function removeServer(){
-        navigate("/dashboard");
-        ipcRenderer.send("remove-server", servPath);
+    async function removeServer(){
+        let resp = await ipcRenderer.invoke("remove", servPath);
+        if(resp === "success"){
+            navigate("/dashboard");
+        }
     }
 
     return(

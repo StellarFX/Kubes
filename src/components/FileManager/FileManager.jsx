@@ -36,6 +36,17 @@ export default function FileManager(props) {
         checked = files.map((val) => {
             return { "type": val.type, "name": val.name, "size": val.size, "created": val.created, "checked": false, key: val.key };
         });
+        checked.sort((a, b) => {
+            if(a['type'] === 'folder' && b['type'] !== 'folder'){
+                return -1;
+            }
+            else if(a['type'] === 'folder' && b['type'] === 'folder'){
+                return 0;
+            }
+            else if(a['type'] !== 'folder' && b['type'] === 'folder'){
+                return 1;
+            }
+        });
         checkboxesHandler.setState(checked);
     },[files]);
 
@@ -58,8 +69,8 @@ export default function FileManager(props) {
     const [managerPath, setManagerPath] = useState([props.server]);
     const [path, setPath] = useState("/"+props.server+"/");
 
-    const items = checkboxes.map((val, index) => {
-        return <File type={val.type} name={val.name} size={val.size} openFile={openFile} created={new Date(val.created)} key={val.key} fileKey={val.key} checked={val.checked} onChange={(e) => CheckFile(val, index, e, val.checked)} />
+    var items = checkboxes.map((val, index) => {
+        return <File type={val.type} name={val.name} size={val.size} openFile={openFile} created={new Date(val.created)} key={val.key} fileKey={val.key} checked={val.checked} onChange={(e) => CheckFile(index, e)} />
     });
 
     function changePath(array){
@@ -112,7 +123,7 @@ export default function FileManager(props) {
 
   
 
-    function CheckFile(val, index, e, value){
+    function CheckFile(index, e){
       checkboxesHandler.setItemProp(index, 'checked', e.currentTarget.checked);
     }
   
@@ -132,10 +143,22 @@ export default function FileManager(props) {
     const [contentValue, setContentValue] = useState(0);
   
 
-    function deleteFile(){
+    async function deleteFile(){
+        let resp = "";
         for(let i = 0; i < everyChecked.length; i++){
             checkboxesHandler.setItemProp(checkboxes.indexOf(everyChecked[i]), 'checked', false);
             checkboxes.splice(checkboxes.indexOf(everyChecked[i]), 1);
+            let base = props.path.substring(0, props.path.length - (props.server.length + 1)) + path;
+            
+            if(everyChecked[i]['type'] === 'folder'){
+                resp = await ipcRenderer.invoke('remove', base + everyChecked[i]['name']);
+            }
+            else{
+                resp = await ipcRenderer.invoke('remove', base + everyChecked[i]['name'] + "." + everyChecked[i]['type']);
+            }
+        }
+        if(resp === "success"){
+            reloadFiles();
         }
     }
 
@@ -167,11 +190,17 @@ export default function FileManager(props) {
 
     function RenameFile(name, extension){
         checkboxesHandler.setItemProp(checkboxes.indexOf(renamedFile), 'name', name);
+        let base = props.path.substring(0, props.path.length - (props.server.length + 1)) + path;
         if(extension != "folder"){
-            checkboxesHandler.setItemProp(checkboxes.indexOf(renamedFile), 'type', extension);
+            checkboxesHandler.setItemProp(checkboxes.indexOf(renamedFile), 'type', extension);            
+            ipcRenderer.send("rename-file", {'oldPath': base + renamedFile['name'] + "." + renamedFile['type'], 'newPath': base + name + "." + extension});
+        }
+        else{
+            ipcRenderer.send("rename-file", {'oldPath': base + renamedFile['name'], 'newPath': base + name});
         }
         setPopUp(false);
         checkboxesHandler.setItemProp(checkboxes.indexOf(renamedFile), 'checked', false);
+        reloadFiles();
     }
   
     function OpenCreate(type){
@@ -180,7 +209,7 @@ export default function FileManager(props) {
             checkboxesHandler.setItemProp(checkboxes.indexOf(everyChecked[i]), 'checked', false);
           
         }
-        if(type == "folder"){
+        if(type === "folder"){
             setFileAction("Create folder");
             setRenamedFile(
                 {type: "folder", name: ""}
@@ -196,13 +225,27 @@ export default function FileManager(props) {
         setPopUp(true);
     }
 
-    function CreateFile(name, type){
+    async function CreateFile(name, type){
+        let base = props.path.substring(0, props.path.length - (props.server.length + 1)) + path;
+
+        let resp = "";
+
+        if(type === 'folder'){
+            resp= await ipcRenderer.invoke('create', {'path': base + name, 'type': 'folder'});
+        }
+        else{
+            resp= await ipcRenderer.invoke('create', {'path': base + name + "." + type, 'type': 'file'});
+        }
         checkboxes.push(
 
             { "type": type.replaceAll(".", ""), "name": name.replaceAll(".", ""), "size": 0, "created": new Date().getTime(), "checked": false, key: randomId() }
 
         );
         setPopUp(false);
+
+        if(resp === "success"){
+            reloadFiles();
+        }
     }
 
     function reloadFiles(){
@@ -301,7 +344,7 @@ export default function FileManager(props) {
 
                         }
 
-                        {/*items.length == 0 ? <></> : */items}
+                        {items}
                     </tbody>
 
                 </table>
@@ -324,13 +367,39 @@ export default function FileManager(props) {
                         backgroundColor: "#3a94df47"
                     }
             
+                }} onDrop={async (files) => {
+                    for(let i = 0; i < files.length; i++){
+                        let base = props.path.substring(0, props.path.length - (props.server.length + 1)) + path;
+
+                        let data = {'destinationPath': base + files[i]['name'], 'pathOrigin': files[i]['path'].replaceAll('\\', '/')};
+                        
+                        let resp = await ipcRenderer.invoke('import', data);
+
+                        if(resp === 'success'){
+                            reloadFiles();
+                        }
+                    }
+
                 }}> 
-                {() => null}
+                {()=>null}
                 </FullScreenDropzone>
                 
-                <Dropzone onDrop={(files)=>
+                <Dropzone onDrop={async (files)=>{
 
-                console.log(files)
+                for(let i = 0; i < files.length; i++){
+                    let base = props.path.substring(0, props.path.length - (props.server.length + 1)) + path;
+
+                    let data = {'destinationPath': base + files[i]['name'], 'pathOrigin': files[i]['path'].replaceAll('\\', '/')};
+
+                    let resp = await ipcRenderer.invoke('import', data);
+
+                    if(resp === 'success'){
+                        reloadFiles();
+                    }
+                }
+
+
+                }
 
                 }>
                     {()=>{
@@ -338,6 +407,7 @@ export default function FileManager(props) {
                         <div className='dropzone-content'>
                             <svg className="svg-inline--fa dropzone-icon" id="Layer_1" height="512" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path fill="currentColor" d="m19 0h-6a5.006 5.006 0 0 0 -5 5v.1a5.009 5.009 0 0 0 -4 4.9v.1a5.009 5.009 0 0 0 -4 4.9v4a5.006 5.006 0 0 0 5 5h6a5.006 5.006 0 0 0 5-5v-.1a5.009 5.009 0 0 0 4-4.9v-.1a5.009 5.009 0 0 0 4-4.9v-4a5.006 5.006 0 0 0 -5-5zm-17 15a3 3 0 0 1 3-3h6a2.988 2.988 0 0 1 2.638 1.6l-3.455 3.463-.475-.479a1.992 1.992 0 0 0 -2.708-.111l-4.621 3.96a2.96 2.96 0 0 1 -.379-1.433zm12 4a3 3 0 0 1 -3 3h-6a2.971 2.971 0 0 1 -1.118-.221l4.406-3.779.476.481a2 2 0 0 0 2.828 0l2.408-2.413zm4-5a3 3 0 0 1 -2 2.816v-1.816a5.006 5.006 0 0 0 -5-5h-5a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3zm4-5a3 3 0 0 1 -2 2.816v-1.816a5.006 5.006 0 0 0 -5-5h-5a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3zm-18 6a1 1 0 1 1 1 1 1 1 0 0 1 -1-1z"/></svg>
                             <p>Click here to add files!</p>    
+                            <p className='precision'>(folders are only accepted by drag & drop)</p>
                         </div>
                         )
                     }}

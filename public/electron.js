@@ -142,21 +142,29 @@ ipcMain.handle("initialize-path", async ()=>{
     return dir;
 });
 
-ipcMain.handle('rename-server',async (e, data)=>{
-    return methods.rename(data);
+ipcMain.on('rename-server', (e, data)=>{
+    methods.renameServer(data);
 });
 
 ipcMain.handle('file-manager', async (e, Path)=>{
     return methods.fileManager(Path);
 });
 
-ipcMain.on("remove-server", (e, path)=>{
-    methods.remove(path);
+ipcMain.handle("remove", async (e, path)=>{
+    return methods.remove(path);
+});
+
+ipcMain.handle('create', async (e,data)=>{
+    return methods.create(data);
+});
+
+ipcMain.handle('import', async (e,data)=>{
+    return methods.import(data);
 });
 
 
 ipcMain.handle('scan-server-path', async (e, id)=>{
-    return methods.scanPath(id);
+    return dir.concat("/Servers/"+id);
 });
 
 ipcMain.handle('scan-players', async (e, path)=>{
@@ -181,6 +189,9 @@ ipcMain.on("change-status", (e, data)=>{
     writer.changeStatus(data);
 });
 
+ipcMain.on('rename-file', (e, data)=>{
+    writer.renameFile(data);
+});
 
 
 
