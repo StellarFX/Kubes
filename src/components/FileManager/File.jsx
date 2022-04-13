@@ -26,7 +26,7 @@ function formatBytes(bytes, decimals = 2) {
 
 export default function File(props) {
 
-    const icon = <FontAwesomeIcon className={props.type == "folder" ? "folder-icon" : "file-icon"} icon={props.type == "folder" ? faFolder : faFile} />
+    const icon = <FontAwesomeIcon className={props.type === "folder" ? "folder-icon" : "file-icon"} icon={props.type === "folder" ? faFolder : faFile} />
 
     const created = formattedDate(props.created);
 
@@ -46,7 +46,7 @@ export default function File(props) {
             <td className='td-name'>
                 <div onClick={() => { props.openFile(props.fileKey);}} title={props.name + (props.type === "folder" ? "" : "." + props.type)}>
                     <p className="file-name">{props.name}</p>
-                    { props.type == "folder" ? <></> :
+                    { props.type === "folder" ? <></> :
                     <>
                         <p>.</p>
                         <p className="file-ext">{props.type}</p>

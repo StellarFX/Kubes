@@ -21,7 +21,7 @@ export default function Players(props){
       setOplist(data['ops']);
     };
   
-    if(initialized == false){
+    if(initialized === false){
       setInitialized(true);
       scanPlayers();
     }
@@ -33,17 +33,17 @@ export default function Players(props){
         let oped = false;
         
         oped = oplist.some((users)=>{
-            if(users["uuid"]== user['uuid']){
+            if(users["uuid"]=== user['uuid']){
                 return true;
             }
         });
         banned = bannedlist.some((users)=>{
-            if(users["uuid"]== user['uuid']){
+            if(users["uuid"]=== user['uuid']){
                 return true;
             }
         });
         bannedIp = bannedIplist.some((users)=>{
-            if(users["uuid"]== user['uuid']){
+            if(users["uuid"]=== user['uuid']){
                 return true;
             }
         });

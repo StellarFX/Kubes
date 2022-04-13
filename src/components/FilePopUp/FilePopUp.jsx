@@ -15,10 +15,10 @@ export default function FilePopUp(props){
     }
 
     function Execute(){
-        if(props.action.substring(0,6) == "Rename" && isValidFileName(name)){
+        if(props.action.substring(0,6) === "Rename" && isValidFileName(name)){
             props.rename(name, extension);
         }
-        else if(props.action.substring(0,6) == "Create" && isValidFileName(name)){
+        else if(props.action.substring(0,6) === "Create" && isValidFileName(name)){
             props.create(name, extension)
         }
         if(!isValidFileName(name)){

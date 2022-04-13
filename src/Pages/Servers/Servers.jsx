@@ -32,7 +32,7 @@ function Servers(){
         setServersList(list);
     }
 
-    if(initialized == false){
+    if(initialized === false){
         InitializePath();
     }
 

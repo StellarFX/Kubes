@@ -85,10 +85,10 @@ export default function FileManager(props) {
 
     async function openFile(key){
         const file = checkboxes.find(arrayFile => {
-            return arrayFile.key == key;
+            return arrayFile.key === key;
         });
 
-        if(file.type == "folder"){
+        if(file.type === "folder"){
             goInFolder(props.path + path.substring(1 + props.server.length, path.length) +file.name, [...managerPath, file.name]);
             setManagerPath((managerPath) => [...managerPath, file.name]);
         }
@@ -169,11 +169,11 @@ export default function FileManager(props) {
     }
 
     function openDeleteW(){
-        if(everyChecked.length >= 1){
-            setDeleteA("ces fichiers");
+        if(everyChecked.length > 1){
+            setDeleteA("these files");
         }
-        if(everyChecked.length == 1){
-            if(everyChecked[0].type == "folder"){
+        if(everyChecked.length === 1){
+            if(everyChecked[0].type === "folder"){
                 setDeleteA(everyChecked[0].name);  
             }
             else{
@@ -185,7 +185,7 @@ export default function FileManager(props) {
 
     function OpenRename(){
         setRenamedFile(everyChecked[0]);
-        if(everyChecked[0].type == "folder"){
+        if(everyChecked[0].type === "folder"){
             setFileAction("Rename folder");
         }
         else{
@@ -266,12 +266,12 @@ export default function FileManager(props) {
   
 
   useEffect(()=>{
-    if(everyChecked.length == 0){
+    if(everyChecked.length === 0){
         setOptionsStyle(uncheckedStyle);
         setPenOptionsStyle(uncheckedStyle);
         setFolderStyle(borderStyle);
     }
-    if(everyChecked.length == 1){
+    if(everyChecked.length === 1){
         setOptionsStyle(checkedStyle);
         setPenOptionsStyle(checkedStyle);
         setFolderStyle(null);
@@ -339,7 +339,7 @@ export default function FileManager(props) {
                         </tr>
                     </thead>
                     <tbody>
-                        {path == "/" + props.server + "/" ?
+                        {path === "/" + props.server + "/" ?
                         
                         <></>
 

@@ -16,7 +16,7 @@ export default function Configuration(props){
       setFileValue(value);
     };
   
-    if(initialized == false){
+    if(initialized === false){
       setInitialized(true);
       scanProperties();
     }

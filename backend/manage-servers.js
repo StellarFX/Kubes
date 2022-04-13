@@ -1,9 +1,8 @@
 const Path = require('path');
 const fs = require('fs');
-const querys = require('querystring');
 const fastFolderSizeSync = require('fast-folder-size/sync');
 const { randomId } = require('@mantine/hooks');
-const languageEncoding = require('detect-file-encoding-and-language');
+const Encoding = require('encoding-japanese');
 
 var methods = {}
 let allDirs = [];
@@ -20,7 +19,7 @@ methods.scan = (dir)=>{
             if(fs.lstatSync(path.concat("/" + file)).isDirectory()){
                 
                 let data =  fs.readdirSync(path.concat("/" + file));
-                if(data.filter(element => element.slice(-11) == ".properties" || element.slice(-4) == ".jar").length == 2 && data.includes('eula.txt')){
+                if(data.filter(element => element.slice(-11) === ".properties" || element.slice(-4) === ".jar").length === 2 && data.includes('eula.txt')){
 
                     scanDirs.push({"path": path.concat("/" + file), "name": file});
                 }
@@ -36,7 +35,7 @@ methods.renameServer = (data)=>{
     var newPath = data['path'].slice(0, data['path'].length-data['Oldname'].length).concat(data['Newname']);
 
     for(let i = 0; i < allDirs.length; i++){
-        if(allDirs[i]["name"] == data["Oldname"]){
+        if(allDirs[i]["name"] === data["Oldname"]){
             allDirs[i]["path"] = newPath;
             allDirs[i]["name"] = data["Newname"];
         }
@@ -81,12 +80,16 @@ methods.import = async (data)=>{
 
 methods.readFileContent = async (path)=>{
 
-    let resp = await languageEncoding(path).then((fileInfo) => {
-        if(fileInfo.encoding !== undefined){
-            return fs.readFileSync(path, fileInfo.encoding.toLowerCase());
-        }
-    }).catch(err => console.log(err));
-
+    let data = fs.readFileSync(path);
+    let encoding = Encoding.detect(data); 
+    let resp;
+    if(encoding){
+        resp = fs.readFileSync(path, encoding);
+    }
+    else{
+        resp = "";
+    }
+    
     return resp;
 }
 
@@ -97,7 +100,7 @@ methods.scanProperties = (path)=>{
     let properties = "";
     fs.readdirSync(path).forEach((file)=>{
 
-        if(file.slice(-11) == ".properties"){
+        if(file.slice(-11) === ".properties"){
             properties = fs.readFileSync(path.concat("/"+file), "utf-8");
         }
 
@@ -115,19 +118,19 @@ methods.scanPlayers = (path)=>{
 
     fs.readdirSync(path).forEach((file)=>{
 
-        if(file == "usercache.json"){
+        if(file === "usercache.json"){
             userList = JSON.parse(fs.readFileSync(path.concat("/"+file)));
         }
 
-        if(file == "banned-players.json"){
+        if(file === "banned-players.json"){
             banned = JSON.parse(fs.readFileSync(path.concat("/"+file)));
         }
 
-        if(file == "banned-ips.json"){
+        if(file === "banned-ips.json"){
             bannedIp = JSON.parse(fs.readFileSync(path.concat("/"+file)));
         }
 
-        if(file == "ops.json"){
+        if(file === "ops.json"){
             ops = JSON.parse(fs.readFileSync(path.concat("/"+file)));
         }
 
@@ -144,11 +147,11 @@ methods.scanWhitelist = (path)=>{
 
     fs.readdirSync(path).forEach((file)=>{
 
-        if(file == "whitelist.json"){
+        if(file === "whitelist.json"){
             whitelist = JSON.parse(fs.readFileSync(path.concat("/"+file)));
         }
 
-        if(file == "usercache.json"){
+        if(file === "usercache.json"){
             userList = JSON.parse(fs.readFileSync(path.concat("/"+file)));
         }
 

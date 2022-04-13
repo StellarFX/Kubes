@@ -47,7 +47,7 @@ function ServerManage(){
       setServPath(path);
     };
   
-    if(initialized == false){
+    if(initialized === false){
       setInitialized(true);
       scanPath();
     }

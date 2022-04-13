@@ -14,7 +14,7 @@ function Preferences() {
     setInputValue(path);
   };
 
-  if(initialized == false){
+  if(initialized === false){
     setInitialized(true);
     InitializePath();
   }

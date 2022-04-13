@@ -39,7 +39,7 @@ export default function ServCard(props) {
         let Value = e.target.value.replaceAll(" ", "");
         const rg1 = /^[^\\\/\:\"\?\<\>\|]+$/i;
         if(e.key === 'Enter'){
-            if(rg1.test(Value) && document.getElementById(e.target.value) == undefined && Value.length <= 35){
+            if(rg1.test(Value) && document.getElementById(e.target.value) === undefined && Value.length <= 35){
                 sendRename(e.target.value, directory, Name);
             }
             else{
@@ -78,7 +78,7 @@ export default function ServCard(props) {
         
         if(Inputed === true && container != undefined){
 
-            if(container.childNodes[0].className == holderValue && document.activeElement != container.childNodes[0]){
+            if(container.childNodes[0].className === holderValue && document.activeElement != container.childNodes[0]){
                 setSelector(0);
                 setPlaceHolder("Enter a name...");
                 setHolderValue("card-name-input-1");

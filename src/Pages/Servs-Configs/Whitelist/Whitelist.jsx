@@ -47,7 +47,7 @@ export default function Whitelist(props) {
     setUserlist(data['userlist']);    
   };
   
-  if(initialized == false){
+  if(initialized === false){
     setInitialized(true);
     scanWhitelist();
   }

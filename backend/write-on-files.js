@@ -1,7 +1,6 @@
 const Path = require('path');
 const fs = require('fs');
-const querys = require('querystring');
-const languageEncoding = require('detect-file-encoding-and-language');
+const Encoding = require('encoding-japanese');
 
 var writer = {};
 
@@ -9,7 +8,7 @@ writer.changeProperties = (content, path)=>{
     let properties = "";
 
     fs.readdirSync(path).forEach((file)=>{
-        if(file.substring(file.length-11,file.length)==".properties"){
+        if(file.substring(file.length-11,file.length)===".properties"){
             properties = path.concat("/"+file);
         }
     });
@@ -18,11 +17,10 @@ writer.changeProperties = (content, path)=>{
 }
 
 writer.changeFileContent = (content, path)=>{
-    languageEncoding(path).then((fileInfo)=>{
-        if(fileInfo.encoding !== undefined){
-            fs.writeFileSync(path, content, { encoding: fileInfo.encoding.toLowerCase()});
-        }
-    })
+    let data = fs.readFileSync(path);
+    let encod = Encoding.detect(data);
+
+    fs.writeFileSync(path, content, { encoding: encod ?? "utf-8" });
 }
 
 

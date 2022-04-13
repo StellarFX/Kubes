@@ -100,7 +100,7 @@ function createWindow() {
 
 
 
-    if(infos["initialized"] == false){
+    if(infos["initialized"] === false){
         AskDefaultPath(win);
     } 
 
@@ -110,7 +110,7 @@ function createWindow() {
             defaultPath: dir
         });
 
-        if(result.canceled == false){
+        if(result.canceled === false){
             dir = result.filePaths[0].replaceAll('\\', '/');
             infos["directory"] = dir;
             fs.writeFile(require.resolve('./data.json'), JSON.stringify(infos), (err)=>{
@@ -208,7 +208,7 @@ app.whenReady().then(()=>{
 });
 
 app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
+    if (process.platform !=== 'darwin') {
         app.quit();
     }
 });

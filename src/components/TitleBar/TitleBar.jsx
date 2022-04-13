@@ -19,7 +19,7 @@ export default function TitleBar() {
         let status = await ipcRenderer.invoke("maximize-window");
         let main = document.getElementById("main");
 
-        if(status == true){
+        if(status === true){
             main.style.borderRadius = "0px";
             setStyle("0rem");
             setDrag("no-drag");
