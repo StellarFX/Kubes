@@ -10,18 +10,18 @@ ace.config.set('basePath', "https://cdn.jsdelivr.net/npm/ace-builds@1.4.3/src-no
 export default function CustomAceEditor(props) {
 
     const [editorMode, setEditorMode] = useState("text");
-    var timer;
+    const [aceNode, setAceNode] = useState(null);
 
     const editor = useCallback((node) => {
         if (node) {
+            setAceNode(node);
             setEditorMode(getModeForPath(props.editedFile['Editedname'] + "." + props.editedFile['Editedtype'])["name"]);
         }
     }, [props.editedFile]);
 
-    function onChange(newValue){
-        clearTimeout(timer);
-        timer = setTimeout(props.change, 3500, newValue);
-        console.log(timer);
+
+    function saveFile() {
+        props.change(aceNode.editor.getValue());
     }
 
     return (
@@ -29,8 +29,8 @@ export default function CustomAceEditor(props) {
         <AceEditor
             mode={editorMode}
             ref={editor}
-            onChange={(val)=>{onChange(val)}}
             theme="github"
+            onBlur={() => saveFile()}
             name="file-editor"
             width={props.setWidth}
             height={props.setHeight}

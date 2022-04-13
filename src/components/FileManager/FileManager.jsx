@@ -333,7 +333,7 @@ export default function FileManager(props) {
                                 onChange={() => headChecker()}/>
                             </th>
                             <th width="5%">Type</th>
-                            <th width="10%">Name</th>
+                            <th width="0.5%">Name</th>
                             <th width="5%">Size</th>
                             <th width="10%">Created&nbsp;at</th>
                         </tr>
