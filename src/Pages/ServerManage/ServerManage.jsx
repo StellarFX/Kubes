@@ -15,6 +15,7 @@ import Performances from '../Servs-Configs/Performances/Performances';
 import Players from '../Servs-Configs/Players/Players';
 import Whitelist from '../Servs-Configs/Whitelist/Whitelist';
 import FileManager from '../../components/FileManager/FileManager';
+import DeletePopup from "../../components/DeletePopup/DeletePopup";
 
 import { faCheck, faTimes, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -39,6 +40,8 @@ function ServerManage(){
 
     const [servPath, setServPath] = useState("");
 
+    const [openWindow, setOpenWindow] = useState(false);
+
     async function scanPath() {
       let path = await ipcRenderer.invoke("scan-server-path", id);
       setServPath(path);
@@ -57,11 +60,21 @@ function ServerManage(){
     }
 
     return(
+        <>
+        {openWindow === true ? 
+        
+            <DeletePopup name={id} delete={removeServer} close={()=>{setOpenWindow(false)}}/>
+
+            :
+
+            <></>
+
+        }
         <div className='page-main-container'>
             <div className='page-title-container'>
                 <p className='page-title'>{id}</p>
                 {statusChanger[status]}
-                <p className="remove-server" onClick={()=>{removeServer()}}>Remove server</p>
+                <p className="remove-server" onClick={()=>{setOpenWindow(true)}}>Remove server</p>
             </div>
             <div className='page-content' id="servmanage-content">
                 <ServNavbar config={location}/>
@@ -78,6 +91,7 @@ function ServerManage(){
                 </div>
             </div>
         </div>
+        </>
     )
 
 }
