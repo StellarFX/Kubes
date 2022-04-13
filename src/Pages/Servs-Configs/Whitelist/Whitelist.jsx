@@ -3,10 +3,9 @@ import React, { useState } from 'react';
 import { faPlusCircle, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { TextInput, Dialog, Select } from '@mantine/core';
+import axios from 'axios';
 
 const { ipcRenderer } = window.require('electron');
-
-var userDict = {};
 
 export default function Whitelist(props) {
 
@@ -41,16 +40,11 @@ export default function Whitelist(props) {
 
   const [whitelistMembers, setWhitelistMembers] = useState([]);
   const [userlist, setUserlist] = useState([]);
-  
 
   async function scanWhitelist() {
     let data = await ipcRenderer.invoke("scan-whitelist", props.path);
     setWhitelistMembers(data['whitelist']);
-    setUserlist(data['userlist']);
-
-    for(let i = 0; i < data['userlist'].length; i++){
-      userDict[data['userlist'][i]['uuid']] = data['userlist'][i]['name'];
-    }
+    setUserlist(data['userlist']);    
   };
   
   if(initialized == false){
@@ -93,29 +87,38 @@ export default function Whitelist(props) {
     setCustomDialogOpened(toggle);
   }
 
-  function whiteListAdd() {
+  async function whiteListAdd() {
+
+    let data = await (await axios.get(`https://api.ashcon.app/mojang/v2/user/${chosenMember}`)).data;
+    let uuid = data["uuid"];
+
     let check = whitelistMembers.some((users)=>{
-      if(users['uuid'] === chosenMember){
+      if(users['uuid'] === uuid){
         return true;
       }
     });
 
     if (check !== true) {
-      setWhitelistMembers((whitelistMembers) => [...whitelistMembers, {'uuid': chosenMember, 'name': userDict[chosenMember], 'level': 4, "bypassesPlayerLimit":false}]);
+
+      setWhitelistMembers((whitelistMembers) => [...whitelistMembers, {'uuid': uuid, 'name': chosenMember, 'level': 4, "bypassesPlayerLimit":false}]);
       toggleDialog("", {}, false);
 
-      ipcRenderer.send("change-status", {"user": {'uuid': chosenMember, 'name': userDict[chosenMember]}, "type":"whitelist", "path":props.path});
+      ipcRenderer.send("change-status", {"user": {'uuid': uuid, 'name': chosenMember}, "type":"whitelist", "path":props.path});
     }
 
     else {
-      toggleDialog(<><FontAwesomeIcon style={{fontSize: "1.5rem"}}icon={faTimes} /><p>{userDict[chosenMember]} is already in the whitelist.</p></>, {root: {color: "white", backgroundColor: "var(--red)", borderColor: "#4a0a0a"}, closeButton: { color: "white", "&:hover": { backgroundColor: "#ff3636" }}}, true);
+      toggleDialog(<><FontAwesomeIcon style={{fontSize: "1.5rem"}}icon={faTimes} /><p>{chosenMember} is already in the whitelist.</p></>, {root: {color: "white", backgroundColor: "var(--red)", borderColor: "#4a0a0a"}, closeButton: { color: "white", "&:hover": { backgroundColor: "#ff3636" }}}, true);
     }
   }
 
-  function whiteListRemove() {
+  async function whiteListRemove() {
+
+    let data = await (await axios.get(`https://api.ashcon.app/mojang/v2/user/${chosenMember}`)).data;
+    let uuid = data["uuid"];
+
     let user = {};
     let check = whitelistMembers.some((users)=>{
-      if(users['uuid'] === chosenMember){
+      if(users['uuid'] === uuid){
         user = users;
         return true;
       }
@@ -127,10 +130,10 @@ export default function Whitelist(props) {
       setWhitelistMembers(array);
       toggleDialog("", {}, false);
 
-      ipcRenderer.send("change-status", {"user": {'uuid': chosenMember, 'name': userDict[chosenMember]}, "type":"whitelist", "path":props.path});
+      ipcRenderer.send("change-status", {"user": {'uuid': uuid, 'name': chosenMember}, "type":"whitelist", "path":props.path});
     }
     else {
-      toggleDialog(<><FontAwesomeIcon style={{fontSize: "1.5rem"}}icon={faTimes} /><p>{userDict[chosenMember]} is not in the whitelist.</p></>, {root: {color: "white", backgroundColor: "var(--red)", borderColor: "#4a0a0a"}, closeButton: { color: "white", "&:hover": { backgroundColor: "#ff3636" }}}, true);
+      toggleDialog(<><FontAwesomeIcon style={{fontSize: "1.5rem"}}icon={faTimes} /><p>{chosenMember} is not in the whitelist.</p></>, {root: {color: "white", backgroundColor: "var(--red)", borderColor: "#4a0a0a"}, closeButton: { color: "white", "&:hover": { backgroundColor: "#ff3636" }}}, true);
     }
   }
 
@@ -149,8 +152,8 @@ export default function Whitelist(props) {
           <FontAwesomeIcon icon={faPlusCircle} className='icon' />
           <p>Actions</p>
         </div>
-        {/*<TextInput className='whitelist-selector' placeholder={placeHolder} value={chosenMember} onChange={(e) => setChosenMember(e.currentTarget.value)} />*/}
-        <Select zIndex={20000} className="input whitelist-selector" styles={inputStyle} placeholder="Select a player" value={chosenMember} onChange={setChosenMember} required data={selectItems}/>
+        <TextInput className='whitelist-selector' placeholder="Enter a name..." value={chosenMember} onChange={(e) => setChosenMember(e.currentTarget.value)} />
+        {/* <Select zIndex={20000} className="input whitelist-selector" searchable styles={inputStyle} placeholder="Select a player" value={chosenMember} onChange={(val) => { setChosenMember(val); console.log(val); }} required data={selectItems}/> */}
         <div className='whitelist-buttons-container'>
           <div className='whitelist-add' onClick={whiteListAdd}>
             <FontAwesomeIcon icon={faPlus} />

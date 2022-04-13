@@ -56,8 +56,6 @@ writer.changeStatus = (data)=>{
         
     }
 
-    console.log(JSON.stringify(fileContent, null, 2));
-
     fs.writeFile(filePath, JSON.stringify(fileContent, null, 2), (err)=>{
         if(err) throw err;
     });
