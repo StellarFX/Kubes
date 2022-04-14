@@ -71,7 +71,7 @@ export default function Create({ open, setOpen }) {
 
     validate: {
       server_name: (val) => val !== "" && /^[^\\/:"?<>|]+$/i.test(val) ? null : ' ',
-      ram_value: (val) => val !== "" && /^\d+$/.test(val) && parseInt(val) >= 1024 ? null : ' ',
+      ram_value: (val) => val !== "" && /^\d+$/.test(val) && parseInt(val) >= 1024 ? null : 'Min is 1024MB',
       port_value: (val) => val !== "" && /^((6553[0-5])|(655[0-2][0-9])|(65[0-4][0-9]{2})|(6[0-4][0-9]{3})|([1-5][0-9]{4})|([0-5]{0,5})|([0-9]{1,4}))$/.test(val) ? null : ' ',
       ip_value: (val) => val !== "" && /^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(.(?!$)|$)){4}$/.test(val) ? null : ' ',
       motd_value: (val) => val !== "" && val ? null : ' ',

@@ -160,6 +160,11 @@
                         text-align: center;
                     }
 
+                    .mantine-TextInput-error{
+                        margin-left: 1rem;
+                        margin-bottom: 0.3rem;
+                    }
+
                 }
 
                 .c-precision {
@@ -169,6 +174,8 @@
                     font-weight: 500;
                     font-style: italic;
                     width: 4rem;
+                    position: absolute;
+                    left: 13rem;
                 }
             }
 
@@ -201,6 +208,8 @@
                             color: transparentize(#d11d1d, 0.5);
                         }
                     }
+
+                    
 
                     select {
                         appearance: none !important;
