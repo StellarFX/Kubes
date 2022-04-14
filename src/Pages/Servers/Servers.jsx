@@ -13,7 +13,7 @@ function Servers(){
 
         return(
             <>
-                <ServCard status="1" name={serv["name"]} dir={serv["path"]}/>
+                <ServCard status="0" name={serv["name"]} dir={serv["path"]}/>
             </>
         )
 

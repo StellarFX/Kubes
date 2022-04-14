@@ -37,7 +37,7 @@ export default function ServCard(props) {
 
     function inputResponse(e){
         let Value = e.target.value.replaceAll(" ", "");
-        const rg1 = /^[^\\\/\:\"\?\<\>\|]+$/i;
+        const rg1 = /^[^\\/:"?<>|]+$/i;
         if(e.key === 'Enter'){
             if(rg1.test(Value) && document.getElementById(e.target.value) === undefined && Value.length <= 35){
                 sendRename(e.target.value, directory, Name);

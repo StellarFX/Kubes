@@ -23,13 +23,13 @@
         position: relative;
         z-index: 10000;
 
-        p{
+        p {
             margin: 0;
         }
 
-        .create-title{
+        .create-title {
 
-            svg{
+            svg {
                 margin-right: 2.5rem;
                 color: var(--main);
                 filter: drop-shadow(3px 2px 1px #7547ff4d);
@@ -45,7 +45,7 @@
                 font-size: 1.5rem;
                 margin-bottom: auto;
 
-                &:active{
+                &:active {
                     transform: translateY(1.5px);
                 }
             }
@@ -55,45 +55,48 @@
             margin-bottom: 1.5rem;
         }
 
-        .create-properties{
+        .create-properties {
             margin-left: 2.5rem;
             margin-right: 3rem;
-            display: flex;
 
-            .create-input-names{
+            form {
+                display: flex;
+            }
+
+            .create-input-names {
                 min-width: 26.5rem;
                 display: flex;
                 flex-direction: column;
                 margin-right: 3rem;
 
-                div{
+                div {
                     display: flex;
                     align-items: center;
                 }
 
-                p{
-                    color: #7467C1;   
+                p {
+                    color: #7467C1;
                     width: 14rem;
                     display: flex;
                     align-items: center;
 
-                    svg{
+                    svg {
                         width: 1.5rem;
                         margin-right: 2rem;
                     }
 
                     margin: 1.1rem 0;
                 }
-    
-                .c-servername{
+
+                .c-servername {
                     border-bottom: 1px solid #252030;
                     display: flex;
                     align-items: center;
                     padding-bottom: 0.5rem;
                     margin-bottom: 0.5rem;
                 }
-    
-                .c-version{
+
+                .c-version {
                     border-bottom: 1px solid #252030;
                     padding-bottom: 0.5rem;
                     margin-bottom: 0.5rem;
@@ -101,17 +104,29 @@
 
                 .input {
 
-                    
-                    
-                    select, input {
+
+
+                    select,
+                    input {
                         border-radius: 0;
                         background: #13121f;
                         border: 0;
                         border-bottom: solid 2px #5c596d;
                         color: var(--main);
 
-                        &::placeholder{
+                        &::placeholder {
                             color: #585279;
+                        }
+
+                        
+                    }
+
+                    .mantine-TextInput-invalid, .mantine-Select-invalid {
+                        border-bottom: solid 2px var(--red) !important;
+                        color: var(--red);
+
+                        &::placeholder {
+                            color: transparentize(#d11d1d, 0.5);
                         }
                     }
 
@@ -124,13 +139,13 @@
                         width: 8rem;
                         -webkit-appearance: none;
 
-                        option{
+                        option {
                             border: none;
                         }
                     }
 
-                    
-                    
+
+
                     .mantine-NativeSelect-rightSection {
                         display: none;
                     }
@@ -139,14 +154,14 @@
 
                 .i-small {
 
-                    input{
+                    input {
                         width: 5rem;
                         text-align: center;
                     }
 
                 }
 
-                .c-precision{
+                .c-precision {
                     color: #554c86;
                     margin-left: 0.7rem;
                     font-size: 1rem;
@@ -156,23 +171,33 @@
                 }
             }
 
-            .more-params{
+            .more-params {
                 width: 100%;
                 display: flex;
                 flex-direction: column;
-                justify-content: space-between;                
+                justify-content: space-between;
 
                 .input {
-                    
-                    select, input {
+
+                    select,
+                    input {
                         border-radius: 0;
                         background: #13121f;
                         border: 0;
                         border-bottom: solid 2px #5c596d;
                         color: var(--main);
 
-                        &::placeholder{
+                        &::placeholder {
                             color: #585279;
+                        }
+                    }
+
+                    .mantine-TextInput-invalid, .mantine-Select-invalid {
+                        border-bottom: solid 2px var(--red) !important;
+                        color: var(--red);
+
+                        &::placeholder {
+                            color: transparentize(#d11d1d, 0.5);
                         }
                     }
 
@@ -185,40 +210,42 @@
                         width: 8rem;
                         -webkit-appearance: none;
 
-                        option{
+                        option {
                             border: none;
                         }
                     }
 
-                    
-                    
+
+
                     .mantine-NativeSelect-rightSection {
                         display: none;
                     }
 
+                    
+
                 }
 
-                .mantine-Accordion-icon{
+                .mantine-Accordion-icon {
                     color: #7467C1;
                 }
 
-                .mantine-Accordion-item{
+                .mantine-Accordion-item {
                     border-bottom: 1px solid #252030;
                 }
 
-                .mantine-Accordion-control{
+                .mantine-Accordion-control {
 
                     padding-bottom: 1.7rem;
 
-                    &:hover{
+                    &:hover {
                         background-color: unset;
 
-                        .mantine-Accordion-label{
+                        .mantine-Accordion-label {
                             color: #9688e7;
                         }
                     }
 
-                    .mantine-Accordion-label{
+                    .mantine-Accordion-label {
                         display: flex;
                         font-family: 'Poppins', sans-serif;
                         font-size: 1rem;
@@ -227,46 +254,51 @@
                     }
                 }
 
-                .mantine-Accordion-content{
+                .mantine-Accordion-content {
 
                     padding-left: 0.9rem;
 
-                    .mantine-Accordion-contentInner{
+                    .mantine-Accordion-contentInner {
                         padding: 0;
                         padding-bottom: 1rem;
                     }
 
-                    .accordion-container{
+                    .accordion-container {
                         display: flex;
                         flex-direction: column;
 
-                        div{
+                        div {
                             display: flex;
                             align-items: center;
 
-                            p{
-                                color:#7467C1;
+                            p {
+                                color: #7467C1;
                                 width: 8rem;
                                 margin: 1.2rem 0;
                             }
                         }
 
-                        .i-small{
+                        .i-small {
                             width: 7rem;
 
-                            input{
+                            input {
                                 text-align: center;
                             }
                         }
                     }
                 }
 
-                .create-button{
-                    
-                    display: flex;
-                    justify-content: end;
+                .create-button {
 
-                    p{
+                    button {
+
+                        display: flex;
+                        justify-content: end;
+                        margin-left: auto;
+                        color: white;
+                        font-family: unset;
+                        font-size: 1rem;
+                        background-color: white;
                         cursor: pointer;
                         display: flex;
                         align-items: center;
@@ -279,17 +311,17 @@
                         border: 2px solid var(--main);
                         transition: 0.3s;
 
-                        svg{
+                        svg {
                             margin-right: 1rem;
                             font-size: 1.2rem;
                         }
 
                         &:hover,
-                        &:focus-visible{
+                        &:focus-visible {
                             background-color: var(--mainTrans);
                         }
 
-                        &:active{
+                        &:active {
                             background-color: transparent;
                         }
                     }
@@ -297,6 +329,6 @@
             }
         }
 
-        
+
     }
 }
