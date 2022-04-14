@@ -19,7 +19,7 @@ methods.scan = (dir)=>{
             if(fs.lstatSync(path.concat("/" + file)).isDirectory()){
                 
                 let data =  fs.readdirSync(path.concat("/" + file));
-                if(data.filter(element => element.slice(-11) === ".properties" || element.slice(-4) === ".jar").length === 2 && data.includes('eula.txt')){
+                if(data.includes(".kubes")){
 
                     scanDirs.push({"path": path.concat("/" + file), "name": file});
                 }
@@ -50,6 +50,7 @@ methods.remove = (path)=>{
 }
 
 methods.create = (data)=>{
+    let resp = "success";
     if(!fs.existsSync(data['path'])){
         if(data['type'] === "folder"){
             fs.mkdirSync(data['path']);
@@ -58,24 +59,34 @@ methods.create = (data)=>{
             fs.writeFileSync(data['path'], "");
         }
     }
+    else{
+        resp = "exists";
+    }
 
-    return "success";
+    return resp;
 }
 
 methods.import = async (data)=>{
-    if(fs.lstatSync(data['pathOrigin']).isDirectory()){
-        fs.mkdirSync(data['destinationPath']);
-        fs.readdirSync(data['pathOrigin']).forEach((file)=>{
-            methods.import({
-                'pathOrigin': data['pathOrigin'].concat("/"+file),
-                'destinationPath': data['destinationPath'].concat('/'+file)
+    let resp = 'success';
+    if(!fs.existsSync(data['destinationPath'])){
+        if(fs.lstatSync(data['pathOrigin']).isDirectory()){
+            fs.mkdirSync(data['destinationPath']);
+            fs.readdirSync(data['pathOrigin']).forEach((file)=>{
+                methods.import({
+                    'pathOrigin': data['pathOrigin'].concat("/"+file),
+                    'destinationPath': data['destinationPath'].concat('/'+file)
+                });
             });
-        });
+        }
+        else{
+            fs.writeFileSync(data['destinationPath'], fs.readFileSync(data['pathOrigin']));
+        }
     }
     else{
-        fs.writeFileSync(data['destinationPath'], fs.readFileSync(data['pathOrigin']));
+        resp = 'exists'
     }
-    return 'success';
+    
+    return resp;
 }
 
 methods.readFileContent = async (path)=>{
@@ -111,60 +122,47 @@ methods.scanProperties = (path)=>{
 
 methods.scanPlayers = (path)=>{
 
-    let banned = {};
-    let bannedIp = {};
-    let ops = {};
-    let userList = {};
+    let dict = {'usercache': {}, 'banned-players': {}, 'banned-ips': {}, 'ops': {}}
 
-    fs.readdirSync(path).forEach((file)=>{
-
-        if(file === "usercache.json"){
-            userList = JSON.parse(fs.readFileSync(path.concat("/"+file)));
+    for(const [key, value] of Object.entries(dict)){
+        if(fs.existsSync(path + "/" + key + ".json")){
+            dict[key] = JSON.parse(fs.readFileSync(path + "/" + key + ".json"));
         }
-
-        if(file === "banned-players.json"){
-            banned = JSON.parse(fs.readFileSync(path.concat("/"+file)));
+        else{
+            fs.writeFileSync(path + "/" + key + ".json", JSON.stringify([]));
+            dict[key] = [];
         }
+    }
 
-        if(file === "banned-ips.json"){
-            bannedIp = JSON.parse(fs.readFileSync(path.concat("/"+file)));
-        }
-
-        if(file === "ops.json"){
-            ops = JSON.parse(fs.readFileSync(path.concat("/"+file)));
-        }
-
-    });
-
-    return { 'users': userList, 'banned': banned, 'banned-ip': bannedIp, 'ops': ops}
+    return dict;
     
 }
 
 methods.scanWhitelist = (path)=>{
 
     let whitelist = {};
-    let userList = {};
 
-    fs.readdirSync(path).forEach((file)=>{
+    if(fs.existsSync(path + "/whitelist.json")){
+        whitelist = JSON.parse(fs.readFileSync(path + "/whitelist.json"));
+    }
+    else{
+        whitelist = [];
+        fs.writeFileSync(path + "/whitelist.json", JSON.stringify([]));
+    }
 
-        if(file === "whitelist.json"){
-            whitelist = JSON.parse(fs.readFileSync(path.concat("/"+file)));
-        }
-
-        if(file === "usercache.json"){
-            userList = JSON.parse(fs.readFileSync(path.concat("/"+file)));
-        }
-
-    });
-
-    return {'whitelist':whitelist, 'userlist':userList};
+    return whitelist;
 }
+
+const doNotDisplay = [
+    ".kubes"
+]
 
 methods.fileManager = (path)=>{
     let files = [];
 
     if(fs.statSync(path).isDirectory()){
         fs.readdirSync(path).forEach((file)=>{
+            if(doNotDisplay.includes(file)) return;
             const properties = fs.statSync(path.concat("/"+file));
             let list = {
                 'name': file.substring(0, file.length - Path.extname(path.concat("/"+file)).length),

@@ -39,12 +39,10 @@ export default function Whitelist(props) {
   const [initialized, setInitialized] = useState(false);
 
   const [whitelistMembers, setWhitelistMembers] = useState([]);
-  const [userlist, setUserlist] = useState([]);
 
   async function scanWhitelist() {
-    let data = await ipcRenderer.invoke("scan-whitelist", props.path);
-    setWhitelistMembers(data['whitelist']);
-    setUserlist(data['userlist']);    
+    let whitelist = await ipcRenderer.invoke("scan-whitelist", props.path);
+    setWhitelistMembers(whitelist);
   };
   
   if(initialized === false){
@@ -66,16 +64,6 @@ export default function Whitelist(props) {
         <div className='white-face' style={{backgroundImage:'url(https://mc-heads.net/avatar/'+m['uuid']+')'}}></div>
         <p id={m['uuid']}>{m['name']}</p>
       </div>
-
-    );
-
-  });
-
-  const selectItems = userlist.map((m) => {
-
-    return (
-
-      { value: m['uuid'], label: m['name']}
 
     );
 

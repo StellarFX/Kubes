@@ -61,11 +61,16 @@ writer.changeStatus = (data)=>{
 }
 
 writer.renameFile = (data)=>{
-
-    fs.rename(data["oldPath"], data['newPath'], (err)=>{
-        if(err) throw err;
-    });
-
+    let resp = "success";
+    if(!fs.existsSync(data['newPath'])){
+        fs.rename(data["oldPath"], data['newPath'], (err)=>{
+            if(err) throw err;
+        });
+    }
+    else{
+        resp = "exists";
+    }
+    return resp;
 }
 
 module.exports = writer;

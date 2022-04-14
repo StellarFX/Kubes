@@ -1,11 +1,11 @@
 import React , {useState, useEffect} from 'react';
-import { faFileMedical as faFilePlus, faPen, faFolderPlus, faArrowRotateRight, faTrashCan, faArrowLeft, faFileArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { faFileMedical as faFilePlus, faPen, faFolderPlus, faArrowRotateRight, faTrashCan, faArrowLeft, faTimes } from '@fortawesome/free-solid-svg-icons';
 import File from './File';
 import FilePopUp from '../FilePopUp/FilePopUp';
 import DeletePopup from '../DeletePopup/DeletePopup';
 import './FileManager.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Checkbox , Text , Group } from '@mantine/core';
+import { Checkbox , Dialog , Group } from '@mantine/core';
 import { randomId, useListState } from '@mantine/hooks';
 import { Dropzone, FullScreenDropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import mime from '../../public/mime.json';
@@ -126,7 +126,17 @@ export default function FileManager(props) {
     const [penOptionsStyle, setPenOptionsStyle] = useState(uncheckedStyle);
     const [folderStyle, setFolderStyle] = useState(borderStyle);
 
-  
+    const [customDialogOpened, setCustomDialogOpened] = useState(false);
+    const [customDialogStyle, setCustomDialogStyle] = useState({});
+    const [customDialogContent, setCustomDialogContent] = useState("");
+
+    const [backResp, setBackResp] = useState("");
+
+    function toggleDialog(content, style, toggle = !customDialogOpened) {
+        setCustomDialogStyle(style);
+        setCustomDialogContent(content);
+        setCustomDialogOpened(toggle);
+    }
 
     function CheckFile(index, e){
       checkboxesHandler.setItemProp(index, 'checked', e.currentTarget.checked);
@@ -194,19 +204,30 @@ export default function FileManager(props) {
         setPopUp(true);
     }
 
-    function RenameFile(name, extension){
-        checkboxesHandler.setItemProp(checkboxes.indexOf(renamedFile), 'name', name);
+    async function RenameFile(name, extension){
+        setBackResp('');
         let base = props.path.substring(0, props.path.length - (props.server.length + 1)) + path;
+        let resp;
         if(extension != "folder"){
             checkboxesHandler.setItemProp(checkboxes.indexOf(renamedFile), 'type', extension);            
-            ipcRenderer.send("rename-file", {'oldPath': base + renamedFile['name'] + "." + renamedFile['type'], 'newPath': base + name + "." + extension});
+            resp = await ipcRenderer.invoke("rename-file", {'oldPath': base + renamedFile['name'] + "." + renamedFile['type'], 'newPath': base + name + "." + extension});
         }
         else{
-            ipcRenderer.send("rename-file", {'oldPath': base + renamedFile['name'], 'newPath': base + name});
+            resp = await ipcRenderer.invoke("rename-file", {'oldPath': base + renamedFile['name'], 'newPath': base + name});
         }
-        setPopUp(false);
-        checkboxesHandler.setItemProp(checkboxes.indexOf(renamedFile), 'checked', false);
-        reloadFiles();
+
+        console.log(resp);
+        if(resp === "success"){
+            setPopUp(false);
+            checkboxesHandler.setItemProp(checkboxes.indexOf(renamedFile), 'checked', false);
+            checkboxesHandler.setItemProp(checkboxes.indexOf(renamedFile), 'name', name);
+            reloadFiles();
+            setBackResp('');
+        }
+        else if(resp === "exists"){
+            setBackResp('exists');
+        }
+        
     }
   
     function OpenCreate(type){
@@ -232,26 +253,32 @@ export default function FileManager(props) {
     }
 
     async function CreateFile(name, type){
+        setBackResp("");
         let base = props.path.substring(0, props.path.length - (props.server.length + 1)) + path;
 
         let resp = "";
 
         if(type === 'folder'){
-            resp= await ipcRenderer.invoke('create', {'path': base + name, 'type': 'folder'});
+            resp = await ipcRenderer.invoke('create', {'path': base + name, 'type': 'folder'});
         }
         else{
-            resp= await ipcRenderer.invoke('create', {'path': base + name + "." + type, 'type': 'file'});
+            resp = await ipcRenderer.invoke('create', {'path': base + name + "." + type, 'type': 'file'});
         }
         checkboxes.push(
 
             { "type": type.replaceAll(".", ""), "name": name.replaceAll(".", ""), "size": 0, "created": new Date().getTime(), "checked": false, key: randomId() }
 
         );
-        setPopUp(false);
 
         if(resp === "success"){
             reloadFiles();
+            setPopUp(false);
+            setBackResp("");
         }
+        else if(resp === "exists"){
+            setBackResp("exists");
+        }
+        
     }
 
     function reloadFiles(){
@@ -292,7 +319,7 @@ export default function FileManager(props) {
             {
                 popUp === true ?
 
-                <FilePopUp action={fileAction} type={renamedFile.type} name={renamedFile.name} rename={RenameFile} create={CreateFile} close={()=>setPopUp(false)}/>
+                <FilePopUp resp={backResp} action={fileAction} type={renamedFile.type} name={renamedFile.name} rename={RenameFile} create={CreateFile} close={()=>{setPopUp(false); setBackResp('')}}/>
                 : <></>
             }
             {
@@ -389,6 +416,9 @@ export default function FileManager(props) {
                         if(resp === 'success'){
                             reloadFiles();
                         }
+                        else if (resp === 'exists'){
+                            toggleDialog(<><FontAwesomeIcon style={{fontSize: "1.5rem"}}icon={faTimes} /><p>{files[i]['name']} already exists</p></>, {root: {color: "white", backgroundColor: "var(--red)", borderColor: "#4a0a0a"}, closeButton: { color: "white", "&:hover": { backgroundColor: "#ff3636" }}}, true);
+                        }
                     }
 
                 }}> 
@@ -425,6 +455,12 @@ export default function FileManager(props) {
                 </Dropzone>
 
             </div>
+
+            <Dialog className="customDialog" styles={customDialogStyle} opened={customDialogOpened} onClose={() => setCustomDialogOpened(false)} withCloseButton size="lg" radius="md">
+                <div className="customDialog-content">
+                    {customDialogContent}
+                </div>
+            </Dialog>
             
         </div>
 
@@ -432,7 +468,7 @@ export default function FileManager(props) {
             
         <div className='editor-container'>
             <div className='editor-header'>
-                <FontAwesomeIcon icon={faArrowLeft} onClick={() => setContentValue(0)}/>
+                <FontAwesomeIcon icon={faArrowLeft} onClick={() => {setContentValue(0); reloadFiles()}}/>
                 <div className='edited-div'>
                     <p className='edited-file-name'>{editedFile['Editedname']}</p>
                     <p>.</p>

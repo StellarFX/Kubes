@@ -8,6 +8,7 @@ export default function FilePopUp(props){
 
     const [name, setName] = useState(props.name);
     const [extension, setExtension] = useState(props.type ?? "");
+    const [placeHolder, setPlaceHolder] = useState('Name...');
 
     function isValidFileName(text) {
         const rg1 = /^[^\\\/\:\"\?\<\>\|]+$/i;
@@ -22,9 +23,21 @@ export default function FilePopUp(props){
             props.create(name, extension)
         }
         if(!isValidFileName(name)){
-            setName("Enter valid name.");
+            setPlaceHolder("Enter valid name.");
         }
     }
+
+    useEffect(()=>{
+        console.log(props.resp, 'yo');
+        if(props.resp === "exists"){
+            setName('');
+            setExtension('');
+            setPlaceHolder('Already exists.');
+        }
+        else{
+            setPlaceHolder('Name...');
+        }
+    },[props.resp]);
 
     return(
         <>
@@ -36,14 +49,14 @@ export default function FilePopUp(props){
                 <div className='inputs'>
                     { props.type != "folder" ? 
                         <>
-                            <Input className='file-name' value={name} onChange={(e) => setName(e.currentTarget.value)} placeholder='Name...'/>
+                            <Input className='file-name' value={name} onChange={(e) => setName(e.currentTarget.value)} placeholder={placeHolder}/>
                             <p>.</p>
                             <Input className='extension' value={extension} onChange={(e) => setExtension(e.currentTarget.value)} placeholder='...'/>
                         </>
 
                         :
 
-                        <Input className='folder-name' value={name} onChange={(e) => setName(e.currentTarget.value)} placeholder='Name...'/>
+                        <Input className='folder-name' value={name} onChange={(e) => setName(e.currentTarget.value)} placeholder={placeHolder}/>
                     }
                     
                 </div>

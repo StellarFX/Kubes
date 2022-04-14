@@ -29,6 +29,15 @@ function WithNavbar(props) {
   )
 }
 
+process.on("uncaughtException", (err, source) => {
+
+  console.error({
+    error: err,
+    source: source
+  });
+
+});
+
 ReactDOM.render(
   <>
     <TitleBar/>

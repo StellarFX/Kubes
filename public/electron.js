@@ -193,8 +193,8 @@ ipcMain.on("change-status", (e, data)=>{
     writer.changeStatus(data);
 });
 
-ipcMain.on('rename-file', (e, data)=>{
-    writer.renameFile(data);
+ipcMain.handle('rename-file', async (e, data)=>{
+    return writer.renameFile(data);
 });
 
 ipcMain.on('changeFileContent', (e,content, path)=>{

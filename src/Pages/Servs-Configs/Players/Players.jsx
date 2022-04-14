@@ -15,9 +15,9 @@ export default function Players(props){
 
     async function scanPlayers() {
       let data = await ipcRenderer.invoke("scan-players", props.path);
-      setUserlist(data['users']);
-      setBannedIplist(data['banned-ip']);
-      setBannedlist(data['banned']);
+      setUserlist(data['usercache']);
+      setBannedIplist(data['banned-ips']);
+      setBannedlist(data['banned-players']);
       setOplist(data['ops']);
     };
   
