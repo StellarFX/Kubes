@@ -37,18 +37,6 @@ export default function Create({ open, setOpen }) {
   // <------------------------------ VALUES ------------------------------>
 
   const [opacity, setOpacity] = useState(0);
-  /*const [serverNameValue, setServerName] = useState("");
-  const [apiValue, setApiValue] = useState("bukkit");
-  const [versionValue, setVersionValue] = useState("1.18.1");
-  const [ramValue, setRamValue] = useState("1024");
-  const [portValue, setPortValue] = useState("25565");
-  const [IPValue, setIPValue] = useState("127.0.0.1");
-  const [MotdValue, setMotdValue] = useState("Server built with Kubes!");
-  const [eulaValue, setEulaValue] = useState("true");
-
-  const formArray = [serverNameValue, apiValue, versionValue, ramValue, portValue, IPValue, MotdValue, eulaValue];*/
-
-  const varToString = varObj => Object.keys(varObj)[0];
 
   // <------------------------------ VALUES ------------------------------>
 
@@ -67,29 +55,6 @@ export default function Create({ open, setOpen }) {
       setOpacity(1);
     }, 200);
   }, []);
-
-  /*function serverCreate(){
-    console.log(varToString({ serverNameValue }));
-    let allFilled = formArray.every((value)=> value !== "" && value !== undefined);
-    if(allFilled){
-
-      const rg1 = /^[^\\\/\:\"\?\<\>\|]+$/i;
-      if(rg1.test(serverNameValue)){
-
-      }
-      else{
-
-      }
-    }
-    else{
-      for(let i = 0; i < formArray.length; i++){
-        if(formArray[i] === "" || formArray[i] === undefined){
-        }
-      }
-    }
-    setOpenWithTransition(false);
-
-  }*/
 
   const form = useForm({
 
