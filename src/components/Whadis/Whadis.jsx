@@ -13,9 +13,8 @@ export default function Whadis() {
                 <p className="title">Welcome to Kubes!</p>
             </div>
             <div className="main-text-container">
-                <p className="whadis">What is Kubes? <br/> <br/>Kubes is a manager for Minecraft local servers.<br/>This software is here in order to make the setup of your servers easier
-                and shorter, therefore to make you have a better experience on the game.<br/> <br/> Kubes has been developped by two students in high school, and is moreover their first
-                software. We hope this will satisfy you and wish you a good experience!</p>
+                <p className="whadis">What is Kubes? <br/> <br/>Kubes is a manager for local Minecraft servers.<br/>This software has been developed using React, and is powered by Electron. It is here in order to make the setup of your servers easier
+                and shorter, therefore to make you have a better experience on the game.<br/> <br/>Have fun using Kubes!</p>
             </div>
         </div>
     );

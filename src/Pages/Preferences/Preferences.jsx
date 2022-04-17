@@ -24,6 +24,13 @@ function Preferences() {
     setInputValue(path);
   };
 
+  async function changeValue(){
+    console.log(inputValue)
+    let path = await ipcRenderer.invoke('change-path-input', inputValue);
+    console.log(path)
+    setInputValue(path);
+  }
+
   return (
     <div className='preferences page-main-container'>
       <div className='page-title-container'>
@@ -48,7 +55,7 @@ function Preferences() {
         <div className='item'>
           <span className="title">- Servers folder path:</span>
           <div className='item-content'>
-            <TextInput value={inputValue} onChange={(e) => setInputValue(e.currentTarget.value)} id="server-path" className="input directory-path" placeholder="C:/Poggers/Documents/Kubes Servers/" required />
+            <TextInput value={inputValue} onBlur={()=>changeValue()} onChange={(e) => setInputValue(e.currentTarget.value)} id="server-path" className="input directory-path" placeholder="C:/Poggers/Documents/Kubes Servers/" required />
             <span className="button" data-type="change-default-server-path" onClick={()=>{onButtonClick()}}>
               ...
             </span>

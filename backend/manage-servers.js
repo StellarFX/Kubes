@@ -40,7 +40,7 @@ methods.renameServer = (data)=>{
             allDirs[i]["name"] = data["Newname"];
         }
     }
-    let renaming = fs.renameSync(data['path'], newPath);
+    fs.renameSync(data['path'], newPath);
 }
 
 methods.remove = (path)=>{
@@ -90,12 +90,17 @@ methods.import = async (data)=>{
 }
 
 methods.readFileContent = async (path)=>{
-
     let data = fs.readFileSync(path);
     let encoding = Encoding.detect(data); 
     let resp;
     if(encoding){
-        resp = fs.readFileSync(path, encoding);
+        if(Path.extname(path) === '.json'){
+            resp = JSON.stringify(JSON.parse(fs.readFileSync(path)),null,2);
+        }
+        else{
+            resp = fs.readFileSync(path, encoding);
+        }
+        
     }
     else{
         resp = "";
@@ -103,8 +108,6 @@ methods.readFileContent = async (path)=>{
     
     return resp;
 }
-
-//regler probl des files sans extensions
 
 methods.scanProperties = (path)=>{
 

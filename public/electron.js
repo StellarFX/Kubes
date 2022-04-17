@@ -142,6 +142,18 @@ ipcMain.handle("initialize-path", async ()=>{
     return dir;
 });
 
+ipcMain.handle("change-path-input", async (e, path)=>{
+    if(fs.existsSync(path)){
+        dir = path;
+        console.log(path);
+        return path;
+    }
+    else{
+        console.log(dir);
+        return dir;
+    }
+})
+
 ipcMain.on('rename-server', (e, data)=>{
     methods.renameServer(data);
 });
