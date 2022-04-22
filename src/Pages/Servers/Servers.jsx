@@ -1,23 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ServCard from '../../components/ServCard/ServCard.jsx';
 import './Servers.scss';
+import { useListState } from '@mantine/hooks';
+import Create from '../../components/Create/Create';
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const { ipcRenderer } = window.require('electron');
+
+var items;
 
 function Servers(){
 
     const [initialized, setInitialized] = useState(false);
-    const [folderPath, setFolderPath] = useState("");
-    const [ServersList, setServersList] = useState([]);
-    const items = ServersList.map((serv)=>{
-
-        return(
-            <>
-                <ServCard status="0" name={serv["name"]} dir={serv["path"]}/>
-            </>
-        )
-
-    });
+    const [openCreate, setOpenCreate] = useState(false);
 
     async function InitializePath() {
 
@@ -27,25 +23,58 @@ function Servers(){
         scanServers();
     };
 
-    async function scanServers(){
-        let list = await ipcRenderer.invoke("scan-servers");
-        setServersList(list);
-    }
-
     if(initialized === false){
         InitializePath();
     }
 
+    const [folderPath, setFolderPath] = useState("");
+    const [serversList, serversListHandler] = useListState([]);
+
+    items = serversList.map((serv)=>{
+        return(
+            <>
+                <ServCard status={serv['status']} name={serv["name"]} dir={serv["path"]} port={serv['port']} key={serv['status']}/>
+            </>
+        )
+
+    });
+
+    async function scanServers(){
+        let list = await ipcRenderer.invoke("scan-servers");
+        for(let i = 0; i < list.length; i++){
+            let resp = await ipcRenderer.invoke('get-activity', list[i]['path']);
+            list[i]['status'] = resp;
+        }
+        serversListHandler.setState(list);
+    }
+
+    ipcRenderer.on('closed-server', (e, path)=>{
+
+        for(let i = 0; i < serversList.length; i++){
+            if(serversList[i]['path'] === path){
+                serversListHandler.setItemProp(i, 'status', 0);
+            }
+        }
+    });
+
+    ipcRenderer.on('started-server', (e, path)=>{
+        for(let i = 0; i < serversList.length; i++){
+            if(serversList[i]['path'] === path){
+                serversListHandler.setItemProp(i, 'status', 1);
+            }
+        }
+    });
 
     return(
         <div className='page-main-container'>
+            {openCreate? <Create open={openCreate} setOpen={setOpenCreate}/> : ""}
             <div className='page-title-container'>
                 <p className='page-title'>Servers</p>
                 <p className='text'>Folder path:</p>
                 <p className='folder-path'>{folderPath}</p>
             </div>
             <div className='page-content' id="servers-content">
-                { items.length > 0 ? 
+                {items.length > 0 ? 
                 
                 <div className='servers-grid'>
                     {items}
@@ -53,7 +82,14 @@ function Servers(){
                 
                 :
                 
-                <p className='no-servs'>There are no servers here.</p>
+                <div className='no-servers'>
+                    <p className='no-servs'>There are no servers here.</p>
+                    <p className='click-here'>Click here to create one:</p>
+                    <div className="button" tabIndex="1" onClick={() => setOpenCreate(!openCreate)}>
+                        <p><FontAwesomeIcon icon={faPlus}/>Create</p>
+                    </div>
+                    
+                </div>
                 
                 }
             </div>

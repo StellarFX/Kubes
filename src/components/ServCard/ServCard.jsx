@@ -12,7 +12,7 @@ export default function ServCard(props) {
 
     const [Status, setStatus] = useState(parseInt(props.status)); // 0: Offline -- 1: Online -- 2: Starting -- 3: Loading -- 4: Empty
     const Version = "Spigot 1.12.2";
-    const Port = "25250";
+    const Port = props.port;
     const onlineUsers = 0;
     const availablePlaces = 50;
     const [Name, setName] = useState(props.name);
@@ -23,8 +23,7 @@ export default function ServCard(props) {
     // ----------------- <Title -----------------
 
     async function sendRename(value, dir, name){
-        ipcRenderer.send('rename-server', {'Newname':value, 'Oldname': name, 'path': dir});
-
+        console.log('bon');
         setDirectory(dir.slice(0, dir.length-name.length).concat(value));
         setName(value);
         setSelector(0);
@@ -35,22 +34,31 @@ export default function ServCard(props) {
         
     }
 
-    function inputResponse(e){
-        let Value = e.target.value.replaceAll(" ", "");
-        const rg1 = /^[^\\/:"?<>|]+$/i;
+    async function inputResponse(e){
         if(e.key === 'Enter'){
-            if(rg1.test(Value) && document.getElementById(e.target.value) === undefined && Value.length <= 35){
-                sendRename(e.target.value, directory, Name);
+            let Value = e.target.value.replaceAll(" ", "");
+            const rg1 = /^[^\\/:"?<>|]+$/i;
+            let resp;
+            if(rg1.test(Value) && Value.length <= 35 && parseInt(props.status) === 0){
+                resp = await ipcRenderer.invoke('rename-server', {'Newname':e.target.value, 'Oldname': Name, 'path': directory});
+                if(resp === 'success'){
+                    sendRename(e.target.value, directory, Name);
+                }
+                else if(resp === 'exists'){
+                    e.target.value = "";
+                    setPlaceHolder("Already used.");
+                    setHolderValue("card-name-input-2");
+                }
             }
             else{
                 if(!rg1.test(Value)){
                     setPlaceHolder("Please enter a valid name.");
                 }
-                if(document.getElementById(e.target.value) != undefined){
-                    setPlaceHolder("Name already used.");
-                }
                 if(Value.length >35){
                     setPlaceHolder("Too long.");
+                }
+                if(parseInt(props.status) !== 0){
+                    setPlaceHolder("Server is running.");
                 }
                 
                 e.target.value = "";
@@ -108,7 +116,7 @@ export default function ServCard(props) {
     const online = <div className="serv-status-online"><FontAwesomeIcon className='status-icon' icon={faCheck}/><p>Online</p></div>;
     const offline = <div className="serv-status-offline"><FontAwesomeIcon className='status-icon' icon={faTimes}/><p>Offline</p></div>;
     const starting = <div className="serv-status-starting"><FontAwesomeIcon className='status-icon' icon={faEllipsisH}/><p>Starting</p></div>;
-    const loading = <div className="serv-status-starting"><FontAwesomeIcon className='status-icon' icon={faEllipsisH}/><p>Loading</p></div>;
+    const loading = <div className="serv-status-restarting"><FontAwesomeIcon className='status-icon' icon={faEllipsisH}/><p>Restarting</p></div>;
     const empty = <div className="serv-status-empty"><FontAwesomeIcon className='status-icon' icon={faTimes}/><p>Empty</p></div>;
     const statusChanger = [offline, online, starting, loading, empty];
 
@@ -149,7 +157,7 @@ export default function ServCard(props) {
                 
             </div>
 
-            <Link to={{pathname:`/server/${Name}/console`}}className="manage-button" tabIndex="1">
+            <Link to={{pathname:`/server/${Name}/console`, search: props.port}}className="manage-button" tabIndex="1">
                 <p>Manage</p>
             </Link>
         </div>

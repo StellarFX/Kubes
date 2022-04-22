@@ -35,11 +35,14 @@
         position: relative;
         margin-bottom: 0.7rem;
 
+        
+
         .serv-status-online,
         .serv-status-offline,
         .serv-status-starting,
         .serv-status-loading,
-        .serv-status-empty{
+        .serv-status-empty,
+        .serv-status-restarting{
             cursor: default;
             display: flex;
             justify-content: space-between;
@@ -69,8 +72,16 @@
             background: var(--red);
         }
 
-        .serv-status-starting{
+        .serv-status-starting,
+        .serv-status-restarting{
             background: var(--yellow);
+        }
+
+        .serv-status-restarting{
+            p{
+                font-size: 0.95rem;
+                margin-left: 0.3rem;
+            }
         }
 
         .serv-status-empty{

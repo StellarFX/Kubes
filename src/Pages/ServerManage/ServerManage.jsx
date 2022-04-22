@@ -24,17 +24,21 @@ const { ipcRenderer } = window.require('electron');
 
 function ServerManage(){
 
-    const [status, setStatus] = useState(1);
+    const { id } = useParams();
+
+    const [status, setStatus] = useState(0);
     const online = <div className="serv-status-online"><FontAwesomeIcon className='status-icon' icon={faCheck}/><p>Online</p></div>;
     const offline = <div className="serv-status-offline"><FontAwesomeIcon className='status-icon' icon={faTimes}/><p>Offline</p></div>;
     const starting = <div className="serv-status-starting"><FontAwesomeIcon className='status-icon' icon={faEllipsisH}/><p>Starting</p></div>;
-    const loading = <div className="serv-status-starting"><FontAwesomeIcon className='status-icon' icon={faEllipsisH}/><p>Loading</p></div>;
+    const loading = <div className="serv-status-restarting"><FontAwesomeIcon className='status-icon' icon={faEllipsisH}/><p>Restarting</p></div>;
     const empty = <div className="serv-status-empty"><FontAwesomeIcon className='status-icon' icon={faTimes}/><p>Empty</p></div>;
     const statusChanger = [offline, online, starting, loading, empty];
 
-    const { id } = useParams();
+    
     const location = decodeURI(useLocation().pathname).replaceAll("/", "").substring(6 +id.length);
     const navigate = useNavigate();
+
+    const [port, setPort] = useState();
 
     const [initialized, setInitialized] = useState(false);
 
@@ -45,11 +49,14 @@ function ServerManage(){
     async function scanPath() {
       let path = await ipcRenderer.invoke("scan-server-path", id);
       setServPath(path);
+      let init = await ipcRenderer.invoke('get-activity', path);
+      setStatus(init);
     };
   
     if(initialized === false){
       setInitialized(true);
       scanPath();
+      
     }
 
     async function removeServer(){
@@ -58,6 +65,22 @@ function ServerManage(){
             navigate("/dashboard");
         }
     }
+
+    ipcRenderer.on('closed-server', (e, path)=>{
+        if(path === servPath){
+            setStatus(0);
+        }
+    });
+
+    ipcRenderer.on('started-server', (e, path)=>{
+        if(path === servPath){
+            setStatus(1);
+        }
+    });
+
+    ipcRenderer.on('changed-port', (e,port)=>{
+        setPort(port);
+    });
 
     return(
         <>
@@ -81,7 +104,7 @@ function ServerManage(){
                 <div className="config-container">
                     <p className="config-name">{location.charAt(0).toUpperCase() + location.slice(1)}</p> 
                     <Routes>
-                        <Route path="/console" element={<Console/>}/>
+                        <Route path="/console" element={<Console path={servPath} port={port} setPort={setPort} status={(num)=>setStatus(num)} stat={status}/>}/>
                         <Route path="/configuration" element={<Configuration path={servPath}/>}/>
                         <Route path="/players" element={<Players path={servPath}/>}/>
                         <Route path="/whitelist" element={<Whitelist path={servPath}/>}/>

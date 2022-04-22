@@ -1,30 +1,72 @@
-const Path = require('path');
 const fs = require('fs');
 const Encoding = require('encoding-japanese');
+const { ipcMain } = require('electron');
+const _ = require('lodash');
 
-var writer = {};
+let win;
 
-writer.changeProperties = (content, path)=>{
+function setWindow(Win){
+    win = Win;
+}
+
+ipcMain.on("change-properties", (e, content, path)=>{
     let properties = "";
 
     fs.readdirSync(path).forEach((file)=>{
-        if(file.substring(file.length-11,file.length)===".properties"){
+        if(file==="server.properties"){
             properties = path.concat("/"+file);
         }
     });
 
-    fs.writeFileSync(properties, content, { encoding: "utf-8"});
-}
+    let port = content.split("\r\n")
+                    .filter((e)=>e.charAt(0)!=="#" && e)
+                    .reduce((acc,line)=>{
+                        _.set(acc, ...line.split('='));
+                        return acc;
+                    },{})['server-port'];
 
-writer.changeFileContent = (content, path)=>{
+    
+
+    let data = JSON.parse(fs.readFileSync(require.resolve('./lastLaunched.json')));
+    for(let i = 0; i < data['serverList'].length; i++){
+        if(data['serverList'][i]['path'] === path){
+            data['serverList'][i]['port'] = port;
+        }
+    }
+    fs.writeFileSync(require.resolve('./lastLaunched.json'), JSON.stringify(data, null, 2));
+    fs.writeFileSync(properties, content, { encoding: "utf-8"});
+
+    win.webContents.send('changed-port', port);
+});
+
+ipcMain.on('changeFileContent', (e,content, path)=>{
     let data = fs.readFileSync(path);
     let encod = Encoding.detect(data);
+    if(path.slice(-17) === "server.properties"){
+        let dataLast = JSON.parse(fs.readFileSync(require.resolve('./lastLaunched.json')));
+
+        let port = content.split("\r\n")
+                    .filter((e)=>e.charAt(0)!=="#" && e)
+                    .reduce((acc,line)=>{
+                        _.set(acc, ...line.split('='));
+                        return acc;
+                    },{})['server-port'];
+
+        console.log(path.slice(-18))
+        for(let i = 0; i < dataLast['serverList'].length; i++){
+            console.log(dataLast['serverList'][i]['path']);
+            if(dataLast['serverList'][i]['path'] === path.slice(0,-18)){
+                dataLast['serverList'][i]['port'] = port;
+            }
+        }
+        fs.writeFileSync(require.resolve('./lastLaunched.json'), JSON.stringify(dataLast, null ,2));
+        win.webContents.send('changed-port', port);
+    }
 
     fs.writeFileSync(path, content, { encoding: encod ?? "utf-8" });
-}
+});
 
-
-writer.changeStatus = (data)=>{
+ipcMain.on("change-status", (e, data)=>{
     let filePath = "";
 
     fs.readdirSync(data['path']).forEach((file)=>{
@@ -57,10 +99,9 @@ writer.changeStatus = (data)=>{
     fs.writeFile(filePath, JSON.stringify(fileContent, null, 2), (err)=>{
         if(err) throw err;
     });
+});
 
-}
-
-writer.renameFile = (data)=>{
+ipcMain.handle('rename-file', (e, data)=>{
     let resp = "success";
     if(!fs.existsSync(data['newPath'])){
         fs.rename(data["oldPath"], data['newPath'], (err)=>{
@@ -71,6 +112,6 @@ writer.renameFile = (data)=>{
         resp = "exists";
     }
     return resp;
-}
+});
 
-module.exports = writer;
+module.exports = setWindow;

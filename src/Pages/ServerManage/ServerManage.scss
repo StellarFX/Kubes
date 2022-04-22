@@ -1,9 +1,11 @@
 .page-title-container{
+
     .serv-status-online,
     .serv-status-offline,
     .serv-status-starting,
     .serv-status-loading,
-    .serv-status-empty{
+    .serv-status-empty,
+    .serv-status-restarting{
         cursor: default;
         display: flex;
         justify-content: space-between;
@@ -25,6 +27,13 @@
         }
     }
 
+    .serv-status-restarting{
+        p{
+            font-size: 0.95rem;
+            margin-left: 0.3rem;
+        }
+    }
+
     .serv-status-online{
         background: var(--green);
     }
@@ -33,7 +42,8 @@
         background: var(--red);
     }
 
-    .serv-status-starting{
+    .serv-status-starting,
+    .serv-status-restarting{
         background: var(--yellow);
     }
 

@@ -1,3 +1,4 @@
+import './index.scss';
 import React from 'react';
 import ReactDOM from 'react-dom';
 // import './index.scss';
@@ -16,11 +17,9 @@ import About from './Pages/About/About';
 import Donate from './Pages/Donate/Donate';
 import FileManager from './components/FileManager/FileManager'
 import Terminal from './components/Terminal/terminal';
-
 import TitleBar from './components/TitleBar/TitleBar';
 
 function WithNavbar(props) {
-  
   return (
     <div className='main-container'>
       <Navbar/>

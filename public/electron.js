@@ -1,10 +1,10 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron')
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const isDev = require('electron-is-dev');
 const path = require('path');
 const fs = require('fs');
-const { JsonInput } = require('@mantine/core');
 const methods = require('../backend/manage-servers');
-const writer = require('../backend/write-on-files');
+const setWindow = require('../backend/write-on-files');
+const server = require('../backend/server.js');
 
 var datas = fs.readFileSync(require.resolve('./data.json'));
 var infos = JSON.parse(datas);
@@ -41,7 +41,7 @@ async function AskDefaultPath(win){
     infos["directory"] = defaultPath;
     dir = defaultPath;
 
-    fs.writeFile(require.resolve('./data.json'), JSON.stringify(infos), (err)=>{
+    fs.writeFile(require.resolve('./data.json'), JSON.stringify(infos, null, 2), (err)=>{
         if(err) console.log("error:", err);
     });
 
@@ -75,7 +75,9 @@ function createWindow() {
         },
     });    
 
+    server.setWin(win);
 
+    setWindow(win);
 
     ipcMain.on("minimize-window", () => {
         win.minimize();
@@ -98,7 +100,9 @@ function createWindow() {
         win.close();
     });
 
-
+    ipcMain.handle('window-stat', ()=>{
+        return win.isMaximized();
+    });
 
     if(infos["initialized"] === false){
         AskDefaultPath(win);
@@ -113,7 +117,7 @@ function createWindow() {
         if(result.canceled === false){
             dir = result.filePaths[0].replaceAll('\\', '/');
             infos["directory"] = dir;
-            fs.writeFile(require.resolve('./data.json'), JSON.stringify(infos), (err)=>{
+            fs.writeFile(require.resolve('./data.json'), JSON.stringify(infos, null, 2), (err)=>{
                 if(err) console.log("error:", err);
             });
             return dir;
@@ -134,93 +138,36 @@ function createWindow() {
     }
 }
 
-ipcMain.handle("scan-servers", async()=>{
+ipcMain.handle("scan-servers", ()=>{
     return methods.scan(dir);
 });
 
-ipcMain.handle("initialize-path", async ()=>{
+ipcMain.handle("initialize-path", ()=>{
     return dir;
 });
 
-ipcMain.handle("change-path-input", async (e, path)=>{
+ipcMain.handle("change-path-input", (e, path)=>{
     if(fs.existsSync(path)){
         dir = path;
-        console.log(path);
         return path;
     }
     else{
-        console.log(dir);
         return dir;
     }
 })
 
-ipcMain.on('rename-server', (e, data)=>{
-    methods.renameServer(data);
-});
-
-ipcMain.handle('file-manager', async (e, Path)=>{
-    return methods.fileManager(Path);
-});
-
-ipcMain.handle("remove", async (e, path)=>{
-    return methods.remove(path);
-});
-
-ipcMain.handle('create', async (e,data)=>{
-    return methods.create(data);
-});
-
-ipcMain.handle('import', async (e,data)=>{
-    return methods.import(data);
-});
-
-ipcMain.handle('readFileContent', async (e,path)=>{
-    return methods.readFileContent(path);
-});
-
-
-ipcMain.handle('scan-server-path', async (e, id)=>{
+ipcMain.handle('scan-server-path', (e, id)=>{
     return dir.concat("/Servers/"+id);
 });
-
-ipcMain.handle('scan-players', async (e, path)=>{
-    return methods.scanPlayers(path);
-});
-
-ipcMain.handle('scan-whitelist', async (e, path)=>{
-    return methods.scanWhitelist(path);
-});
-
-ipcMain.handle('scan-properties', async (e, path)=>{
-    return methods.scanProperties(path);
-});
-
-
-
-ipcMain.on("change-properties", (e, content, path)=>{
-    writer.changeProperties(content, path);
-});
-
-ipcMain.on("change-status", (e, data)=>{
-    writer.changeStatus(data);
-});
-
-ipcMain.handle('rename-file', async (e, data)=>{
-    return writer.renameFile(data);
-});
-
-ipcMain.on('changeFileContent', (e,content, path)=>{
-    writer.changeFileContent(content,path);
-});
-
-
 
 app.whenReady().then(()=>{
     createWindow();
 });
 
-app.on('window-all-closed', () => {
+app.on('window-all-closed', async () => {
+    console.log("rip");
     if (process.platform !== 'darwin') {
+        await server.quit();
         app.quit();
     }
 });

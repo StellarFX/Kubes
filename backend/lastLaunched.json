@@ -1,0 +1,20 @@
+{
+  "lastLaunched": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/Minecraft Server",
+  "serverList": [
+    {
+      "path": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/Minecraft Server",
+      "name": "Minecraft Server",
+      "port": "25564"
+    },
+    {
+      "path": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/one block",
+      "name": "one block",
+      "port": "25566"
+    },
+    {
+      "path": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/server",
+      "name": "server",
+      "port": "25566"
+    }
+  ]
+}

@@ -3,12 +3,14 @@ const fs = require('fs');
 const fastFolderSizeSync = require('fast-folder-size/sync');
 const { randomId } = require('@mantine/hooks');
 const Encoding = require('encoding-japanese');
+const { ipcMain} = require('electron');
+const _ = require('lodash');
 
 var methods = {}
 let allDirs = [];
 
 methods.scan = (dir)=>{
-
+    let dataLast = JSON.parse(fs.readFileSync(require.resolve('./lastLaunched.json')));
     let scanDirs = [];
     const path = dir.concat("/Servers");
 
@@ -20,36 +22,64 @@ methods.scan = (dir)=>{
                 
                 let data =  fs.readdirSync(path.concat("/" + file));
                 if(data.includes(".kubes")){
+                    var prop = data.filter((e)=>e === "server.properties");
+                    var port = fs.readFileSync(path.concat("/"+file+"/"+prop), 'utf-8')
+                                .split("\r\n")
+                                .filter((e)=>e.charAt(0)!=="#" && e)
+                                .reduce((acc,line)=>{
+                                    _.set(acc, ...line.split('='));
+                                    return acc;
+                                },{})['server-port'];
 
-                    scanDirs.push({"path": path.concat("/" + file), "name": file});
+                    
+
+                    scanDirs.push({"path": path.concat("/" + file), "name": file, 'port': port});
                 }
             }
         }); 
     }
     allDirs = scanDirs;
+    dataLast["serverList"] = allDirs;
+    fs.writeFileSync(require.resolve('./lastLaunched.json'), JSON.stringify(dataLast, null, 2));
     return allDirs;
 }
 
-methods.renameServer = (data)=>{
-
+ipcMain.handle('rename-server', (e, data)=>{
+    let dataLast = JSON.parse(fs.readFileSync(require.resolve('./lastLaunched.json')));
     var newPath = data['path'].slice(0, data['path'].length-data['Oldname'].length).concat(data['Newname']);
-
-    for(let i = 0; i < allDirs.length; i++){
-        if(allDirs[i]["name"] === data["Oldname"]){
-            allDirs[i]["path"] = newPath;
-            allDirs[i]["name"] = data["Newname"];
+    if(!fs.existsSync(newPath)){
+        for(let i = 0; i < allDirs.length; i++){
+            if(allDirs[i]["name"] === data["Oldname"]){
+                allDirs[i]["path"] = newPath;
+                allDirs[i]["name"] = data["Newname"];
+            }
         }
+        if(dataLast['lastLaunched'] === data['path']){
+            dataLast['lastLaunched'] = newPath;
+        }
+        dataLast['serverList'] = allDirs;
+        fs.writeFileSync(require.resolve('./lastLaunched.json'), JSON.stringify(dataLast, null, 2));
+        fs.renameSync(data['path'], newPath);
+        return 'success'
     }
-    fs.renameSync(data['path'], newPath);
-}
+    else{
+        return 'exists'
+    }
+});
 
-methods.remove = (path)=>{
-
+ipcMain.handle("remove", (e, path)=>{
+    let dataLast = JSON.parse(fs.readFileSync(require.resolve('./lastLaunched.json')));
     fs.rmSync(path, { recursive: true });
+    let serv = allDirs.filter((e)=>e['path'] === path);
+    if(serv.length > 0){
+        allDirs.splice(allDirs.indexOf(serv[0]), 1);
+        data['serverList'] =  allDirs;
+        fs.writeFileSync(require.resolve('./lastLaunched.json'), JSON.stringify(dataLast, null, 2));
+    }
     return "success";
-}
+});
 
-methods.create = (data)=>{
+ipcMain.handle('create', (e,data)=>{
     let resp = "success";
     if(!fs.existsSync(data['path'])){
         if(data['type'] === "folder"){
@@ -64,9 +94,9 @@ methods.create = (data)=>{
     }
 
     return resp;
-}
+});
 
-methods.import = async (data)=>{
+ipcMain.handle('import', (e,data)=>{
     let resp = 'success';
     if(!fs.existsSync(data['destinationPath'])){
         if(fs.lstatSync(data['pathOrigin']).isDirectory()){
@@ -87,9 +117,9 @@ methods.import = async (data)=>{
     }
     
     return resp;
-}
+});
 
-methods.readFileContent = async (path)=>{
+ipcMain.handle('readFileContent', (e,path)=>{
     let data = fs.readFileSync(path);
     let encoding = Encoding.detect(data); 
     let resp;
@@ -107,24 +137,22 @@ methods.readFileContent = async (path)=>{
     }
     
     return resp;
-}
+});
 
-methods.scanProperties = (path)=>{
-
+ipcMain.handle('scan-properties', (e, path)=>{
     let properties = "";
     fs.readdirSync(path).forEach((file)=>{
 
-        if(file.slice(-11) === ".properties"){
+        if(file === "server.properties"){
             properties = fs.readFileSync(path.concat("/"+file), "utf-8");
         }
 
     });
 
     return properties;
-}
+});
 
-methods.scanPlayers = (path)=>{
-
+ipcMain.handle('scan-players', (e, path)=>{
     let dict = {'usercache': {}, 'banned-players': {}, 'banned-ips': {}, 'ops': {}}
 
     for(const [key, value] of Object.entries(dict)){
@@ -138,11 +166,9 @@ methods.scanPlayers = (path)=>{
     }
 
     return dict;
-    
-}
+});
 
-methods.scanWhitelist = (path)=>{
-
+ipcMain.handle('scan-whitelist', (e, path)=>{
     let whitelist = {};
 
     if(fs.existsSync(path + "/whitelist.json")){
@@ -154,13 +180,13 @@ methods.scanWhitelist = (path)=>{
     }
 
     return whitelist;
-}
+});
 
 const doNotDisplay = [
     ".kubes"
 ]
 
-methods.fileManager = (path)=>{
+ipcMain.handle('file-manager', (e, path)=>{
     let files = [];
 
     if(fs.statSync(path).isDirectory()){
@@ -185,7 +211,7 @@ methods.fileManager = (path)=>{
     }
 
     return files;
-}
+});
 
 module.exports = methods;
 
