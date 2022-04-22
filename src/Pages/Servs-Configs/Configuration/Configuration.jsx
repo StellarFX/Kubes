@@ -22,8 +22,13 @@ export default function Configuration(props){
     }
 
     function changeValue(value){
+      setFileValue(value);
         ipcRenderer.send("change-properties", value, props.path);
     }
+
+    useEffect(()=>{
+      console.log(fileValue);
+    },[fileValue]);
 
     return(
 

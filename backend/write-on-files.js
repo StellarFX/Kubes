@@ -33,6 +33,7 @@ ipcMain.on("change-properties", (e, content, path)=>{
             data['serverList'][i]['port'] = port;
         }
     }
+    console.log(port);
     fs.writeFileSync(require.resolve('./lastLaunched.json'), JSON.stringify(data, null, 2));
     fs.writeFileSync(properties, content, { encoding: "utf-8"});
 
