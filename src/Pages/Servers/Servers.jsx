@@ -29,6 +29,7 @@ function Servers(){
 
     const [folderPath, setFolderPath] = useState("");
     const [serversList, serversListHandler] = useListState([]);
+    const [scanned, setScanned] = useState(false);
 
     items = serversList.map((serv)=>{
         return(
@@ -46,6 +47,7 @@ function Servers(){
             list[i]['status'] = resp;
         }
         serversListHandler.setState(list);
+        setScanned(true);
     }
 
     ipcRenderer.on('closed-server', (e, path)=>{
@@ -81,6 +83,8 @@ function Servers(){
                 </div>
                 
                 :
+
+                scanned ?
                 
                 <div className='no-servers'>
                     <p className='no-servs'>There are no servers here.</p>
@@ -90,6 +94,10 @@ function Servers(){
                     </div>
                     
                 </div>
+
+                :
+
+                <></>
                 
                 }
             </div>

@@ -17,6 +17,7 @@ function Dashboard() {
   const [transitionn, setTransition] = useState('0.2s');
   const [init, setInit] = useState(false);
   const [lastServ, lastServHandler] = useState({});
+  const [scanned, setScanned] = useState(false);
 
   async function Init(){
     let resp = await ipcRenderer.invoke('last-server-launched');
@@ -28,6 +29,7 @@ function Dashboard() {
       resp['status'] = stat;
       lastServHandler(resp);
     }
+    setScanned(true);
   }
 
   if(!init){
@@ -83,7 +85,7 @@ function Dashboard() {
         <div className='dashboard-left' id="dl">
           <div className='servcard-container'>
             <p className='last-serv'>Last server launched</p>
-            {
+            { scanned ?
               lastServ === undefined || JSON.stringify(lastServ) === "{}"?
               <div className='not-launched' id="nl">
                 <p className='title'>Seems like you haven't</p>
@@ -95,6 +97,9 @@ function Dashboard() {
               </div>
               :
               <ServCard status={lastServ['status']} name={lastServ['name']} port={lastServ['port']} dir={lastServ['path']} key={lastServ['key']}/>
+
+              :
+              <></>
             }
           </div>
 

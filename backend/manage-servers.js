@@ -73,7 +73,7 @@ ipcMain.handle("remove", (e, path)=>{
     let serv = allDirs.filter((e)=>e['path'] === path);
     if(serv.length > 0){
         allDirs.splice(allDirs.indexOf(serv[0]), 1);
-        data['serverList'] =  allDirs;
+        dataLast['serverList'] =  allDirs;
         fs.writeFileSync(require.resolve('./lastLaunched.json'), JSON.stringify(dataLast, null, 2));
     }
     return "success";
