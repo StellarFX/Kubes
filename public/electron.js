@@ -17,7 +17,7 @@ async function AskDefaultPath(win){
         properties: ['openDirectory'],
         defaultPath: "C:/",
         title: 'Select default server path.',
-        buttonLabel: 'Select default server path'
+        buttonLabel: 'Select Kubes directory'
     });
 
     if(result.canceled){
