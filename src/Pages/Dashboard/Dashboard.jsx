@@ -21,7 +21,8 @@ function Dashboard() {
 
   async function Init(){
     let resp = await ipcRenderer.invoke('last-server-launched');
-    if(JSON.stringify(resp) === "{}"){
+    setScanned(true);
+    if(resp === undefined){
       return;
     }
     else{
@@ -29,7 +30,8 @@ function Dashboard() {
       resp['status'] = stat;
       lastServHandler(resp);
     }
-    setScanned(true);
+    
+    
   }
 
   if(!init){
