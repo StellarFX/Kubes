@@ -42,7 +42,7 @@ function Dashboard() {
   ipcRenderer.on('closed-server', (e, path)=>{
     if(lastServ !== undefined){
       if(path === lastServ['path']){
-        lastServHandler({name: lastServ['name'], path: lastServ['path'], port: lastServ['port'], status: 0, key: randomId()});
+        lastServHandler({name: lastServ['name'], path: lastServ['path'], api: lastServ['api'], version: lastServ['version'], port: lastServ['port'], status: 0, key: randomId()});
       }
     }
   });
@@ -50,7 +50,7 @@ function Dashboard() {
   ipcRenderer.on('started-server', (e, path)=>{
     if(lastServ !== undefined){
       if(path === lastServ['path']){
-        lastServHandler({name: lastServ['name'], path: lastServ['path'], port: lastServ['port'], status: 1, key: randomId()});
+        lastServHandler({name: lastServ['name'], path: lastServ['path'], api: lastServ['api'], version: lastServ['version'], port: lastServ['port'], status: 1, key: randomId()});
       }
     }
   });
@@ -98,7 +98,7 @@ function Dashboard() {
                 
               </div>
               :
-              <ServCard status={lastServ['status']} name={lastServ['name']} port={lastServ['port']} dir={lastServ['path']} key={lastServ['key']}/>
+              <ServCard status={lastServ['status']} name={lastServ['name']} api={lastServ['api']} version={lastServ['version']} port={lastServ['port']} dir={lastServ['path']} key={lastServ['key']}/>
 
               :
               <></>

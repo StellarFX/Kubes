@@ -1,4 +1,4 @@
-const { spawn } = require("child_process");
+const { spawn, exec } = require("child_process");
 const fs = require('fs');
 const { ipcMain} = require('electron');
 
@@ -22,7 +22,12 @@ ipcMain.handle('get-activity', async(e,path)=>{
 
 ipcMain.handle('last-server-launched', ()=>{
     data = JSON.parse(fs.readFileSync(require.resolve('./lastLaunched.json')));
-    return data['serverList'].filter((e)=>e['path'] === data['lastLaunched'])[0];
+    if(fs.existsSync(data['lastLaunched'])){
+        return data['serverList'].filter((e)=>e['path'] === data['lastLaunched'])[0];
+    }
+    else{
+        return;
+    }
 });
 
 server.start = (path)=>{
@@ -33,6 +38,11 @@ server.start = (path)=>{
             file = files;
         }
     });
+    exec('echo eula=true>eula.txt', {shell: true,cwd: path}, (error, stdout, stderr)=>{
+        console.log(`stdout: ${stdout}`);
+        console.log(`stderr: ${stderr}`);
+        console.error(`error: ${error}`);
+    });
 
     if(servList[path] === undefined){
         servList[path] = {};
@@ -40,7 +50,6 @@ server.start = (path)=>{
     if(servList[path]['status'] !== 3){
         servList[path]['status'] = 2;
     }
-
     servList[path]['process'] = spawn('java', ['-Xmx1024M', '-Xms1024M', '-jar', `"${path.concat("/"+file)}"`, 'nogui'], {spawn: true, shell: true, cwd: path});
     data['lastLaunched'] = path;
       
@@ -76,8 +85,7 @@ server.start = (path)=>{
                 win.webContents.send('started-server', path);
                 servList[path]['status'] = 1;
             }
-        }
-        
+        }        
     });
 }
 
@@ -85,10 +93,77 @@ ipcMain.on('start-server', (e,path)=>{
     server.start(path);
 });
 
+server.createServ = (servInfo, path)=>{
+    fs.mkdirSync(path);
+    fs.copyFileSync(require.resolve('./serverTemplate/spigot-1.16.4.jar'), path.concat("/server.jar"));
+    let init = spawn('java', [`-Xmx${servInfo['ram']}M`, `-Xms1024M`, "-jar","server.jar", "nogui"], {cwd: path, spawn: true});
+
+    init.stderr.on('data', (data) => {
+        console.log(`stderr: ${data}`);
+    });
+
+    let done = new Promise((res, rej)=>{
+        init.on('close', (code) => {
+            console.log(`child process exited with code ${code}`);
+            exec('echo eula=true>eula.txt', {shell: true,cwd: path}, (error, stdout, stderr)=>{
+                console.log(`stdout: ${stdout}`);
+                console.log(`stderr: ${stderr}`);
+                console.error(`error: ${error}`);
+            });
+            res('closed');
+        });
+    });
+
+    done.then(()=>{
+        servList[path] = {};
+        servList[path]['process'] = spawn('java', [`-Xmx${servInfo['ram']}M`, `-Xms1024M`, "-jar","server.jar", "nogui"], {cwd: path, spawn: true});
+
+        servList[path]['process'].stderr.on('data', (data) => {
+            console.log(`stderr: ${data}`);
+        });
+        servList[path]['process'].stdout.on('data', (data) => {
+            console.log(`stdout: ${data}`);
+            if(`stdout: ${data}`.slice(-25) === '! For help, type "help"\r\n'){
+                let kubes = {
+                    "api": "Spigot",
+                    "version": "1.16.4"
+                }
+                fs.writeFileSync(path.concat("/.kubes"), JSON.stringify(kubes, null, 2));
+                if(win !== undefined){
+                    dataLast = JSON.parse(fs.readFileSync(require.resolve('./lastLaunched.json')));
+                    dataLast['lastLaunched'] = path;
+      
+                    fs.writeFile(require.resolve('./lastLaunched.json'), JSON.stringify(dataLast, null, 2), (err)=>{
+                        if(err)console.log(err);
+                    });
+                    win.webContents.send('created-server');
+                    win.webContents.send('started-server', path);
+                    servList[path]['status'] = 1;
+                }
+            }  
+        });
+        servList[path]['process'].on('close', (code) => {
+            console.log(`child process exited with code ${code}`);
+            win.webContents.send('closed-server', path);
+            servList[path]['status'] = 0;
+        });
+    },()=>{});
+
+    init.stdout.on('data', (data) => {
+        console.log(`stdout: ${data}`);      
+    });
+
+}
+
 server.stop = (path)=>{
     if(servList[path]){
+        servList[path]['status'] = 4;
         try{
             servList[path]['process'].stdin.write("stop\n");
+        }catch(err){
+            console.log(err);
+        }
+        try{
             servList[path]['process'].stdin.end();
         }catch(err){
             console.log(err);
@@ -124,12 +199,12 @@ server.quit = ()=>{
         y++;
     }
 
-    console.log(i, Key);
-
     return new Promise((res, rej)=>{
-        servList[Key]['process'].on('close', () => {
-            res('done');
-        });
+        if(Key){
+            servList[Key]['process'].on('close', () => {
+                res('done');
+            });
+        }
     });
 }
 

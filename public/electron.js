@@ -11,6 +11,15 @@ var infos = JSON.parse(datas);
 var defaultPath = infos["initial-path"];
 let dir = infos["directory"];
 
+process.on('uncaughtException', (err,source)=>{
+
+    console.error({
+        error: err,
+        source, source
+    });
+
+});
+
 async function AskDefaultPath(win){
 
     const result = await dialog.showOpenDialog(win, {
@@ -76,7 +85,6 @@ function createWindow() {
     });    
 
     server.setWin(win);
-
     setWindow(win);
 
     ipcMain.on("minimize-window", () => {
@@ -138,8 +146,18 @@ function createWindow() {
     }
 }
 
-ipcMain.handle("scan-servers", ()=>{
-    return methods.scan(dir);
+ipcMain.handle("scan-servers", async ()=>{
+    return await methods.scan(dir);
+});
+
+ipcMain.handle('create-server', (e,data)=>{
+    if(fs.existsSync(dir.concat("/Servers/"+data['name']))){
+        return true;
+    }
+    else{
+        server.createServ(data, dir.concat("/Servers/" + data['name']));
+        return false;
+    }
 });
 
 ipcMain.handle("initialize-path", ()=>{
@@ -165,7 +183,6 @@ app.whenReady().then(()=>{
 });
 
 app.on('window-all-closed', async () => {
-    console.log("rip");
     if (process.platform !== 'darwin') {
         await server.quit();
         app.quit();

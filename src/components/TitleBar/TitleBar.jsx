@@ -16,7 +16,6 @@ export default function TitleBar() {
 
     useEffect(()=>{
         let main = document.getElementById("main");
-        console.log('yoyoy', winStat);
         if(winStat){
             main.style.borderRadius = "0px";
             setStyle("0rem");
