@@ -1,5 +1,5 @@
 {
-  "lastLaunched": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/Minecraft Server",
+  "lastLaunched": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/test",
   "serverList": [
     {
       "path": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/Minecraft Server",
@@ -21,13 +21,6 @@
       "version": "1.16.8",
       "name": "server",
       "port": "25566"
-    },
-    {
-      "path": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/test",
-      "api": "Spigot",
-      "version": "1.16.4",
-      "name": "test",
-      "port": "25565"
     }
   ]
 }

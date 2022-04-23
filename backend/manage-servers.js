@@ -5,6 +5,7 @@ const { randomId } = require('@mantine/hooks');
 const Encoding = require('encoding-japanese');
 const { ipcMain} = require('electron');
 const _ = require('lodash');
+var propertiesReader = require('properties-reader');
 
 var methods = {}
 let allDirs = [];

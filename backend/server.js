@@ -1,6 +1,7 @@
 const { spawn, exec } = require("child_process");
 const fs = require('fs');
 const { ipcMain} = require('electron');
+var propertiesReader = require('properties-reader');
 
 let server = {};
 let servList = {};
@@ -110,6 +111,17 @@ server.createServ = (servInfo, path)=>{
                 console.log(`stderr: ${stderr}`);
                 console.error(`error: ${error}`);
             });
+            let properties = propertiesReader(path.concat('/server.properties')).getAllProperties();
+            properties["server-port"] = servInfo['port'];
+            properties["motd"] = servInfo['motd'];
+            properties['server-ip'] = servInfo['ip'];
+            let final = JSON.stringify(properties)
+                            .replaceAll('{',"")
+                            .replaceAll('}', "")
+                            .replaceAll('\"', "")
+                            .replaceAll(',', "\n")
+                            .replaceAll(':',"=");
+            fs.writeFileSync(path.concat('/server.properties'), final, { encoding: "utf-8"});
             res('closed');
         });
     });
