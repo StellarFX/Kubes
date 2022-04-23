@@ -21,6 +21,13 @@
       "version": "1.16.8",
       "name": "server",
       "port": "25566"
+    },
+    {
+      "path": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/test",
+      "api": "Spigot",
+      "version": "1.16.4",
+      "name": "test",
+      "port": "25565"
     }
   ]
 }

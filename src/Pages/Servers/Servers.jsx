@@ -31,7 +31,17 @@ function Servers(){
     const [serversList, serversListHandler] = useListState([]);
     const [scanned, setScanned] = useState(false);
 
-    items = serversList.map((serv)=>{
+    items = serversList.sort((a,b)=>{
+        if([1,2,3].includes(parseInt(a['status']))){
+            return -1;
+        }
+        else if([1,2,3].includes(parseInt(b['status']))){
+            return 1;
+        }
+        else{
+            return 0;
+        }
+    }).map((serv)=>{
         return(
             <>
                 <ServCard status={serv['status']} api={serv['api']} name={serv["name"]} dir={serv["path"]} version={serv['version']} port={serv['port']} key={serv['status']}/>
