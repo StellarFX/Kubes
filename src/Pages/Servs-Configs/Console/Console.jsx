@@ -13,7 +13,6 @@ export default function Console(props){
     const [api, setApi] = useState();
     const [version, setVersion] = useState();
     const [init, setInit] = useState(false);
-    console.log(location.state.port);
     if(!init){
         if(location.state){
             props.setPort(location.state.port);

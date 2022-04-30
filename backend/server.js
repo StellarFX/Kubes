@@ -51,7 +51,10 @@ server.start = (path)=>{
     if(servList[path]['status'] !== 3){
         servList[path]['status'] = 2;
     }
-    servList[path]['process'] = spawn('java', ['-Xmx1024M', '-Xms1024M', '-jar', `"${path.concat("/"+file)}"`, 'nogui'], {spawn: true, shell: true, cwd: path});
+
+    let rawCommand = `java -Xms4G -Xmx4G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:InitiatingHeapOccupancyPercent=15 -Dusing.aikars.flags=https://mcflags.emc.gs/ -Daikars.new.flags=true -jar "${path.concat("/"+file)}" nogui`;
+    let command = rawCommand.split(" ");
+    servList[path]['process'] = spawn(command[0], command.slice(1,command.length), {spawn: true, shell: true, cwd: path});
     data['lastLaunched'] = path;
       
     fs.writeFile(require.resolve('./lastLaunched.json'), JSON.stringify(data, null, 2), (err)=>{
@@ -94,9 +97,9 @@ ipcMain.on('start-server', (e,path)=>{
     server.start(path);
 });
 
-server.createServ = (servInfo, path)=>{
+server.createServ = (servInfo, path, samplePath)=>{
     fs.mkdirSync(path);
-    fs.copyFileSync(require.resolve('./serverTemplate/spigot-1.16.4.jar'), path.concat("/server.jar"));
+    fs.copyFileSync(samplePath, path.concat("/server.jar"));
     let init = spawn('java', [`-Xmx${servInfo['ram']}M`, `-Xms1024M`, "-jar","server.jar", "nogui"], {cwd: path, spawn: true});
 
     init.stderr.on('data', (data) => {
@@ -137,8 +140,8 @@ server.createServ = (servInfo, path)=>{
             console.log(`stdout: ${data}`);
             if(`stdout: ${data}`.slice(-25) === '! For help, type "help"\r\n'){
                 let kubes = {
-                    "api": "Spigot",
-                    "version": "1.16.4"
+                    "api": servInfo['api'],
+                    "version": servInfo['version']
                 }
                 fs.writeFileSync(path.concat("/.kubes"), JSON.stringify(kubes, null, 2));
                 if(win !== undefined){
@@ -164,7 +167,7 @@ server.createServ = (servInfo, path)=>{
     init.stdout.on('data', (data) => {
         console.log(`stdout: ${data}`);      
     });
-
+    
 }
 
 server.stop = (path)=>{
@@ -216,6 +219,9 @@ server.quit = ()=>{
             servList[Key]['process'].on('close', () => {
                 res('done');
             });
+        }
+        else{
+            res('done');
         }
     });
 }

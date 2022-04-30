@@ -1,12 +1,19 @@
 {
-  "lastLaunched": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/test",
+  "lastLaunched": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/erhyesdhdshj",
   "serverList": [
     {
-      "path": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/Minecraft Server",
-      "api": "Spigot",
-      "version": "1.18.2",
-      "name": "Minecraft Server",
+      "path": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/erhyesdhdshj",
+      "api": "craftbukkit",
+      "version": "1.16.5",
+      "name": "erhyesdhdshj",
       "port": "25565"
+    },
+    {
+      "path": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/Minecraft Server",
+      "api": "Paper",
+      "version": "1.16.8",
+      "name": "Minecraft Server",
+      "port": "25566"
     },
     {
       "path": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/one block",

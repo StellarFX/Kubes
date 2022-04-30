@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, forwardRef } from 'react';
 import './Create.scss';
 import { faPlus , faPen , faServer , faCodeBranch , faMicrochip , faCloud, faFile, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { TextInput, Select, Button, Accordion } from '@mantine/core';
+import { Group, Avatar, Text, TextInput, Select, Button, Accordion } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -15,9 +16,11 @@ const inputStyle = {
     backgroundColor: "#13121f",
     border: "none",
     borderRadius: "0",
-    padding: "0"
+    padding: "0",
+    scrollBar: {
+      backgroundColor: "#ff0000"
+    }
   },
-
   item: {
     color: "#585279",
     borderRadius: "0"
@@ -35,19 +38,23 @@ const inputStyle = {
 
 }
 
-export default function Create({ open, setOpen }) {
+let apiList = [{}];
+let versionList = [{}];
 
+export default function Create({ open, setOpen }) {
+  
   // <------------------------------ VALUES ------------------------------>
 
   const navigate = useNavigate();
   const [opacity, setOpacity] = useState(0);
   const [placeHolder, setPlaceHolder] = useState("Type here to write...");
   const [creating, setCreating] = useState(false);
+  const [init, setInit] = useState(false);
+  const [buttonName, setButtonName] = useState('Create');
 
   // <------------------------------ VALUES ------------------------------>
 
   function setOpenWithTransition(val) {
-
     setOpacity(0);
 
     setTimeout(() => {
@@ -57,6 +64,9 @@ export default function Create({ open, setOpen }) {
   }
 
   useEffect(() => {
+    window.addEventListener('load', ()=>{
+      console.log('aaaaa');
+    })
     setTimeout(() => {
       setOpacity(1);
     }, 200);
@@ -64,8 +74,13 @@ export default function Create({ open, setOpen }) {
 
   ipcRenderer.on('created-server', ()=>{
     setCreating(false);
+    setButtonName('Create');
     navigate('/servers');
     setOpenWithTransition(false);
+  });
+
+  ipcRenderer.on('err-creating-server', ()=>{
+    setCreating(false);
   });
 
   const form = useForm({
@@ -73,7 +88,7 @@ export default function Create({ open, setOpen }) {
     initialValues: {
       server_name: '',
       api_value: "bukkit",
-      version_value: "1.18.1",
+      version_value: "1.8.8",
       ram_value: "1024",
       port_value: "25565",
       ip_value: "127.0.0.1",
@@ -92,16 +107,48 @@ export default function Create({ open, setOpen }) {
 
   });
 
+  if(!init){
+    axios.get("https://api.kubesmc.ml/apis").then((resp) => {
+      console.log('a');
+      apiList = resp.data['available'].map((e)=>{
+        return(
+          {value: e, label: e.charAt(0).toUpperCase() + e.slice(1)}
+        );
+      });
+      form.setFieldValue('api_value', apiList[0]['value']);
+      console.log(apiList[0]['value']);
+
+    }).catch(err=>console.log(err)); 
+    setInit(true);
+  }
+
+  useEffect(()=>{
+    if(form.getInputProps('api_value')['value']){
+      
+      axios.get("https://api.kubesmc.ml/apis/"+form.getInputProps('api_value')['value']).then((resp)=>{
+        versionList = resp.data['versions'].reverse().map((e)=>{
+          return(
+            {value: e, label: e}
+          );
+        });
+        form.setFieldValue('version_value', versionList[0]['value']);
+      });
+    }
+  },[form.getInputProps('api_value')['value']]);
+
   const createForm = useRef(null);
 
   async function createServer(values){
     setCreating(true);
+    setButtonName('Creating...');
     let resp = await ipcRenderer.invoke("create-server", {
       'name': values['server_name'],
       'ram': values['ram_value'],
       'port': values['port_value'],
       'motd': values['motd_value'],
-      'ip': values['ip_value']==='127.0.0.1'?"":values['ip_value']
+      'ip': values['ip_value']==='127.0.0.1'?"":values['ip_value'],
+      'api': values['api_value'],
+      'version': values['version_value']
     });
 
     if(resp){
@@ -112,6 +159,7 @@ export default function Create({ open, setOpen }) {
     }
     else{
       setPlaceHolder("Type here to write...");
+      
     }
   }
 
@@ -133,21 +181,11 @@ export default function Create({ open, setOpen }) {
                   </div>
                   <div>
                     <p><FontAwesomeIcon icon={faServer}/>API:</p>
-                    <Select zIndex={20000} className="input" styles={inputStyle} placeholder="Spigot" {...form.getInputProps('api_value')} data={[
-                    { value: "spigot", label: "Spigot"},
-                    { value: "bukkit", label: "Bukkit"},
-                    { value: "paper", label: "Paper"},
-                    { value: "forge", label: "Forge"}
-                    ]} disabled/>
+                    <Select zIndex={20000} nothingFound="Nobody here" className="input" styles={inputStyle} placeholder="Spigot" {...form.getInputProps('api_value')} data={apiList} disabled={creating}/>
                   </div>
                   <div className='c-version'>
                     <p><FontAwesomeIcon icon={faCodeBranch}/>Version:</p>
-                    <Select zIndex={20000} className="input" styles={inputStyle} placeholder="1.16.4" {...form.getInputProps('version_value')} data={[
-                    { value: "1.16.4", label: "1.16.4"},
-                    { value: "1.12.2", label: "1.12.2"},
-                    { value: "1.9.3", label: "1.9.3"},
-                    { value: "1.8.5", label: "1.8.5"}
-                    ]} disabled/>
+                    <Select zIndex={20000} nothingFound="Nobody here" className="input" styles={inputStyle} placeholder="1.16.4" {...form.getInputProps('version_value')} data={versionList} disabled={creating}/>
                   </div>
                   <div>
                     <p><FontAwesomeIcon icon={faMicrochip}/>RAM:</p>
@@ -160,7 +198,7 @@ export default function Create({ open, setOpen }) {
                   </div>
                   <div>
                     <p><FontAwesomeIcon icon={faFile}/>Eula:</p>
-                    <Select zIndex={20000} className="input" styles={inputStyle} placeholder="True" {...form.getInputProps('eula_value')} data={[
+                    <Select zIndex={20000} className="input" nothingFound="Nobody here" styles={inputStyle} placeholder="True" {...form.getInputProps('eula_value')} data={[
                     { value: "true", label: "True"},
                     { value: "false", label: "False"},
                     ]} disabled={creating}/>
@@ -183,7 +221,7 @@ export default function Create({ open, setOpen }) {
                     </Accordion.Item>
                   </Accordion>
                   <div className='create-button'>
-                    <button type="submit"><FontAwesomeIcon icon={faPlus}/>Create</button>
+                    <button type="submit"><FontAwesomeIcon icon={faPlus}/>{buttonName}</button>
                   </div>
                   
                 </div>

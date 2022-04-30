@@ -1,5 +1,5 @@
 {
-  "name": "react-frontend",
+  "name": "kubes",
   "version": "0.1.0",
   "main": "public/electron.js",
   "private": true,

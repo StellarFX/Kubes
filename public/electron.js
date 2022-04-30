@@ -5,11 +5,15 @@ const fs = require('fs');
 const methods = require('../backend/manage-servers');
 const setWindow = require('../backend/write-on-files');
 const server = require('../backend/server.js');
+const axios = require('axios');
+var crypto = require('crypto');
+const { spawn, exec } = require("child_process");
 
 var datas = fs.readFileSync(require.resolve('./data.json'));
 var infos = JSON.parse(datas);
 var defaultPath = infos["initial-path"];
 let dir = infos["directory"];
+let window;
 
 process.on('uncaughtException', (err,source)=>{
 
@@ -82,7 +86,9 @@ function createWindow() {
             nodeIntegration: true,
             contextIsolation: false
         },
-    });    
+    });
+
+    window = win;
 
     server.setWin(win);
     setWindow(win);
@@ -150,13 +156,60 @@ ipcMain.handle("scan-servers", async ()=>{
     return await methods.scan(dir);
 });
 
-ipcMain.handle('create-server', (e,data)=>{
+ipcMain.handle('create-server', async (e,data)=>{
     if(fs.existsSync(dir.concat("/Servers/"+data['name']))){
         return true;
     }
     else{
-        server.createServ(data, dir.concat("/Servers/" + data['name']));
-        return false;
+        let api = await (await axios.get(`https://api.kubesmc.ml/apis/${data['api']}/${data['version']}`)).data;
+        let samplePath = dir.concat("/Apis/"+data['api']+"/"+data['version']);
+
+        if(!fs.existsSync(samplePath)){
+
+            createDirIfNotExist("/Apis");
+            createDirIfNotExist(dir.concat("/Apis/"+data['api']));
+            createDirIfNotExist(samplePath);
+        }
+        
+        const url = api['build']["link"];
+        let fileName = url.split("/").at(-1);
+        const response = await axios({url, method:'GET',responseType: 'stream'});
+
+        if(api['build']["command"] === ""){
+            const writer = fs.createWriteStream(samplePath+"/"+fileName);
+            if(fs.existsSync(samplePath+"/"+fileName) && api['build']['sha256'] !== ""){
+                
+                
+                let sum = crypto.createHash('sha256');
+                sum.update(fs.readFileSync(samplePath+"/"+fileName));
+    
+                if(sum.digest('hex') !== api['build']['sha256']){
+    
+                    response.data.pipe(writer);
+    
+                    await new Promise((res,rej)=>{
+                        writer.on('finish', res);
+                        writer.on('error', ()=>{
+                            window.webContents.send('err-creating-server');
+                            rej();
+                        });
+                    });
+                }
+            }
+            else{
+                response.data.pipe(writer);
+    
+                await new Promise((res,rej)=>{
+                    writer.on('finish', res);
+                    writer.on('error', ()=>{
+                        window.webContents.send('err-creating-server');
+                        rej();
+                    });
+                });
+            }
+        }
+        console.log('ok');
+        server.createServ(data, dir.concat("/Servers/" + data['name']), samplePath+"/"+fileName);
     }
 });
 
