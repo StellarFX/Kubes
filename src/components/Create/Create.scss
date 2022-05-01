@@ -300,6 +300,18 @@
 
                 .create-button {
 
+                    display: flex;
+                    align-items: center;
+
+                    .build-info{
+
+                        margin: 0;
+                        font-weight: 500;
+                        font-size: 0.85rem;
+                        color: #554c86;
+
+                    }
+
                     button {
 
                         display: flex;

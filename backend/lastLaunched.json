@@ -1,6 +1,13 @@
 {
-  "lastLaunched": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/erhyesdhdshj",
+  "lastLaunched": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/Minecraft Server - Copie",
   "serverList": [
+    {
+      "path": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/fggffgddgdgf",
+      "api": "forge",
+      "version": "1.18.2",
+      "name": "fggffgddgdgf",
+      "port": "25565"
+    },
     {
       "path": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/Minecraft Server",
       "api": "Paper",
@@ -29,5 +36,10 @@
       "name": "test",
       "port": "25565"
     }
+  ],
+  "lastLaunches": [
+    "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/test",
+    "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/server",
+    "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/Minecraft Server"
   ]
 }

@@ -50,6 +50,7 @@ export default function Create({ open, setOpen }) {
   const [placeHolder, setPlaceHolder] = useState("Type here to write...");
   const [creating, setCreating] = useState(false);
   const [buttonName, setButtonName] = useState('Create');
+  const [buildingInfo, setBuildingInfo] = useState("");
 
   const [customDialogOpened, setCustomDialogOpened] = useState(false);
   const [customDialogStyle, setCustomDialogStyle] = useState({});
@@ -82,10 +83,27 @@ export default function Create({ open, setOpen }) {
     setButtonName('Create');
     navigate('/servers');
     setOpenWithTransition(false);
+    setBuildingInfo('');
+  });
+
+  ipcRenderer.on('building-jar', ()=>{
+    setBuildingInfo('getting the jar file...');
+  });
+
+  ipcRenderer.on('creating-server', ()=>{
+    setBuildingInfo('creating the server...');
+  });
+
+  ipcRenderer.on('launching-server', ()=>{
+    setBuildingInfo('launching the server...');
+  });
+
+  ipcRenderer.on('preparing-spawn', ()=>{
+    setBuildingInfo('preparing spawn area...');
   });
 
   ipcRenderer.on('err-creating-server', (e, err)=>{
-    console.log(err);
+    setBuildingInfo('');
     setCreating(false);
     setButtonName('Create');
     if(err && err !== ""){
@@ -230,6 +248,7 @@ export default function Create({ open, setOpen }) {
                     </Accordion.Item>
                   </Accordion>
                   <div className='create-button'>
+                    <p className='build-info'>{buildingInfo}</p>
                     <button type="submit"><FontAwesomeIcon icon={faPlus}/>{buttonName}</button>
                   </div>
                   

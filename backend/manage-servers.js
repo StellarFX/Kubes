@@ -86,7 +86,7 @@ methods.remove = (path)=>{
 }
 
 ipcMain.handle("remove", (e, path)=>{
-    methods.remove(path);
+    return methods.remove(path);
 });
 
 ipcMain.handle('create', (e,data)=>{
