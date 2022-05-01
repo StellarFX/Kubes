@@ -37,7 +37,7 @@ methods.scan = (dir)=>{
                                     },{})['server-port'];
     
     
-                        scanDirs.push({"path": path.concat("/" + file),'api': api, 'version': version, "name": file, 'port': port});
+                        scanDirs.push({"path": path.concat("/" + file),'api': api.charAt(0).toUpperCase() + api.slice(1), 'version': version, "name": file, 'port': port});
                     }
                 }
             }

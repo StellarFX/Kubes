@@ -181,12 +181,12 @@ server.createServ = (servInfo, path, samplePath)=>{
         });
         servList[path]['process'].stdout.on('data', (data) => {
             console.log(`stdout: ${data}`);
-            if(`${data}`.slice(-2) === "%\n"){
+            if(`${data}`.slice(-3) === "%\r\n"){
                 win.webContents.send('preparing-spawn');
             }
-            if(`stdout: ${data}`.slice(-25) === '! For help, type "help"\r\n'){
+            if(`stdout: ${data}`.slice(-25) === '! For help, type "help"\r\n' || `stdout: ${data}`.slice(-32) === '! For help, type "help" or "?"\r\n' ){
                 let kubes = {
-                    "api": servInfo['api'],
+                    "api": api.charAt(0).toUpperCase() + api.slice(1),
                     "version": servInfo['version']
                 }
                 fs.writeFileSync(path.concat("/.kubes"), JSON.stringify(kubes, null, 2));

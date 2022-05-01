@@ -23,6 +23,13 @@
       "port": "25566"
     },
     {
+      "path": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/sfdgsgqsg",
+      "api": "Vanilla",
+      "version": "1.8.8",
+      "name": "sfdgsgqsg",
+      "port": "25565"
+    },
+    {
       "path": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/test",
       "api": "Spigot",
       "version": "1.16.4",
@@ -31,6 +38,7 @@
     }
   ],
   "lastLaunches": [
+    "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/sfdgsgqsg",
     "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/test",
     "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/server",
     "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/Minecraft Server"
