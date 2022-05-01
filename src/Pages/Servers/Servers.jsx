@@ -11,21 +11,14 @@ const { ipcRenderer } = window.require('electron');
 var items;
 
 function Servers(){
-
-    const [initialized, setInitialized] = useState(false);
+    
     const [openCreate, setOpenCreate] = useState(false);
 
-    async function InitializePath() {
-
+    useEffect(async()=>{
         let path = await ipcRenderer.invoke("initialize-path");
         setFolderPath(path);
-        setInitialized(true);
         scanServers();
-    };
-
-    if(initialized === false){
-        InitializePath();
-    }
+    },[]);
 
     const [folderPath, setFolderPath] = useState("");
     const [serversList, serversListHandler] = useListState([]);

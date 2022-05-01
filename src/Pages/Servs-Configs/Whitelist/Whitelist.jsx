@@ -1,5 +1,5 @@
 import './Whitelist.scss';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { faPlusCircle, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { TextInput, Dialog, Select } from '@mantine/core';
@@ -36,19 +36,12 @@ export default function Whitelist(props) {
 
   }
 
-  const [initialized, setInitialized] = useState(false);
-
   const [whitelistMembers, setWhitelistMembers] = useState([]);
 
-  async function scanWhitelist() {
+  useEffect(async()=>{
     let whitelist = await ipcRenderer.invoke("scan-whitelist", props.path);
     setWhitelistMembers(whitelist);
-  };
-  
-  if(initialized === false){
-    setInitialized(true);
-    scanWhitelist();
-  }
+  },[]);
 
   const [chosenMember, setChosenMember] = useState([]);
 

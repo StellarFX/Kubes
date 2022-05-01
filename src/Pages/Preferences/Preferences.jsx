@@ -9,15 +9,10 @@ function Preferences() {
   const [inputValue, setInputValue] = useState("");
   const [initialized, setInitialized] = useState(false);
 
-  async function InitializePath() {
+  useEffect(async()=>{
     let path = await ipcRenderer.invoke("initialize-path");
     setInputValue(path);
-  };
-
-  if(initialized === false){
-    setInitialized(true);
-    InitializePath();
-  }
+  },[]);
 
   async function onButtonClick() {
     let path = await ipcRenderer.invoke("change-path", inputValue);

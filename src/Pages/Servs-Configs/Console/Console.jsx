@@ -1,4 +1,4 @@
-import React , { useState } from 'react';
+import React , { useEffect, useState } from 'react';
 import "./Console.scss";
 import { faPowerOff, faRedoAlt, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,8 +12,8 @@ export default function Console(props){
     const [port, setPort] = useState();
     const [api, setApi] = useState();
     const [version, setVersion] = useState();
-    const [init, setInit] = useState(false);
-    if(!init){
+
+    useEffect(()=>{
         if(location.state){
             props.setPort(location.state.port);
             setPort(location.state.port);
@@ -27,8 +27,7 @@ export default function Console(props){
             setVersion(props.version);
             setApi(props.api);
         }
-        setInit(true);
-    }
+    },[]);
     
     function start(){
         props.status(2);

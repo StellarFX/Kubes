@@ -72,7 +72,8 @@ ipcMain.handle('rename-server', (e, data)=>{
     }
 });
 
-ipcMain.handle("remove", (e, path)=>{
+methods.remove = (path)=>{
+    console.log('bonalols', path);
     let dataLast = JSON.parse(fs.readFileSync(require.resolve('./lastLaunched.json')));
     fs.rmSync(path, { recursive: true });
     let serv = allDirs.filter((e)=>e['path'] === path);
@@ -82,6 +83,10 @@ ipcMain.handle("remove", (e, path)=>{
         fs.writeFileSync(require.resolve('./lastLaunched.json'), JSON.stringify(dataLast, null, 2));
     }
     return "success";
+}
+
+ipcMain.handle("remove", (e, path)=>{
+    methods.remove(path);
 });
 
 ipcMain.handle('create', (e,data)=>{

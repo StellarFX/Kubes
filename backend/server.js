@@ -2,6 +2,7 @@ const { spawn, exec } = require("child_process");
 const fs = require('fs');
 const { ipcMain} = require('electron');
 var propertiesReader = require('properties-reader');
+const methods = require('./manage-servers');
 
 let server = {};
 let servList = {};
@@ -98,34 +99,53 @@ ipcMain.on('start-server', (e,path)=>{
 });
 
 server.createServ = (servInfo, path, samplePath)=>{
+    let errorVers = false;
     fs.mkdirSync(path);
     fs.copyFileSync(samplePath, path.concat("/server.jar"));
     let init = spawn('java', [`-Xmx${servInfo['ram']}M`, `-Xms1024M`, "-jar","server.jar", "nogui"], {cwd: path, spawn: true});
 
     init.stderr.on('data', (data) => {
         console.log(`stderr: ${data}`);
+        errorVers = true;
+        win.webContents.send('err-creating-server', `${data}`);
     });
 
     let done = new Promise((res, rej)=>{
         init.on('close', (code) => {
             console.log(`child process exited with code ${code}`);
-            exec('echo eula=true>eula.txt', {shell: true,cwd: path}, (error, stdout, stderr)=>{
-                console.log(`stdout: ${stdout}`);
-                console.log(`stderr: ${stderr}`);
-                console.error(`error: ${error}`);
-            });
-            let properties = propertiesReader(path.concat('/server.properties')).getAllProperties();
-            properties["server-port"] = servInfo['port'];
-            properties["motd"] = servInfo['motd'];
-            properties['server-ip'] = servInfo['ip'];
-            let final = JSON.stringify(properties)
-                            .replaceAll('{',"")
-                            .replaceAll('}', "")
-                            .replaceAll('\"', "")
-                            .replaceAll(',', "\n")
-                            .replaceAll(':',"=");
-            fs.writeFileSync(path.concat('/server.properties'), final, { encoding: "utf-8"});
-            res('closed');
+            if(`${code}` === "0"){
+                if(errorVers){
+                    methods.remove(path);
+                }
+                else{
+                    exec('echo eula=true>eula.txt', {shell: true,cwd: path}, (error, stdout, stderr)=>{
+                        console.log(`stdout: ${stdout}`);
+                        console.log(`stderr: ${stderr}`);
+                        console.error(`error: ${error}`);
+                        if(error || stderr){
+                            win.webContents.send('err-creating-server', `${stderr}`);
+                            methods.remove(path);
+                        }
+                    });
+                    let properties = propertiesReader(path.concat('/server.properties')).getAllProperties();
+                    properties["server-port"] = servInfo['port'];
+                    properties["motd"] = servInfo['motd'];
+                    properties['server-ip'] = servInfo['ip'];
+                    let final = JSON.stringify(properties)
+                                    .replaceAll('{',"")
+                                    .replaceAll('}', "")
+                                    .replaceAll('\"', "")
+                                    .replaceAll(',', "\n")
+                                    .replaceAll(':',"=");
+                    fs.writeFileSync(path.concat('/server.properties'), final, { encoding: "utf-8"});
+                    res('closed');
+                }
+            }
+            else{
+                win.webContents.send('err-creating-server', `child process exited with code ${code}`);
+                methods.remove(path);
+                rej('closed');
+            }
         });
     });
 
@@ -134,7 +154,9 @@ server.createServ = (servInfo, path, samplePath)=>{
         servList[path]['process'] = spawn('java', [`-Xmx${servInfo['ram']}M`, `-Xms1024M`, "-jar","server.jar", "nogui"], {cwd: path, spawn: true});
 
         servList[path]['process'].stderr.on('data', (data) => {
-            console.log(`stderr: ${data}`);
+            console.log(`stderr: ${data}`, "aeaeaeaea", path);
+            win.webContents.send('err-creating-server', `${data}`);
+            methods.remove(path);
         });
         servList[path]['process'].stdout.on('data', (data) => {
             console.log(`stdout: ${data}`);
@@ -159,8 +181,20 @@ server.createServ = (servInfo, path, samplePath)=>{
         });
         servList[path]['process'].on('close', (code) => {
             console.log(`child process exited with code ${code}`);
-            win.webContents.send('closed-server', path);
-            servList[path]['status'] = 0;
+            if(`${code}` === "0"){
+                win.webContents.send('closed-server', path);
+                servList[path]['status'] = 0;
+            }
+            else{
+                if(servList[path]['status'] === 1){
+                    win.webContents.send('closed-server', path);
+                    servList[path]['status'] = 0;
+                }
+                else{
+                    win.webContents.send('err-creating-server', `child process exited with code ${code}`);
+                    methods.remove(path);
+                }
+            }
         });
     },()=>{});
 

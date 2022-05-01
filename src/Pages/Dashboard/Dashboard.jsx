@@ -15,11 +15,10 @@ function Dashboard() {
 
   const [opacityy, setOpacity] = useState('0');
   const [transitionn, setTransition] = useState('0.2s');
-  const [init, setInit] = useState(false);
   const [lastServ, lastServHandler] = useState({});
   const [scanned, setScanned] = useState(false);
 
-  async function Init(){
+  useEffect(async()=>{
     let resp = await ipcRenderer.invoke('last-server-launched');
     setScanned(true);
     if(resp === undefined){
@@ -30,14 +29,7 @@ function Dashboard() {
       resp['status'] = stat;
       lastServHandler(resp);
     }
-    
-    
-  }
-
-  if(!init){
-    setInit(true);
-    Init();
-  }
+  },[]);
 
   ipcRenderer.on('closed-server', (e, path)=>{
     if(lastServ !== undefined){

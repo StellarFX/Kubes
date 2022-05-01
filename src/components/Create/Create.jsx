@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, forwardRef } from 'react';
 import './Create.scss';
 import { faPlus , faPen , faServer , faCodeBranch , faMicrochip , faCloud, faFile, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Group, Avatar, Text, TextInput, Select, Button, Accordion } from '@mantine/core';
+import { Dialog, TextInput, Select, Button, Accordion } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
@@ -49,8 +49,11 @@ export default function Create({ open, setOpen }) {
   const [opacity, setOpacity] = useState(0);
   const [placeHolder, setPlaceHolder] = useState("Type here to write...");
   const [creating, setCreating] = useState(false);
-  const [init, setInit] = useState(false);
   const [buttonName, setButtonName] = useState('Create');
+
+  const [customDialogOpened, setCustomDialogOpened] = useState(false);
+  const [customDialogStyle, setCustomDialogStyle] = useState({});
+  const [customDialogContent, setCustomDialogContent] = useState("");
 
   // <------------------------------ VALUES ------------------------------>
 
@@ -60,13 +63,15 @@ export default function Create({ open, setOpen }) {
     setTimeout(() => {
       setOpen(val);
     }, 200);
+  }
 
+  function toggleDialog(content, style, toggle = !customDialogOpened) {
+    setCustomDialogStyle(style);
+    setCustomDialogContent(content);
+    setCustomDialogOpened(toggle);
   }
 
   useEffect(() => {
-    window.addEventListener('load', ()=>{
-      console.log('aaaaa');
-    })
     setTimeout(() => {
       setOpacity(1);
     }, 200);
@@ -79,8 +84,13 @@ export default function Create({ open, setOpen }) {
     setOpenWithTransition(false);
   });
 
-  ipcRenderer.on('err-creating-server', ()=>{
+  ipcRenderer.on('err-creating-server', (e, err)=>{
+    console.log(err);
     setCreating(false);
+    setButtonName('Create');
+    if(err && err !== ""){
+      toggleDialog(<><FontAwesomeIcon style={{fontSize: "1.5rem"}}icon={faTimes} /><p>{err}</p></>, {root: {color: "white", zIndex: "9999",backgroundColor: "var(--red)", borderColor: "#4a0a0a"}, closeButton: { color: "white", "&:hover": { backgroundColor: "#ff3636" }}}, true);
+    }
   });
 
   const form = useForm({
@@ -107,20 +117,19 @@ export default function Create({ open, setOpen }) {
 
   });
 
-  if(!init){
+
+  useEffect(()=>{
     axios.get("https://api.kubesmc.ml/apis").then((resp) => {
-      console.log('a');
       apiList = resp.data['available'].map((e)=>{
         return(
           {value: e, label: e.charAt(0).toUpperCase() + e.slice(1)}
         );
       });
       form.setFieldValue('api_value', apiList[0]['value']);
-      console.log(apiList[0]['value']);
 
-    }).catch(err=>console.log(err)); 
-    setInit(true);
-  }
+    }).catch(err=>console.log(err));
+  },[]);
+
 
   useEffect(()=>{
     if(form.getInputProps('api_value')['value']){
@@ -227,8 +236,13 @@ export default function Create({ open, setOpen }) {
                 </div>
               </form>
             </div>
-            
+            <Dialog className="customDialog" styles={customDialogStyle} opened={customDialogOpened} onClose={() => setCustomDialogOpened(false)} withCloseButton size="lg" radius="md">
+              <div className="customDialog-content">
+                {customDialogContent}
+              </div>
+            </Dialog>
         </div>
+        
       </div>
 
       );

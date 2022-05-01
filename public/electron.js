@@ -190,7 +190,7 @@ ipcMain.handle('create-server', async (e,data)=>{
                     await new Promise((res,rej)=>{
                         writer.on('finish', res);
                         writer.on('error', ()=>{
-                            window.webContents.send('err-creating-server');
+                            window.webContents.send('err-creating-server', "");
                             rej();
                         });
                     });
@@ -202,13 +202,12 @@ ipcMain.handle('create-server', async (e,data)=>{
                 await new Promise((res,rej)=>{
                     writer.on('finish', res);
                     writer.on('error', ()=>{
-                        window.webContents.send('err-creating-server');
+                        window.webContents.send('err-creating-server', "");
                         rej();
                     });
                 });
             }
         }
-        console.log('ok');
         server.createServ(data, dir.concat("/Servers/" + data['name']), samplePath+"/"+fileName);
     }
 });

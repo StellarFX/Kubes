@@ -5,7 +5,7 @@ import {
     useLocation,
     useNavigate
 } from "react-router-dom";
-import React,  {useState} from 'react';
+import React,  {useEffect, useState} from 'react';
 import './ServerManage.scss';
 import ServNavbar from '../../components/ServNavbar/ServNavbar.jsx';
 
@@ -42,24 +42,16 @@ function ServerManage(){
     const [version, setVersion] = useState();
     const [api, setApi] = useState();
 
-    const [initialized, setInitialized] = useState(false);
-
     const [servPath, setServPath] = useState("");
 
     const [openWindow, setOpenWindow] = useState(false);
 
-    async function scanPath() {
-      let path = await ipcRenderer.invoke("scan-server-path", id);
-      setServPath(path);
-      let init = await ipcRenderer.invoke('get-activity', path);
-      setStatus(init);
-    };
-  
-    if(initialized === false){
-      setInitialized(true);
-      scanPath();
-      
-    }
+    useEffect(async()=>{
+        let path = await ipcRenderer.invoke("scan-server-path", id);
+        setServPath(path);
+        let init = await ipcRenderer.invoke('get-activity', path);
+        setStatus(init);
+    },[]);
 
     async function removeServer(){
         let resp = await ipcRenderer.invoke("remove", servPath);
