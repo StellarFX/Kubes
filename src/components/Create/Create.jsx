@@ -51,6 +51,7 @@ export default function Create({ open, setOpen }) {
   const [creating, setCreating] = useState(false);
   const [buttonName, setButtonName] = useState('Create');
   const [buildingInfo, setBuildingInfo] = useState("");
+  const [prevention, setPrevention] = useState("");
 
   const [customDialogOpened, setCustomDialogOpened] = useState(false);
   const [customDialogStyle, setCustomDialogStyle] = useState({});
@@ -91,6 +92,7 @@ export default function Create({ open, setOpen }) {
   });
 
   ipcRenderer.on('creating-server', ()=>{
+    setPrevention('');
     setBuildingInfo('creating the server...');
   });
 
@@ -102,10 +104,15 @@ export default function Create({ open, setOpen }) {
     setBuildingInfo('preparing spawn area...');
   });
 
+  ipcRenderer.on('longer-jar', ()=>{
+    setPrevention('This might take a little longer if this is your first time building in this version.');
+  });
+
   ipcRenderer.on('err-creating-server', (e, err)=>{
     setBuildingInfo('');
     setCreating(false);
     setButtonName('Create');
+    setPrevention('');
     if(err && err !== ""){
       toggleDialog(<><FontAwesomeIcon style={{fontSize: "1.5rem"}}icon={faTimes} /><p>{err}</p></>, {root: {color: "white", zIndex: "9999",backgroundColor: "var(--red)", borderColor: "#4a0a0a"}, closeButton: { color: "white", "&:hover": { backgroundColor: "#ff3636" }}}, true);
     }
@@ -247,6 +254,7 @@ export default function Create({ open, setOpen }) {
                       </div>
                     </Accordion.Item>
                   </Accordion>
+                  <p className='prevention'>{prevention}</p>
                   <div className='create-button'>
                     <p className='build-info'>{buildingInfo}</p>
                     <button type="submit"><FontAwesomeIcon icon={faPlus}/>{buttonName}</button>

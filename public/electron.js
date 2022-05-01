@@ -196,6 +196,7 @@ ipcMain.handle('create-server', async (e,data)=>{
             }
         }
         if(!fs.existsSync(samplePath+"/"+fileName)){
+            window.webContents.send('longer-jar');
             response.data.pipe(writer);
     
             await new Promise((res,rej)=>{
@@ -208,6 +209,7 @@ ipcMain.handle('create-server', async (e,data)=>{
         }
         if(api['build']['command'] !== ""){
             if(!fs.existsSync(samplePath + `/libraries/net/minecraft/server/${data['version']}/server-${data['version']}.jar`)){
+                window.webContents.send('longer-jar');
                 let command = api['build']['command'].split(" ");
                 let installer = spawn(command[0], command.slice(1,command.length), {spawn: true, shell: true, cwd: samplePath});
 

@@ -59,7 +59,7 @@ function ServerManage(){
 
     async function removeServer(){
         let resp = await ipcRenderer.invoke("remove", servPath);
-        if(resp === "success"){
+        if(resp === "success" && status === 0){
             navigate("/dashboard");
         }
     }
