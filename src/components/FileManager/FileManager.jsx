@@ -8,7 +8,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Checkbox , Dialog , Group } from '@mantine/core';
 import { randomId, useListState } from '@mantine/hooks';
 import { Dropzone, FullScreenDropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
-import mime from '../../public/mime.json';
 import AceEditor from '../AceEditor/AceEditor';
 
 const { ipcRenderer } = window.require('electron');
