@@ -21,11 +21,11 @@ export default function FileManager(props) {
     const [files, setFiles] = useState([]);
     const [checkboxes, checkboxesHandler] = useListState([]);
 
-    async function Initialize(){
+    useEffect(async()=>{
         let list = await ipcRenderer.invoke('file-manager', props.path);
-        setFiles(list);        
-    }
-
+        setFiles(list);  
+    },[]);
+    
     async function goInFolder(path, array){
         let list = await ipcRenderer.invoke('file-manager', path);
         setFiles(list);  
@@ -49,11 +49,6 @@ export default function FileManager(props) {
         });
         checkboxesHandler.setState(checked);
     },[files]);
-
-    if(!initialize){
-        setInitialized(true);
-        Initialize();
-    }
 
     const [popUp, setPopUp] = useState(false);
     const [renamedFile, setRenamedFile] = useState();

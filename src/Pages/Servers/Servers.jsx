@@ -11,30 +11,33 @@ const { ipcRenderer } = window.require('electron');
 var items;
 
 function Servers(){
-
-    const [initialized, setInitialized] = useState(false);
+    
     const [openCreate, setOpenCreate] = useState(false);
 
-    async function InitializePath() {
-
+    useEffect(async()=>{
         let path = await ipcRenderer.invoke("initialize-path");
         setFolderPath(path);
-        setInitialized(true);
         scanServers();
-    };
-
-    if(initialized === false){
-        InitializePath();
-    }
+    },[]);
 
     const [folderPath, setFolderPath] = useState("");
     const [serversList, serversListHandler] = useListState([]);
     const [scanned, setScanned] = useState(false);
 
-    items = serversList.map((serv)=>{
+    items = serversList.sort((a,b)=>{
+        if([1,2,3].includes(parseInt(a['status']))){
+            return -1;
+        }
+        else if([1,2,3].includes(parseInt(b['status']))){
+            return 1;
+        }
+        else{
+            return 0;
+        }
+    }).map((serv)=>{
         return(
             <>
-                <ServCard status={serv['status']} name={serv["name"]} dir={serv["path"]} port={serv['port']} key={serv['status']}/>
+                <ServCard status={serv['status']} api={serv['api']} name={serv["name"]} dir={serv["path"]} version={serv['version']} port={serv['port']} key={serv['status']}/>
             </>
         )
 

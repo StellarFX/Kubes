@@ -5,11 +5,24 @@ const fs = require('fs');
 const methods = require('../backend/manage-servers');
 const setWindow = require('../backend/write-on-files');
 const server = require('../backend/server.js');
+const axios = require('axios');
+var crypto = require('crypto');
+const { spawn, exec } = require("child_process");
 
 var datas = fs.readFileSync(require.resolve('./data.json'));
 var infos = JSON.parse(datas);
 var defaultPath = infos["initial-path"];
 let dir = infos["directory"];
+let window;
+
+process.on('uncaughtException', (err,source)=>{
+
+    console.error({
+        error: err,
+        source, source
+    });
+
+});
 
 async function AskDefaultPath(win){
 
@@ -73,10 +86,11 @@ function createWindow() {
             nodeIntegration: true,
             contextIsolation: false
         },
-    });    
+    });
+
+    window = win;
 
     server.setWin(win);
-
     setWindow(win);
 
     ipcMain.on("minimize-window", () => {
@@ -138,8 +152,89 @@ function createWindow() {
     }
 }
 
-ipcMain.handle("scan-servers", ()=>{
-    return methods.scan(dir);
+ipcMain.handle("scan-servers", async ()=>{
+    return await methods.scan(dir);
+});
+
+ipcMain.handle('create-server', async (e,data)=>{
+    if(fs.existsSync(dir.concat("/Servers/"+data['name']))){
+        return true;
+    }
+    else{
+        let api = await (await axios.get(`https://api.kubesmc.ml/apis/${data['api']}/${data['version']}`)).data;
+        let samplePath = dir.concat("/Apis/"+data['api']+"/"+data['version']);
+
+        if(!fs.existsSync(samplePath)){
+
+            createDirIfNotExist("/Apis");
+            createDirIfNotExist(dir.concat("/Apis/"+data['api']));
+            createDirIfNotExist(samplePath);
+        }
+        
+        const url = api['build']["link"];
+        let fileName = url.split("/").at(-1);
+        let serverPath = samplePath+"/"+fileName;
+        const response = await axios({url, method:'GET',responseType: 'stream'});
+        const writer = fs.createWriteStream(samplePath+"/"+fileName);
+        window.webContents.send('building-jar');
+        if(fs.existsSync(samplePath+"/"+fileName) && api['build']['sha256'] !== ""){
+                
+            let sum = crypto.createHash('sha256');
+            sum.update(fs.readFileSync(samplePath+"/"+fileName));
+    
+            if(sum.digest('hex') !== api['build']['sha256']){
+    
+                response.data.pipe(writer);
+    
+                await new Promise((res,rej)=>{
+                    writer.on('finish', res);
+                    writer.on('error', ()=>{
+                        window.webContents.send('err-creating-server', "");
+                        rej();
+                    });
+                });
+            }
+        }
+        if(!fs.existsSync(samplePath+"/"+fileName)){
+            window.webContents.send('longer-jar');
+            response.data.pipe(writer);
+    
+            await new Promise((res,rej)=>{
+                writer.on('finish', res);
+                writer.on('error', ()=>{
+                    window.webContents.send('err-creating-server', "");
+                    rej();
+                });
+            });
+        }
+        if(api['build']['command'] !== ""){
+            if(!fs.existsSync(samplePath + `/libraries/net/minecraft/server/${data['version']}/server-${data['version']}.jar`)){
+                window.webContents.send('longer-jar');
+                let command = api['build']['command'].split(" ");
+                let installer = spawn(command[0], command.slice(1,command.length), {spawn: true, shell: true, cwd: samplePath});
+
+                installer.stdout.on('data', (data) => {
+                    console.log(`stdout: ${data}`);      
+                });
+
+                await new Promise((res,rej)=>{
+                    installer.stderr.on('data', (data) => {
+                        console.log(`stderr: ${data}`);
+                        window.webContents.send('err-creating-server', `${data}`);
+                        rej();
+                    });
+
+                    installer.on('close', (code) => {
+                        console.log(`child process exited with code ${code}`);
+                        res();
+                    });
+                });
+            }
+            serverPath = samplePath + `/libraries/net/minecraft/server/${data['version']}/server-${data['version']}.jar`;
+        }
+        window.webContents.send('creating-server');
+        server.createServ(data, dir.concat("/Servers/" + data['name']), serverPath);
+    }
 });
 
 ipcMain.handle("initialize-path", ()=>{
@@ -165,7 +260,6 @@ app.whenReady().then(()=>{
 });
 
 app.on('window-all-closed', async () => {
-    console.log("rip");
     if (process.platform !== 'darwin') {
         await server.quit();
         app.quit();

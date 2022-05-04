@@ -6,25 +6,18 @@ const { ipcRenderer } = window.require('electron');
 
 export default function Players(props){
 
-    const [initialized, setInitialized] = useState(false);
-
     const [userlist, setUserlist] = useState([]);
     const [oplist, setOplist] = useState([]);
     const [bannedlist, setBannedlist] = useState([]);
     const [bannedIplist, setBannedIplist] = useState([]);
 
-    async function scanPlayers() {
-      let data = await ipcRenderer.invoke("scan-players", props.path);
-      setUserlist(data['usercache']);
-      setBannedIplist(data['banned-ips']);
-      setBannedlist(data['banned-players']);
-      setOplist(data['ops']);
-    };
-  
-    if(initialized === false){
-      setInitialized(true);
-      scanPlayers();
-    }
+    useEffect(async()=>{
+        let data = await ipcRenderer.invoke("scan-players", props.path);
+        setUserlist(data['usercache']);
+        setBannedIplist(data['banned-ips']);
+        setBannedlist(data['banned-players']);
+        setOplist(data['ops']);
+    },[]);
 
     let playerList = userlist.map((user)=>{
 

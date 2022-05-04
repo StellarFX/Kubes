@@ -41,7 +41,7 @@
         .serv-status-offline,
         .serv-status-starting,
         .serv-status-loading,
-        .serv-status-empty,
+        .serv-status-stopping,
         .serv-status-restarting{
             cursor: default;
             display: flex;
@@ -73,7 +73,8 @@
         }
 
         .serv-status-starting,
-        .serv-status-restarting{
+        .serv-status-restarting,
+        .serv-status-stopping{
             background: var(--yellow);
         }
 
@@ -82,10 +83,6 @@
                 font-size: 0.95rem;
                 margin-left: 0.3rem;
             }
-        }
-
-        .serv-status-empty{
-            background: rgb(136, 136, 136);
         }
 
         .name-container{

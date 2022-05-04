@@ -5,7 +5,7 @@ import {
     useLocation,
     useNavigate
 } from "react-router-dom";
-import React,  {useState,useEffect} from 'react';
+import React,  {useEffect, useState} from 'react';
 import './ServerManage.scss';
 import ServNavbar from '../../components/ServNavbar/ServNavbar.jsx';
 
@@ -19,6 +19,7 @@ import DeletePopup from "../../components/DeletePopup/DeletePopup";
 
 import { faCheck, faTimes, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Dialog } from '@mantine/core';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -31,39 +32,42 @@ function ServerManage(){
     const offline = <div className="serv-status-offline"><FontAwesomeIcon className='status-icon' icon={faTimes}/><p>Offline</p></div>;
     const starting = <div className="serv-status-starting"><FontAwesomeIcon className='status-icon' icon={faEllipsisH}/><p>Starting</p></div>;
     const loading = <div className="serv-status-restarting"><FontAwesomeIcon className='status-icon' icon={faEllipsisH}/><p>Restarting</p></div>;
-    const empty = <div className="serv-status-empty"><FontAwesomeIcon className='status-icon' icon={faTimes}/><p>Empty</p></div>;
-    const statusChanger = [offline, online, starting, loading, empty];
+    const stopping = <div className="serv-status-stopping"><FontAwesomeIcon className='status-icon' icon={faTimes}/><p>Stopping</p></div>;
+    const statusChanger = [offline, online, starting, loading, stopping];
 
+    const [customDialogOpened, setCustomDialogOpened] = useState(false);
+    const [customDialogStyle, setCustomDialogStyle] = useState({});
+    const [customDialogContent, setCustomDialogContent] = useState("");
     
     const location = decodeURI(useLocation().pathname).replaceAll("/", "").substring(6 +id.length);
     const navigate = useNavigate();
 
     const [port, setPort] = useState();
-
-    const [initialized, setInitialized] = useState(false);
+    const [version, setVersion] = useState();
+    const [api, setApi] = useState();
 
     const [servPath, setServPath] = useState("");
 
     const [openWindow, setOpenWindow] = useState(false);
 
-    async function scanPath() {
-      let path = await ipcRenderer.invoke("scan-server-path", id);
-      setServPath(path);
-      let init = await ipcRenderer.invoke('get-activity', path);
-      setStatus(init);
-    };
-  
-    if(initialized === false){
-      setInitialized(true);
-      scanPath();
-      
-    }
+    useEffect(async()=>{
+        let path = await ipcRenderer.invoke("scan-server-path", id);
+        setServPath(path);
+        let init = await ipcRenderer.invoke('get-activity', path);
+        setStatus(init);
+    },[]);
 
     async function removeServer(){
         let resp = await ipcRenderer.invoke("remove", servPath);
-        if(resp === "success"){
+        if(resp === "success" && status === 0){
             navigate("/dashboard");
         }
+    }
+
+    function toggleDialog(content, style, toggle = !customDialogOpened) {
+        setCustomDialogStyle(style);
+        setCustomDialogContent(content);
+        setCustomDialogOpened(toggle);
     }
 
     ipcRenderer.on('closed-server', (e, path)=>{
@@ -80,6 +84,10 @@ function ServerManage(){
 
     ipcRenderer.on('changed-port', (e,port)=>{
         setPort(port);
+    });
+
+    ipcRenderer.on('error-starting-server', (e,err)=>{
+        toggleDialog(<><FontAwesomeIcon style={{fontSize: "1.5rem"}}icon={faTimes} /><p>{err}</p></>, {root: {color: "white", zIndex: "9999",backgroundColor: "var(--red)", borderColor: "#4a0a0a"}, closeButton: { color: "white", "&:hover": { backgroundColor: "#ff3636" }}}, true);
     });
 
     return(
@@ -104,7 +112,18 @@ function ServerManage(){
                 <div className="config-container">
                     <p className="config-name">{location.charAt(0).toUpperCase() + location.slice(1)}</p> 
                     <Routes>
-                        <Route path="/console" element={<Console path={servPath} port={port} setPort={setPort} status={(num)=>setStatus(num)} stat={status}/>}/>
+                        <Route path="/console" element={
+                            <Console 
+                            path={servPath} 
+                            api={api} 
+                            setApi={setApi} 
+                            version={version} setVersion={setVersion} 
+                            port={port} 
+                            setPort={setPort} 
+                            status={(num)=>setStatus(num)} 
+                            stat={status}/>
+                        }/>
+
                         <Route path="/configuration" element={<Configuration path={servPath}/>}/>
                         <Route path="/players" element={<Players path={servPath}/>}/>
                         <Route path="/whitelist" element={<Whitelist path={servPath}/>}/>
@@ -113,6 +132,11 @@ function ServerManage(){
                     </Routes>
                 </div>
             </div>
+            <Dialog className="customDialog" styles={customDialogStyle} opened={customDialogOpened} onClose={() => setCustomDialogOpened(false)} withCloseButton size="lg" radius="md">
+              <div className="customDialog-content">
+                {customDialogContent}
+              </div>
+            </Dialog>
         </div>
         </>
     )

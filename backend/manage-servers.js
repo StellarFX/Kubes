@@ -5,35 +5,40 @@ const { randomId } = require('@mantine/hooks');
 const Encoding = require('encoding-japanese');
 const { ipcMain} = require('electron');
 const _ = require('lodash');
+var propertiesReader = require('properties-reader');
 
 var methods = {}
 let allDirs = [];
 
 methods.scan = (dir)=>{
-    let dataLast = JSON.parse(fs.readFileSync(require.resolve('./lastLaunched.json')));
+    let dataLast = JSON.parse(fs.readFileSync(require.resolve('./lastLaunched.json'), 'utf-8'));
     let scanDirs = [];
     const path = dir.concat("/Servers");
 
+    
     if(fs.existsSync(path)){
         let files = fs.readdirSync(path);
 
         files.forEach((file)=>{
             if(fs.lstatSync(path.concat("/" + file)).isDirectory()){
-                
                 let data =  fs.readdirSync(path.concat("/" + file));
                 if(data.includes(".kubes")){
-                    var prop = data.filter((e)=>e === "server.properties");
-                    var port = fs.readFileSync(path.concat("/"+file+"/"+prop), 'utf-8')
-                                .split("\r\n")
-                                .filter((e)=>e.charAt(0)!=="#" && e)
-                                .reduce((acc,line)=>{
-                                    _.set(acc, ...line.split('='));
-                                    return acc;
-                                },{})['server-port'];
-
-                    
-
-                    scanDirs.push({"path": path.concat("/" + file), "name": file, 'port': port});
+                    let kubes = JSON.parse(fs.readFileSync(path.concat("/" + file + "/.kubes")));
+                    if("api" in kubes && "version" in kubes){
+                        let version = kubes['version']!==""&&kubes['version']?kubes['version']:"unknown";
+                        let api = kubes['api']?kubes['api']:"";
+                        let prop = data.filter((e)=>e === "server.properties");
+                        let port = fs.readFileSync(path.concat("/"+file+"/"+prop), 'utf-8')
+                                    .split("\r\n")
+                                    .filter((e)=>e.charAt(0)!=="#" && e)
+                                    .reduce((acc,line)=>{
+                                        _.set(acc, ...line.split('='));
+                                        return acc;
+                                    },{})['server-port'];
+    
+    
+                        scanDirs.push({"path": path.concat("/" + file),'api': api.charAt(0).toUpperCase() + api.slice(1), 'version': version, "name": file, 'port': port});
+                    }
                 }
             }
         }); 
@@ -67,7 +72,8 @@ ipcMain.handle('rename-server', (e, data)=>{
     }
 });
 
-ipcMain.handle("remove", (e, path)=>{
+methods.remove = (path)=>{
+    console.log('bonalols', path);
     let dataLast = JSON.parse(fs.readFileSync(require.resolve('./lastLaunched.json')));
     fs.rmSync(path, { recursive: true });
     let serv = allDirs.filter((e)=>e['path'] === path);
@@ -77,6 +83,10 @@ ipcMain.handle("remove", (e, path)=>{
         fs.writeFileSync(require.resolve('./lastLaunched.json'), JSON.stringify(dataLast, null, 2));
     }
     return "success";
+}
+
+ipcMain.handle("remove", (e, path)=>{
+    return methods.remove(path);
 });
 
 ipcMain.handle('create', (e,data)=>{

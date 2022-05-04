@@ -1,4 +1,4 @@
-import React , { useState } from 'react';
+import React , { useEffect, useState } from 'react';
 import "./Console.scss";
 import { faPowerOff, faRedoAlt, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,17 +10,24 @@ const { ipcRenderer } = window.require("electron");
 export default function Console(props){
     const location = useLocation();
     const [port, setPort] = useState();
-    const [init, setInit] = useState(false);
-    if(!init){
-        if(location.search.substring(1)!==""){
-            props.setPort(location.search.substring(1));
-            setPort(location.search.substring(1));
+    const [api, setApi] = useState();
+    const [version, setVersion] = useState();
+
+    useEffect(()=>{
+        if(location.state){
+            props.setPort(location.state.port);
+            setPort(location.state.port);
+            props.setApi(location.state.api);
+            setApi(location.state.api);
+            props.setVersion(location.state.version);
+            setVersion(location.state.version);
         }
         else{
             setPort(props.port);
+            setVersion(props.version);
+            setApi(props.api);
         }
-        setInit(true);
-    }
+    },[]);
     
     function start(){
         props.status(2);
@@ -35,7 +42,10 @@ export default function Console(props){
     }
 
     function stop(){
-        ipcRenderer.send('stop-server', props.path);
+        if(props.stat === 1){
+            props.status(4);
+            ipcRenderer.send('stop-server', props.path);
+        }
     }
 
     return(
@@ -69,7 +79,7 @@ export default function Console(props){
                         </div>
                         <div className="p-right">
                             <p>0/50</p>
-                            <p>Spigot 1.12.2</p>
+                            <p>{api} {version}</p>
                             <p>{port}</p>
                         </div>
                     </div>
