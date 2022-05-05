@@ -21,27 +21,27 @@ methods.scan = (dir)=>{
     let files = fs.readdirSync(path);
 
     files.forEach((file)=>{
-            if(fs.lstatSync(path.concat("/" + file)).isDirectory()){
-                let data =  fs.readdirSync(path.concat("/" + file));
-                if(data.includes(".kubes")){
-                    let kubes = JSON.parse(fs.readFileSync(path.concat("/" + file + "/.kubes")));
-                    if("api" in kubes && "version" in kubes){
-                        let version = kubes['version']!==""&&kubes['version']?kubes['version']:"unknown";
-                        let api = kubes['api']?kubes['api']:"";
-                        let prop = data.filter((e)=>e === "server.properties");
-                        let port = fs.readFileSync(path.concat("/"+file+"/"+prop), 'utf-8')
-                                    .split("\r\n")
-                                    .filter((e)=>e.charAt(0)!=="#" && e)
-                                    .reduce((acc,line)=>{
-                                        _.set(acc, ...line.split('='));
-                                        return acc;
-                                    },{})['server-port'];
-    
-    
-                        scanDirs.push({"path": path.concat("/" + file),'api': api.charAt(0).toUpperCase() + api.slice(1), 'version': version, "name": file, 'port': port});
-                    }
+        if(fs.lstatSync(path.concat("/" + file)).isDirectory()){
+            let data =  fs.readdirSync(path.concat("/" + file));
+            if(data.includes(".kubes")){
+                let kubes = JSON.parse(fs.readFileSync(path.concat("/" + file + "/.kubes")));
+                if("api" in kubes && "version" in kubes){
+                    let version = kubes['version']!==""&&kubes['version']?kubes['version']:"unknown";
+                    let api = kubes['api']?kubes['api']:"";
+                    let prop = data.filter((e)=>e === "server.properties");
+                    let port = fs.readFileSync(path.concat("/"+file+"/"+prop), 'utf-8')
+                                .split("\r\n")
+                                .filter((e)=>e.charAt(0)!=="#" && e)
+                                .reduce((acc,line)=>{
+                                    _.set(acc, ...line.split('='));
+                                    return acc;
+                                },{})['server-port'];
+
+
+                    scanDirs.push({"path": path.concat("/" + file),'api': api.charAt(0).toUpperCase() + api.slice(1), 'version': version, "name": file, 'port': port});
                 }
             }
+        }
     }); 
     allDirs = scanDirs;
     dataLast["serverList"] = allDirs;
