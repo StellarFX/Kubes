@@ -50,7 +50,7 @@ export default function Create({ open, setOpen }) {
   const [creating, setCreating] = useState(false);
   const [buttonName, setButtonName] = useState('Create');
   const [buildingInfo, setBuildingInfo] = useState("");
-  const [prevention, setPrevention] = useState("");
+  const [prevention, setPrevention] = useState("Please check if you have the matching JAVA version, otherwise it might leads to errors.");
 
   const [customDialogOpened, setCustomDialogOpened] = useState(false);
   const [customDialogStyle, setCustomDialogStyle] = useState({});
@@ -146,6 +146,7 @@ export default function Create({ open, setOpen }) {
   const createForm = useRef(null);
 
   async function createServer(values){
+    setPrevention('');
     setCreating(true);
     setButtonName('Creating...');
     ipcRenderer.on('err-creating-server', Error);
@@ -156,6 +157,7 @@ export default function Create({ open, setOpen }) {
         navigate('/servers');
         setOpenWithTransition(false);
         setBuildingInfo('');
+        setPrevention('Please check if you have the matching JAVA version, otherwise it might leads to errors.');
       });
     
       ipcRenderer.on('building-jar', ()=>{
@@ -227,7 +229,7 @@ export default function Create({ open, setOpen }) {
                   <div>
                     <p><FontAwesomeIcon icon={faMicrochip}/>RAM:</p>
                     <TextInput className="input i-small" placeholder="..." {...form.getInputProps('ram_value')} disabled={creating}/>
-                    <p className='c-precision'>(in MB)</p>
+                    <p className='c-precision'>(in GB)</p>
                   </div>
                   <div>
                     <p><FontAwesomeIcon icon={faCloud}/>Port:</p>

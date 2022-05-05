@@ -1,7 +1,7 @@
 import { faCog, faDollarSign, faHome, faInfoCircle, faPlus, faServer } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
-import { Link , useLocation } from 'react-router-dom';
+import { Link , useLocation, useNavigate } from 'react-router-dom';
 import './Navbar.scss';
 import Create from "../Create/Create";
 import LogoFull from '../../public/Logo-Full.png';
@@ -9,6 +9,7 @@ import LogoFull from '../../public/Logo-Full.png';
 export default function Navbar() {
 
     const location = useLocation();
+    const navigate = useNavigate();
     const [createOpen, setCreateOpen] = useState(false);
 
     useEffect(() => {
@@ -52,7 +53,7 @@ export default function Navbar() {
                 </div>   
 
                 <div className="navbar-group">
-                    <div className="button" tabIndex="1" onClick={() => setCreateOpen(!createOpen)}>
+                    <div className="button" tabIndex="1" onClick={() => {setCreateOpen(!createOpen);navigate('/dashboard')}}>
                         <p><FontAwesomeIcon icon={faPlus}/>Create</p>
                     </div>
 

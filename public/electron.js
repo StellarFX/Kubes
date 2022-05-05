@@ -208,7 +208,7 @@ ipcMain.handle('create-server', async (e,data)=>{
             });
         }
         if(api['build']['command'] !== ""){
-            if(!fs.existsSync(samplePath + `/libraries/net/minecraft/server/${data['version']}/server-${data['version']}.jar`)){
+            if(!fs.existsSync(samplePath + `/libraries/net/minecraft/server/${data['version']}/server-${data['version']}.jar`) && !fs.existsSync(samplePath + `/minecraft_server.${data['version']}.jar`)){
                 window.webContents.send('longer-jar');
                 let command = api['build']['command'].split(" ");
                 let installer = spawn(command[0], command.slice(1,command.length), {spawn: true, shell: true, cwd: samplePath});
@@ -230,10 +230,26 @@ ipcMain.handle('create-server', async (e,data)=>{
                     });
                 });
             }
-            serverPath = samplePath + `/libraries/net/minecraft/server/${data['version']}/server-${data['version']}.jar`;
+            fs.mkdirSync(dir.concat("/Servers/" + data['name']));
+            if(fs.existsSync(samplePath + `/libraries/net/minecraft/server/${data['version']}/server-${data['version']}.jar`)){
+                serverPath = samplePath + `/libraries/net/minecraft/server/${data['version']}/server-${data['version']}.jar`;
+                fs.copyFileSync(serverPath, path.concat("/server.jar"));
+            }
+            else{
+                let File;
+                fs.readdirSync(samplePath).forEach((file)=>{
+                    if(file.slice(-4) === '.jar' && file.substring(0,5) === "forge" && !file.includes('installer')){
+                        File = file;
+                    }
+                });
+                serverPath = samplePath + "/" + File;
+                fs.copyFileSync(serverPath, path.concat("/server.jar"));
+                fs.copyFileSync(samplePath + "/libraries", path.concat("/libraries"));
+            }
+            
         }
         window.webContents.send('creating-server');
-        server.createServ(data, dir.concat("/Servers/" + data['name']), serverPath);
+        server.createServ(data, dir.concat("/Servers/" + data['name']));
     }
 });
 

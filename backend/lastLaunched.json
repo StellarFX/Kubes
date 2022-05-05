@@ -2,6 +2,13 @@
   "lastLaunched": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/Minecraft Server - Copie",
   "serverList": [
     {
+      "path": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/1.16 forge",
+      "api": "Forge",
+      "version": "1.18.2",
+      "name": "1.16 forge",
+      "port": "25565"
+    },
+    {
       "path": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/Minecraft Server",
       "api": "Paper",
       "version": "1.16.8",
@@ -31,8 +38,9 @@
     }
   ],
   "lastLaunches": [
+    "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/1.16 forge",
+    "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/Minecraft Server",
     "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/test",
-    "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/server",
-    "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/Minecraft Server"
+    "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/server"
   ]
 }

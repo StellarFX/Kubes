@@ -49,6 +49,8 @@ function ServerManage(){
     const [servPath, setServPath] = useState("");
 
     const [openWindow, setOpenWindow] = useState(false);
+    const [init, setInit] = useState(false);
+    
 
     useEffect(async()=>{
         let path = await ipcRenderer.invoke("scan-server-path", id);
@@ -70,25 +72,28 @@ function ServerManage(){
         setCustomDialogOpened(toggle);
     }
 
-    ipcRenderer.on('closed-server', (e, path)=>{
-        if(path === servPath){
-            setStatus(0);
-        }
-    });
+    useEffect(()=>{
+        setInit(true);
+        ipcRenderer.on('error-starting-server', (e,err)=>{
+            toggleDialog(<><FontAwesomeIcon style={{fontSize: "1.5rem"}}icon={faTimes} /><p>{err}</p></>, {root: {color: "white", zIndex: "9999",backgroundColor: "var(--red)", borderColor: "#4a0a0a"}, closeButton: { color: "white", "&:hover": { backgroundColor: "#ff3636" }}}, true);
+        });
 
-    ipcRenderer.on('started-server', (e, path)=>{
-        if(path === servPath){
-            setStatus(1);
-        }
-    });
+        ipcRenderer.on('closed-server', (e, path)=>{
+            if(path === servPath && status !== 3){
+                setStatus(0);
+            }
+        });
+        
+        ipcRenderer.on('started-server', (e, path)=>{
+            if(path === servPath){
+                setStatus(1);
+            }
+        });
 
-    ipcRenderer.on('changed-port', (e,port)=>{
-        setPort(port);
-    });
-
-    ipcRenderer.on('error-starting-server', (e,err)=>{
-        toggleDialog(<><FontAwesomeIcon style={{fontSize: "1.5rem"}}icon={faTimes} /><p>{err}</p></>, {root: {color: "white", zIndex: "9999",backgroundColor: "var(--red)", borderColor: "#4a0a0a"}, closeButton: { color: "white", "&:hover": { backgroundColor: "#ff3636" }}}, true);
-    });
+        ipcRenderer.on('changed-port', (e,port)=>{
+            setPort(port);
+        });
+    },[status]);
 
     return(
         <>
