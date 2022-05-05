@@ -44,7 +44,6 @@ let versionList = [{}];
 export default function Create({ open, setOpen }) {
   
   // <------------------------------ VALUES ------------------------------>
-
   const navigate = useNavigate();
   const [opacity, setOpacity] = useState(0);
   const [placeHolder, setPlaceHolder] = useState("Type here to write...");
@@ -79,36 +78,10 @@ export default function Create({ open, setOpen }) {
     }, 200);
   }, []);
 
-  ipcRenderer.on('created-server', ()=>{
-    setCreating(false);
-    setButtonName('Create');
-    navigate('/servers');
-    setOpenWithTransition(false);
-    setBuildingInfo('');
-  });
 
-  ipcRenderer.on('building-jar', ()=>{
-    setBuildingInfo('getting the jar file...');
-  });
 
-  ipcRenderer.on('creating-server', ()=>{
-    setPrevention('');
-    setBuildingInfo('creating the server...');
-  });
-
-  ipcRenderer.on('launching-server', ()=>{
-    setBuildingInfo('launching the server...');
-  });
-
-  ipcRenderer.on('preparing-spawn', ()=>{
-    setBuildingInfo('preparing spawn area...');
-  });
-
-  ipcRenderer.on('longer-jar', ()=>{
-    setPrevention('This might take a little longer if this is your first time building in this version.');
-  });
-
-  ipcRenderer.on('err-creating-server', (e, err)=>{
+  function Error(e,err){
+    console.log('error')
     setBuildingInfo('');
     setCreating(false);
     setButtonName('Create');
@@ -116,7 +89,7 @@ export default function Create({ open, setOpen }) {
     if(err && err !== ""){
       toggleDialog(<><FontAwesomeIcon style={{fontSize: "1.5rem"}}icon={faTimes} /><p>{err}</p></>, {root: {color: "white", zIndex: "9999",backgroundColor: "var(--red)", borderColor: "#4a0a0a"}, closeButton: { color: "white", "&:hover": { backgroundColor: "#ff3636" }}}, true);
     }
-  });
+  }
 
   const form = useForm({
 
@@ -175,6 +148,36 @@ export default function Create({ open, setOpen }) {
   async function createServer(values){
     setCreating(true);
     setButtonName('Creating...');
+    ipcRenderer.on('err-creating-server', Error);
+
+      ipcRenderer.on('created-server', ()=>{
+        setCreating(false);
+        setButtonName('Create');
+        navigate('/servers');
+        setOpenWithTransition(false);
+        setBuildingInfo('');
+      });
+    
+      ipcRenderer.on('building-jar', ()=>{
+        setBuildingInfo('getting the jar file...');
+      });
+    
+      ipcRenderer.on('creating-server', ()=>{
+        setPrevention('');
+        setBuildingInfo('creating the server...');
+      });
+    
+      ipcRenderer.on('launching-server', ()=>{
+        setBuildingInfo('launching the server...');
+      });
+    
+      ipcRenderer.on('preparing-spawn', ()=>{
+        setBuildingInfo('preparing spawn area...');
+      });
+    
+      ipcRenderer.on('longer-jar', ()=>{
+        setPrevention('This might take a little longer if this is your first time building in this version.');
+      });
     let resp = await ipcRenderer.invoke("create-server", {
       'name': values['server_name'],
       'ram': values['ram_value'],
@@ -188,12 +191,12 @@ export default function Create({ open, setOpen }) {
     if(resp){
       setCreating(false);
       setPlaceHolder("Name already used.");
+      setButtonName('Create');
       form.setFieldValue('server_name', "");
       form.setFieldError('server_name', " ");
     }
     else{
       setPlaceHolder("Type here to write...");
-      
     }
   }
 

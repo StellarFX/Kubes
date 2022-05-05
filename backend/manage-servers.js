@@ -15,11 +15,12 @@ methods.scan = (dir)=>{
     let scanDirs = [];
     const path = dir.concat("/Servers");
 
-    
-    if(fs.existsSync(path)){
-        let files = fs.readdirSync(path);
+    if(!fs.existsSync(path)){
+        fs.mkdirSync(path);
+    }
+    let files = fs.readdirSync(path);
 
-        files.forEach((file)=>{
+    files.forEach((file)=>{
             if(fs.lstatSync(path.concat("/" + file)).isDirectory()){
                 let data =  fs.readdirSync(path.concat("/" + file));
                 if(data.includes(".kubes")){
@@ -41,8 +42,7 @@ methods.scan = (dir)=>{
                     }
                 }
             }
-        }); 
-    }
+    }); 
     allDirs = scanDirs;
     dataLast["serverList"] = allDirs;
     fs.writeFileSync(require.resolve('./lastLaunched.json'), JSON.stringify(dataLast, null, 2));

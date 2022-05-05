@@ -1,6 +1,6 @@
 const { spawn, exec } = require("child_process");
 const fs = require('fs');
-const { ipcMain} = require('electron');
+const { ipcMain , BrowserWindow } = require('electron');
 var propertiesReader = require('properties-reader');
 const methods = require('./manage-servers');
 
@@ -112,32 +112,41 @@ ipcMain.on('start-server', (e,path)=>{
 });
 
 server.createServ = (servInfo, path, samplePath)=>{
-    let errorVers = false;
     fs.mkdirSync(path);
-    fs.copyFileSync(samplePath, path.concat("/server.jar"));
-    let init = spawn('java', [`-Xmx${servInfo['ram']}M`, `-Xms1024M`, "-jar","server.jar", "nogui"], {cwd: path, spawn: true});
+    fs.copyFile(samplePath, path.concat("/server.jar"), (errc)=>{
+        if(errc)console.log(errc);
+        let init = spawn('java', [`-Xmx${servInfo['ram']}M`, `-Xms1024M`, "-jar","server.jar", "nogui"], {cwd: path, spawn: true});
 
-    init.stderr.on('data', (data) => {
-        console.log(`stderr: ${data}`);
-        errorVers = true;
-        win.webContents.send('err-creating-server', `${data}`);
-    });
+        init.stdout.on('data', (data) => {
+            console.log(`stdout: ${data}`);      
+        });
 
-    let done = new Promise((res, rej)=>{
-        init.on('close', (code) => {
-            console.log(`child process exited with code ${code}`);
-            if(`${code}` === "0"){
+        new Promise((res, rej)=>{
+
+            let errorVers = false;
+            let errorDat = "";
+
+            init.stderr.on('data', (data) => {
+                console.log(`stderr: ${data}`);
+                errorVers = true;
+                errorDat = data;
+            });
+
+            init.on('close', (code) => {
+                console.log(`child process exited with code ${code}`);
                 if(errorVers){
-                    methods.remove(path);
+                    rej(`${errorDat}`);
                 }
-                else{
+                else if(`${code}` === "0"){
                     exec('echo eula=true>eula.txt', {shell: true,cwd: path}, (error, stdout, stderr)=>{
                         console.log(`stdout: ${stdout}`);
                         console.log(`stderr: ${stderr}`);
                         console.error(`error: ${error}`);
-                        if(error || stderr){
-                            win.webContents.send('err-creating-server', `${stderr}`);
-                            methods.remove(path);
+                        if(stderr){
+                            rej(`Error: ${stderr}`);
+                        }
+                        if(error){
+                            rej(`Error: ${error}`);
                         }
                     });
                     let properties;
@@ -155,76 +164,91 @@ server.createServ = (servInfo, path, samplePath)=>{
                         fs.writeFileSync(path.concat('/server.properties'), final, { encoding: "utf-8"});
                         res('closed');
                     }catch(err){
-                        win.webContents.send('err-creating-server', `${stderr}`);
-                        methods.remove(path);
-                        rej('error');
+                        rej(err);
                     }
                 }
-            }
-            else{
-                win.webContents.send('err-creating-server', `child process exited with code ${code}`);
-                methods.remove(path);
-                rej('closed');
-            }
-        });
-    });
-
-    done.then(()=>{
-        win.webContents.send('launching-server');
-        servList[path] = {};
-        servList[path]['process'] = spawn('java', [`-Xmx${servInfo['ram']}M`, `-Xms1024M`, "-jar","server.jar", "nogui"], {cwd: path, spawn: true});
-
-        servList[path]['process'].stderr.on('data', (data) => {
-            console.log(`stderr: ${data}`, "aeaeaeaea", path);
-            win.webContents.send('err-creating-server', `${data}`);
-            methods.remove(path);
-        });
-        servList[path]['process'].stdout.on('data', (data) => {
-            console.log(`stdout: ${data}`);
-            if(`${data}`.slice(-3) === "%\r\n"){
-                win.webContents.send('preparing-spawn');
-            }
-            if(`stdout: ${data}`.slice(-25) === '! For help, type "help"\r\n' || `stdout: ${data}`.slice(-32) === '! For help, type "help" or "?"\r\n' ){
-                let kubes = {
-                    "api": api.charAt(0).toUpperCase() + api.slice(1),
-                    "version": servInfo['version']
+                else{
+                    rej(`child process exited with code ${code}`);
                 }
-                fs.writeFileSync(path.concat("/.kubes"), JSON.stringify(kubes, null, 2));
-                if(win !== undefined){
-                    dataLast = JSON.parse(fs.readFileSync(require.resolve('./lastLaunched.json')));
-                    dataLast['lastLaunches'].unshift(path);
-      
-                    fs.writeFile(require.resolve('./lastLaunched.json'), JSON.stringify(dataLast, null, 2), (err)=>{
-                        if(err)console.log(err);
-                    });
-                    win.webContents.send('created-server');
-                    win.webContents.send('started-server', path);
-                    servList[path]['status'] = 1;
+            });
+        }).then(()=>{
+            console.log('res');
+            win.webContents.send('launching-server');
+            let errorLaunch = false;
+            let errorDat = "";
+            servList[path] = {};
+            servList[path]['process'] = spawn('java', [`-Xmx${servInfo['ram']}M`, `-Xms1024M`, "-jar","server.jar", "nogui"], {cwd: path, spawn: true});
+            servList[path]['process'].stderr.on('data', (data) => {
+                errorLaunch = true;
+                errorDat = data;
+                console.log(`stderr: ${data}`, "aeaeaeaea", path);
+            });
+            servList[path]['process'].stdout.on('data', (data) => {
+                console.log(`stdout: ${data}`);
+                if(`${data}`.slice(-3) === "%\r\n"){
+                    win.webContents.send('preparing-spawn');
                 }
-            }  
-        });
-        servList[path]['process'].on('close', (code) => {
-            console.log(`child process exited with code ${code}`);
-            if(`${code}` === "0"){
-                win.webContents.send('closed-server', path);
-                servList[path]['status'] = 0;
-            }
-            else{
-                if(servList[path]['status'] === 1){
+                if(`stdout: ${data}`.slice(-25) === '! For help, type "help"\r\n' || `stdout: ${data}`.slice(-32) === '! For help, type "help" or "?"\r\n' ){
+                    let kubes = {
+                        "api": servInfo['api'].charAt(0).toUpperCase() + servInfo['api'].slice(1),
+                        "version": servInfo['version']
+                    }
+                    fs.writeFileSync(path.concat("/.kubes"), JSON.stringify(kubes, null, 2));
+                    if(win !== undefined){
+                        dataLast = JSON.parse(fs.readFileSync(require.resolve('./lastLaunched.json')));
+                        dataLast['lastLaunches'].unshift(path);
+        
+                        fs.writeFile(require.resolve('./lastLaunched.json'), JSON.stringify(dataLast, null, 2), (err)=>{
+                            if(err)console.log(err);
+                        });
+                        win.webContents.send('created-server');
+                        win.webContents.send('started-server', path);
+                        servList[path]['status'] = 1;
+                    }
+                }  
+            });
+            servList[path]['process'].on('close', (code) => {
+                console.log(`child process exited with code ${code}`);
+                if(errorLaunch){
+                    if(`${errorDat}`.length <= 200){
+                        console.log('error');
+                        win.webContents.send('err-creating-server', `${errorDat}`);
+                    }
+                    else{
+                        console.log('error');
+                        win.webContents.send('err-creating-server', "Error: Server closed.");
+                    }
+                    methods.remove(path);
+                }
+                if(`${code}` === "0"){
                     win.webContents.send('closed-server', path);
                     servList[path]['status'] = 0;
                 }
                 else{
-                    win.webContents.send('err-creating-server', `child process exited with code ${code}`);
-                    methods.remove(path);
+                    if(servList[path]['status'] === 1){
+                        win.webContents.send('closed-server', path);
+                        servList[path]['status'] = 0;
+                    }
+                    else{
+                        console.log('error');
+                        win.webContents.send('err-creating-server', `child process exited with code ${code}`);
+                        methods.remove(path);
+                    }
                 }
+            });
+        },(error)=>{
+            console.log('rej');
+            if(error.length <= 200){
+                console.log('sends');
+                win.webContents.postMessage('err-creating-server', error);
             }
-        });
-    },()=>{});
-
-    init.stdout.on('data', (data) => {
-        console.log(`stdout: ${data}`);      
+            else{
+                win.webContents.send('err-creating-server', "Error: Server closed.");
+            }
+            methods.remove(path);
+        }).catch((err)=>console.log(err ,"ayayaya"));
     });
+    
     
 }
 
