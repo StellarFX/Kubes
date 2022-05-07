@@ -12,8 +12,6 @@ const { ipcRenderer } = window.require('electron');
 var items;
 
 function Servers(){
-
-    const location = useLocation();
     
     const [openCreate, setOpenCreate] = useState(false);
 
@@ -26,7 +24,7 @@ function Servers(){
 
     useEffect(()=>{
         ipcRenderer.removeAllListeners();
-    });
+    },[]);
 
     const [folderPath, setFolderPath] = useState("");
     const [serversList, serversListHandler] = useListState([]);
