@@ -119,7 +119,7 @@ ipcMain.on('start-server', (e,path)=>{
 });
 
 server.createServ = (servInfo, path)=>{
-    let init = spawn('java', [`-Xmx${servInfo['ram']}M`, `-Xms1M`, "-jar","server.jar", "nogui"], {cwd: path, spawn: true});
+    let init = spawn('java', [`-Xmx${servInfo['ram']}M`, `-Xms1024M`, "-jar","server.jar", "nogui"], {cwd: path, spawn: true});
 
     init.stdout.on('data', (data) => {
         console.log(`stdout: ${data}`);      

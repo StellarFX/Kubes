@@ -50,7 +50,7 @@ export default function Create({ open, setOpen }) {
   const [creating, setCreating] = useState(false);
   const [buttonName, setButtonName] = useState('Create');
   const [buildingInfo, setBuildingInfo] = useState("");
-  const [prevention, setPrevention] = useState("Please check if you have the matching JAVA version, otherwise it might leads to errors.");
+  const [prevention, setPrevention] = useState("Please check if you have the matching JAVA and server version, otherwise it might leads to errors.");
 
   const [customDialogOpened, setCustomDialogOpened] = useState(false);
   const [customDialogStyle, setCustomDialogStyle] = useState({});
@@ -157,7 +157,7 @@ export default function Create({ open, setOpen }) {
         navigate('/servers');
         setOpenWithTransition(false);
         setBuildingInfo('');
-        setPrevention('Please check if you have the matching JAVA version, otherwise it might leads to errors.');
+        setPrevention('Please check if you have the matching JAVA and server version, otherwise it might leads to errors.');
       });
     
       ipcRenderer.on('building-jar', ()=>{

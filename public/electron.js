@@ -233,18 +233,11 @@ ipcMain.handle('create-server', async (e,data)=>{
             fs.mkdirSync(dir.concat("/Servers/" + data['name']));
             if(fs.existsSync(samplePath + `/libraries/net/minecraft/server/${data['version']}/server-${data['version']}.jar`)){
                 serverPath = samplePath + `/libraries/net/minecraft/server/${data['version']}/server-${data['version']}.jar`;
-                fs.copyFileSync(serverPath, path.concat("/server.jar"));
+                fs.copyFileSync(serverPath, dir.concat("/Servers/" + data['name'] + "/server.jar"));
             }
             else{
-                let File;
-                fs.readdirSync(samplePath).forEach((file)=>{
-                    if(file.slice(-4) === '.jar' && file.substring(0,5) === "forge" && !file.includes('installer')){
-                        File = file;
-                    }
-                });
-                serverPath = samplePath + "/" + File;
-                fs.copyFileSync(serverPath, path.concat("/server.jar"));
-                fs.copyFileSync(samplePath + "/libraries", path.concat("/libraries"));
+                serverPath = samplePath + `/minecraft_server.${data['version']}.jar`;
+                fs.copyFileSync(serverPath, dir.concat("/Servers/" + data['name'] + "/server.jar"));
             }
             
         }

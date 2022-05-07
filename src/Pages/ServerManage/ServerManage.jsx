@@ -49,7 +49,6 @@ function ServerManage(){
     const [servPath, setServPath] = useState("");
 
     const [openWindow, setOpenWindow] = useState(false);
-    const [init, setInit] = useState(false);
     
 
     useEffect(async()=>{
@@ -73,13 +72,12 @@ function ServerManage(){
     }
 
     useEffect(()=>{
-        setInit(true);
         ipcRenderer.on('error-starting-server', (e,err)=>{
             toggleDialog(<><FontAwesomeIcon style={{fontSize: "1.5rem"}}icon={faTimes} /><p>{err}</p></>, {root: {color: "white", zIndex: "9999",backgroundColor: "var(--red)", borderColor: "#4a0a0a"}, closeButton: { color: "white", "&:hover": { backgroundColor: "#ff3636" }}}, true);
         });
 
         ipcRenderer.on('closed-server', (e, path)=>{
-            if(path === servPath && status !== 3){
+            if(path === servPath && status === 4){
                 setStatus(0);
             }
         });
