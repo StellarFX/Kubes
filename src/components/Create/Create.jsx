@@ -51,6 +51,7 @@ export default function Create({ open, setOpen }) {
   const [buttonName, setButtonName] = useState('Create');
   const [buildingInfo, setBuildingInfo] = useState("");
   const [prevention, setPrevention] = useState("Please check if you have the matching JAVA and server version, otherwise it might leads to errors.");
+  const [forge, setForge] = useState(false);
 
   const [customDialogOpened, setCustomDialogOpened] = useState(false);
   const [customDialogStyle, setCustomDialogStyle] = useState({});
@@ -81,14 +82,16 @@ export default function Create({ open, setOpen }) {
 
 
   function Error(e,err){
+    let error = err;
     console.log('error')
     setBuildingInfo('');
     setCreating(false);
     setButtonName('Create');
-    setPrevention('');
-    if(err && err !== ""){
-      toggleDialog(<><FontAwesomeIcon style={{fontSize: "1.5rem"}}icon={faTimes} /><p>{err}</p></>, {root: {color: "white", zIndex: "9999",backgroundColor: "var(--red)", borderColor: "#4a0a0a"}, closeButton: { color: "white", "&:hover": { backgroundColor: "#ff3636" }}}, true);
+    setPrevention('Please check if you have the matching JAVA and server version, otherwise it might leads to errors.');
+    if(!error || error.replaceAll(' ', '') === "" || error.length > 200){
+      error = "Error: server closed."
     }
+    toggleDialog(<><FontAwesomeIcon style={{fontSize: "1.5rem"}}icon={faTimes} /><p style={{wordBreak: 'break-word'}}>{error}</p></>, {root: {color: "white", zIndex: "9999", backgroundColor: "var(--red)", borderColor: "#4a0a0a"}, closeButton: { color: "white", "&:hover": { backgroundColor: "#ff3636" }}}, true);
   }
 
   const form = useForm({
@@ -140,6 +143,13 @@ export default function Create({ open, setOpen }) {
         });
         form.setFieldValue('version_value', versionList[0]['value']);
       });
+
+      if(form.getInputProps('api_value')['value'] === 'forge'){
+        setForge(true);
+      }
+      else{
+        setForge(false);
+      }
     }
   },[form.getInputProps('api_value')['value']]);
 
@@ -158,6 +168,7 @@ export default function Create({ open, setOpen }) {
         setOpenWithTransition(false);
         setBuildingInfo('');
         setPrevention('Please check if you have the matching JAVA and server version, otherwise it might leads to errors.');
+        ipcRenderer.removeAllListeners();
       });
     
       ipcRenderer.on('building-jar', ()=>{
@@ -197,9 +208,6 @@ export default function Create({ open, setOpen }) {
       form.setFieldValue('server_name', "");
       form.setFieldError('server_name', " ");
     }
-    else{
-      setPlaceHolder("Type here to write...");
-    }
   }
 
   if(open) {
@@ -233,7 +241,7 @@ export default function Create({ open, setOpen }) {
                   </div>
                   <div>
                     <p><FontAwesomeIcon icon={faCloud}/>Port:</p>
-                    <TextInput className="input i-small" placeholder="..." {...form.getInputProps('port_value')} disabled={creating}/>
+                    <TextInput className="input i-small" placeholder="..." {...form.getInputProps('port_value')} disabled={creating || forge}/>
                   </div>
                   <div>
                     <p><FontAwesomeIcon icon={faFile}/>Eula:</p>
@@ -250,11 +258,11 @@ export default function Create({ open, setOpen }) {
                       <div className='accordion-container'>
                         <div>
                           <p>IP</p>
-                          <TextInput className="input i-small" placeholder="Enter IP..." {...form.getInputProps('ip_value')} disabled={creating}/>
+                          <TextInput className="input i-small" placeholder="Enter IP..." {...form.getInputProps('ip_value')} disabled={creating || forge}/>
                         </div>
                         <div>
                           <p>Motd</p>
-                          <TextInput className="input" placeholder="Type here to write..." {...form.getInputProps('motd_value')} disabled={creating}/>
+                          <TextInput className="input" placeholder="Type here to write..." {...form.getInputProps('motd_value')} disabled={creating || forge}/>
                         </div>
                       </div>
                     </Accordion.Item>

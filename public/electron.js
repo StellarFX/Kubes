@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const isDev = require('electron-is-dev');
 const path = require('path');
 const fs = require('fs');
+const fsextra = require('fs-extra');
 const methods = require('../backend/manage-servers');
 const setWindow = require('../backend/write-on-files');
 const server = require('../backend/server.js');
@@ -163,6 +164,8 @@ ipcMain.handle('create-server', async (e,data)=>{
     else{
         let api = await (await axios.get(`https://api.kubesmc.ml/apis/${data['api']}/${data['version']}`)).data;
         let samplePath = dir.concat("/Apis/"+data['api']+"/"+data['version']);
+        let command = `java -Xmx${data['ram']}M -Xms1024M -jar server.jar nogui`;
+        let secondCommand = `java -Xmx${data['ram']}M -Xms1024M -jar server.jar nogui`;
 
         if(!fs.existsSync(samplePath)){
 
@@ -175,7 +178,6 @@ ipcMain.handle('create-server', async (e,data)=>{
         let fileName = url.split("/").at(-1);
         let serverPath = samplePath+"/"+fileName;
         const response = await axios({url, method:'GET',responseType: 'stream'});
-        const writer = fs.createWriteStream(samplePath+"/"+fileName);
         window.webContents.send('building-jar');
         if(fs.existsSync(samplePath+"/"+fileName) && api['build']['sha256'] !== ""){
                 
@@ -183,7 +185,7 @@ ipcMain.handle('create-server', async (e,data)=>{
             sum.update(fs.readFileSync(samplePath+"/"+fileName));
     
             if(sum.digest('hex') !== api['build']['sha256']){
-    
+                const writer = fs.createWriteStream(samplePath+"/"+fileName);
                 response.data.pipe(writer);
     
                 await new Promise((res,rej)=>{
@@ -195,7 +197,8 @@ ipcMain.handle('create-server', async (e,data)=>{
                 });
             }
         }
-        if(!fs.existsSync(samplePath+"/"+fileName)){
+        if(!fs.existsSync(serverPath)){
+            const writer = fs.createWriteStream(samplePath+"/"+fileName);
             window.webContents.send('longer-jar');
             response.data.pipe(writer);
     
@@ -207,6 +210,7 @@ ipcMain.handle('create-server', async (e,data)=>{
                 });
             });
         }
+        fs.mkdirSync(dir.concat("/Servers/" + data['name']));
         if(api['build']['command'] !== ""){
             if(!fs.existsSync(samplePath + `/libraries/net/minecraft/server/${data['version']}/server-${data['version']}.jar`) && !fs.existsSync(samplePath + `/minecraft_server.${data['version']}.jar`)){
                 window.webContents.send('longer-jar');
@@ -230,20 +234,50 @@ ipcMain.handle('create-server', async (e,data)=>{
                     });
                 });
             }
-            fs.mkdirSync(dir.concat("/Servers/" + data['name']));
+            let forge;
+            let ram;
             if(fs.existsSync(samplePath + `/libraries/net/minecraft/server/${data['version']}/server-${data['version']}.jar`)){
                 serverPath = samplePath + `/libraries/net/minecraft/server/${data['version']}/server-${data['version']}.jar`;
                 fs.copyFileSync(serverPath, dir.concat("/Servers/" + data['name'] + "/server.jar"));
             }
-            else{
+            else if(fs.existsSync(samplePath + `/minecraft_server.${data['version']}.jar`)){
+                fs.readdirSync(samplePath).forEach((file)=>{
+                    if(file.includes('forge') && !(file.includes('installer'))){
+                        forge = file;
+                    }
+                });
                 serverPath = samplePath + `/minecraft_server.${data['version']}.jar`;
                 fs.copyFileSync(serverPath, dir.concat("/Servers/" + data['name'] + "/server.jar"));
+                
             }
-            
+            fs.readdirSync(samplePath).forEach((file)=>{
+                fsextra.copySync(samplePath +"/" + file, dir.concat("/Servers/" + data['name'] + "/" + file));
+                if(file.slice(-4) === '.txt'){
+                    ram = file;
+                }
+            });
+            if(fs.existsSync(samplePath + "/run.bat")){
+                fs.writeFileSync(samplePath + "/" + ram, `-Xmx${data['ram']}`);
+                command = fs.readFileSync(samplePath + "/run.bat", "utf-8")
+                            .split("\n")
+                            .filter((e)=>e.substring(0,3) !== "REM")
+                            .at(-3)
+                            .slice(0,-3)
+                            .concat('nogui %*');
+
+                secondCommand = command;
+            }
+            else{
+                secondCommand = `java -Xmx${data['ram']}M -Xms1024M -jar ${forge} nogui`;
+            }
+        }
+        else{
+            fs.copyFileSync(serverPath, dir.concat("/Servers/" + data['name'] + "/server.jar"));
         }
         window.webContents.send('creating-server');
-        server.createServ(data, dir.concat("/Servers/" + data['name']));
+        server.createServ(data, dir.concat("/Servers/" + data['name']), command, secondCommand);
     }
+    return false;
 });
 
 ipcMain.handle("initialize-path", ()=>{

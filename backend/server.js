@@ -118,16 +118,20 @@ ipcMain.on('start-server', (e,path)=>{
     server.start(path);
 });
 
-server.createServ = (servInfo, path)=>{
-    let init = spawn('java', [`-Xmx${servInfo['ram']}M`, `-Xms1024M`, "-jar","server.jar", "nogui"], {cwd: path, spawn: true});
-
+server.createServ = (servInfo, path, rawCommand, rawSecondCommand)=>{
+    let command = rawCommand.split(" ");
+    let secondCommand = rawSecondCommand.split(" ");
+    let init = spawn(command[0], command.slice(1, command.length), {cwd: path, spawn: true});
+    let errorVers = false;
     init.stdout.on('data', (data) => {
+        if(errorVers){
+            errorVers = false;
+        }
         console.log(`stdout: ${data}`);      
     });
 
     new Promise((res, rej)=>{
 
-        let errorVers = false;
         let errorDat = "";
 
         init.stderr.on('data', (data) => {
@@ -142,36 +146,40 @@ server.createServ = (servInfo, path)=>{
                 rej(`${errorDat}`);
             }
             else if(`${code}` === "0"){
-                exec('echo eula=true>eula.txt', {shell: true,cwd: path}, (error, stdout, stderr)=>{
-                    console.log(`stdout: ${stdout}`);
-                    console.log(`stderr: ${stderr}`);
-                    console.error(`error: ${error}`);
-                    if(stderr){
-                        rej(`Error: ${stderr}`);
-                    }
-                    if(error){
-                        rej(`Error: ${error}`);
-                    }
-                });
                 let properties;
+                
                 try{
-                    properties = propertiesReader(path.concat('/server.properties')).getAllProperties();
-                    properties["server-port"] = servInfo['port'];
-                    properties["motd"] = servInfo['motd'];
-                    properties['server-ip'] = servInfo['ip'];
-                    let final = JSON.stringify(properties)
-                                    .replaceAll('{',"")
-                                    .replaceAll('}', "")
-                                    .replaceAll('\"', "")
-                                    .replaceAll(',', "\n")
-                                    .replaceAll(':',"=");
-                    fs.writeFileSync(path.concat('/server.properties'), final, { encoding: "utf-8"});
-                    res('closed');
+                    if(command[command.length-1] !== "%*"){
+                        properties = propertiesReader(path.concat('/server.properties')).getAllProperties();
+                        properties["server-port"] = servInfo['port'];
+                        properties["motd"] = servInfo['motd'];
+                        properties['server-ip'] = servInfo['ip'];
+                        let final = JSON.stringify(properties)
+                                        .replaceAll('{',"")
+                                        .replaceAll('}', "")
+                                        .replaceAll('\"', "")
+                                        .replaceAll(',', "\n")
+                                        .replaceAll(':',"=");
+                        fs.writeFileSync(path.concat('/server.properties'), final, { encoding: "utf-8"});
+                    }
+                    exec('echo eula=true>eula.txt', {shell: true,cwd: path}, (error, stdout, stderr)=>{
+                        console.log(`stdout: ${stdout}`);
+                        console.log(`stderr: ${stderr}`);
+                        console.error(`error: ${error}`);
+                        if(stderr){
+                            rej(`Error: ${stderr}`);
+                        }
+                        if(error){
+                            rej(`Error: ${error}`);
+                        }
+                    });
                 }catch(err){
                     rej(err);
                 }
+                res('closed');
             }
             else{
+                console.log(7);
                 rej(`child process exited with code ${code}`);
             }
         });
@@ -181,13 +189,16 @@ server.createServ = (servInfo, path)=>{
         let errorLaunch = false;
         let errorDat = "";
         servList[path] = {};
-        servList[path]['process'] = spawn('java', [`-Xmx${servInfo['ram']}M`, `-Xms1024M`, "-jar","server.jar", "nogui"], {cwd: path, spawn: true});
+        servList[path]['process'] = spawn(secondCommand[0], secondCommand.slice(1, secondCommand.length), {cwd: path, spawn: true});
         servList[path]['process'].stderr.on('data', (data) => {
             errorLaunch = true;
             errorDat = data;
             console.log(`stderr: ${data}`, "aeaeaeaea", path);
         });
         servList[path]['process'].stdout.on('data', (data) => {
+            if(errorLaunch){
+                errorLaunch = false;
+            }
             console.log(`stdout: ${data}`);
             if(`${data}`.slice(-3) === "%\r\n"){
                 win.webContents.send('preparing-spawn');
@@ -226,14 +237,21 @@ server.createServ = (servInfo, path)=>{
                 methods.remove(path);
             }
             if(`${code}` === "0"){
-                win.webContents.send('closed-server', path);
-                servList[path]['status'] = 0;
+                if(servList[path]['restart']){
+                    servList[path]['restart'] = false;
+                    server.start(path);
+                }
+                else{
+                    win.webContents.send('closed-server', path);
+                    servList[path]['status'] = 0;
+                }
             }
             else{
                 if(servList[path]['status'] === 1){
                     win.webContents.send('closed-server', path);
                     servList[path]['status'] = 0;
                 }
+                
                 else{
                     console.log('error');
                     win.webContents.send('err-creating-server', `child process exited with code ${code}`);

@@ -5,12 +5,15 @@ import { useListState } from '@mantine/hooks';
 import Create from '../../components/Create/Create';
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useLocation } from "react-router-dom";
 
 const { ipcRenderer } = window.require('electron');
 
 var items;
 
 function Servers(){
+
+    const location = useLocation();
     
     const [openCreate, setOpenCreate] = useState(false);
 
@@ -18,7 +21,12 @@ function Servers(){
         let path = await ipcRenderer.invoke("initialize-path");
         setFolderPath(path);
         scanServers();
+        
     },[]);
+
+    useEffect(()=>{
+        ipcRenderer.removeAllListeners();
+    });
 
     const [folderPath, setFolderPath] = useState("");
     const [serversList, serversListHandler] = useListState([]);
