@@ -31,6 +31,10 @@ function Dashboard() {
     }
   },[]);
 
+  useEffect(()=>{
+    ipcRenderer.removeAllListeners();
+  },[]);
+
   ipcRenderer.on('closed-server', (e, path)=>{
     if(lastServ !== undefined){
       if(path === lastServ['path']){
