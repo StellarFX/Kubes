@@ -42,7 +42,7 @@ function Servers(){
     }).map((serv)=>{
         return(
             <>
-                <ServCard status={serv['status']} api={serv['api']} name={serv["name"]} dir={serv["path"]} version={serv['version']} port={serv['port']} key={serv['status']}/>
+                <ServCard status={serv['status']} api={serv['api']} name={serv["name"]} dir={serv["path"]} version={serv['version']} port={serv['port']} maxPlayers={serv['max-players']} key={serv['status']}/>
             </>
         )
 

@@ -5,7 +5,6 @@ const { randomId } = require('@mantine/hooks');
 const Encoding = require('encoding-japanese');
 const { ipcMain} = require('electron');
 const _ = require('lodash');
-var propertiesReader = require('properties-reader');
 
 var methods = {}
 let allDirs = [];
@@ -29,16 +28,18 @@ methods.scan = (dir)=>{
                     let version = kubes['version']!==""&&kubes['version']?kubes['version']:"unknown";
                     let api = kubes['api']?kubes['api']:"";
                     let prop = data.filter((e)=>e === "server.properties");
-                    let port = fs.readFileSync(path.concat("/"+file+"/"+prop), 'utf-8')
+                    let props = fs.readFileSync(path.concat("/"+file+"/"+prop), 'utf-8')
                                 .split("\r\n")
                                 .filter((e)=>e.charAt(0)!=="#" && e)
                                 .reduce((acc,line)=>{
                                     _.set(acc, ...line.split('='));
                                     return acc;
-                                },{})['server-port'];
+                                },{});
+                    
+                    let port = props['server-port'];
+                    let maxPlayers = props['max-players'];
 
-
-                    scanDirs.push({"path": path.concat("/" + file),'api': api.charAt(0).toUpperCase() + api.slice(1), 'version': version, "name": file, 'port': port});
+                    scanDirs.push({"path": path.concat("/" + file),'api': api.charAt(0).toUpperCase() + api.slice(1), 'version': version, "name": file, 'port': port, 'max-players': maxPlayers});
                 }
             }
         }

@@ -1,8 +1,10 @@
 const { spawn, exec } = require("child_process");
 const fs = require('fs');
-const { ipcMain , BrowserWindow } = require('electron');
+const { ipcMain } = require('electron');
 var propertiesReader = require('properties-reader');
 const methods = require('./manage-servers');
+const util = require('minecraft-server-util');
+const axios = require('axios');
 
 let server = {};
 let servList = {};
@@ -38,7 +40,7 @@ ipcMain.handle('last-server-launched', ()=>{
 });
 
 server.start = (path)=>{
-    data = JSON.parse(fs.readFileSync(require.resolve('./lastLaunched.json')));
+    dataLast = JSON.parse(fs.readFileSync(require.resolve('./lastLaunched.json')));
     let file;
     fs.readdirSync(path).forEach((files)=>{
         if(files.slice(-4) === ".jar"){
@@ -57,8 +59,8 @@ server.start = (path)=>{
     if(servList[path]['status'] !== 3){
         servList[path]['status'] = 2;
     }
-    if(!data['lastLaunches']){
-        data['lastLaunches'] = [];
+    if(!dataLast['lastLaunches']){
+        dataLast['lastLaunches'] = [];
     }
 
     let kubes = JSON.parse(fs.readFileSync(path + "/.kubes"));
@@ -71,13 +73,13 @@ server.start = (path)=>{
     let rawCommand = `java -Xms${kubes['ram']}M -Xmx${kubes['ram']}M -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:InitiatingHeapOccupancyPercent=15 -Dusing.aikars.flags=https://mcflags.emc.gs/ -Daikars.new.flags=true -jar "${path.concat("/"+file)}" nogui`;
     let command = rawCommand.split(" ");
     servList[path]['process'] = spawn(command[0], command.slice(1,command.length), {spawn: true, shell: true, cwd: path});
-    const index = data['lastLaunches'].indexOf(path);
+    const index = dataLast['lastLaunches'].indexOf(path);
     if(index !== -1){
-        data['lastLaunches'].splice(index, 1);
+        dataLast['lastLaunches'].splice(index, 1);
     }
-    data['lastLaunches'].unshift(path);
+    dataLast['lastLaunches'].unshift(path);
       
-    fs.writeFile(require.resolve('./lastLaunched.json'), JSON.stringify(data, null, 2), (err)=>{
+    fs.writeFile(require.resolve('./lastLaunched.json'), JSON.stringify(dataLast, null, 2), (err)=>{
         if(err)console.log(err);
     });
 
@@ -105,11 +107,20 @@ server.start = (path)=>{
     servList[path]['process'].stdout.on('data', (data) => {
         
         console.log(`stdout: ${data}`);
+
         if(`stdout: ${data}`.slice(-25) === '! For help, type "help"\r\n' || `stdout: ${data}`.slice(-32) === '! For help, type "help" or "?"\r\n' ){
+
             if(win !== undefined){
                 win.webContents.send('started-server', path);
                 servList[path]['status'] = 1;
             }
+
+            let port = dataLast['serverList'].filter((serv)=>serv['path'] === path)[0]['port'];
+
+            util.statusLegacy('localhost', port, {timeout: 1000 * 5, enableSRV: true})
+            .then((result)=>{
+                win.webContents.send('server-request', result);
+            }).catch((error)=>console.error(error));
         }        
     });
 }
@@ -118,7 +129,7 @@ ipcMain.on('start-server', (e,path)=>{
     server.start(path);
 });
 
-server.createServ = (servInfo, path, rawCommand, rawSecondCommand)=>{
+server.createServ = (servInfo, path, rawCommand, rawSecondCommand, link2)=>{
     let command = rawCommand.split(" ");
     let secondCommand = rawSecondCommand.split(" ");
     let init = spawn(command[0], command.slice(1, command.length), {cwd: path, spawn: true});
@@ -218,12 +229,12 @@ server.createServ = (servInfo, path, rawCommand, rawSecondCommand)=>{
                         if(err)console.log(err);
                     });
                     servList[path]['status'] = 1;
-                    win.webContents.send('created-server');
-                    win.webContents.send('started-server', path);
+                    servList[path]['process'].stdin.write("stop\n");
+                    servList[path]['process'].stdin.end();
                 }
             }  
         });
-        servList[path]['process'].on('close', (code) => {
+        servList[path]['process'].on('close', async (code) => {
             console.log(`child process exited with code ${code}`);
             if(errorLaunch){
                 if(`${errorDat}`.length <= 200){
@@ -237,26 +248,18 @@ server.createServ = (servInfo, path, rawCommand, rawSecondCommand)=>{
                 methods.remove(path);
             }
             if(`${code}` === "0"){
-                if(servList[path]['restart']){
-                    servList[path]['restart'] = false;
-                    server.start(path);
+                if(link2){
+                    let response = await axios({url: link2, method:'GET',responseType: 'stream'})
+                    const writer = fs.createWriteStream(path + "/mods/spongeforge.jar");
+                    await response.data.pipe(writer);
                 }
-                else{
-                    win.webContents.send('closed-server', path);
-                    servList[path]['status'] = 0;
-                }
+                servList[path]['status'] = 0;
+                win.webContents.send('created-server');
+                win.webContents.send('closed-server', path);
             }
             else{
-                if(servList[path]['status'] === 1){
-                    win.webContents.send('closed-server', path);
-                    servList[path]['status'] = 0;
-                }
-                
-                else{
-                    console.log('error');
-                    win.webContents.send('err-creating-server', `child process exited with code ${code}`);
-                    methods.remove(path);
-                }
+                win.webContents.send('err-creating-server', `child process exited with code ${code}`);
+                methods.remove(path);
             }
         });
     },(error)=>{

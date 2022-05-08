@@ -12,6 +12,7 @@ export default function Console(props){
     const [port, setPort] = useState();
     const [api, setApi] = useState();
     const [version, setVersion] = useState();
+    const [maxPlayers, setMaxPlayers] = useState();
 
     useEffect(()=>{
         if(location.state){
@@ -21,11 +22,14 @@ export default function Console(props){
             setApi(location.state.api);
             props.setVersion(location.state.version);
             setVersion(location.state.version);
+            props.setMaxPlayers(location.state.maxPlayers);
+            setMaxPlayers(location.state.maxPlayers);
         }
         else{
             setPort(props.port);
             setVersion(props.version);
             setApi(props.api);
+            setMaxPlayers(props.maxPlayers);
         }
     },[]);
     
@@ -78,7 +82,7 @@ export default function Console(props){
                             <p>Port:</p>
                         </div>
                         <div className="p-right">
-                            <p>0/50</p>
+                            <p>0/{maxPlayers}</p>
                             <p>{api} {version}</p>
                             <p>{port}</p>
                         </div>

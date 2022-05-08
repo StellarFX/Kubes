@@ -275,7 +275,7 @@ ipcMain.handle('create-server', async (e,data)=>{
             fs.copyFileSync(serverPath, dir.concat("/Servers/" + data['name'] + "/server.jar"));
         }
         window.webContents.send('creating-server');
-        server.createServ(data, dir.concat("/Servers/" + data['name']), command, secondCommand);
+        server.createServ(data, dir.concat("/Servers/" + data['name']), command, secondCommand, api['build']['link2']);
     }
     return false;
 });

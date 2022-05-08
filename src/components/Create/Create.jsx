@@ -52,6 +52,7 @@ export default function Create({ open, setOpen }) {
   const [buildingInfo, setBuildingInfo] = useState("");
   const [prevention, setPrevention] = useState("Please check if you have the matching JAVA and server version, otherwise it might leads to errors.");
   const [forge, setForge] = useState(false);
+  const [ramMin, setRamMin] = useState(1024);
 
   const [customDialogOpened, setCustomDialogOpened] = useState(false);
   const [customDialogStyle, setCustomDialogStyle] = useState({});
@@ -100,7 +101,7 @@ export default function Create({ open, setOpen }) {
       server_name: '',
       api_value: "bukkit",
       version_value: "1.8.8",
-      ram_value: "1024",
+      ram_value: "2048",
       port_value: "25565",
       ip_value: "127.0.0.1",
       motd_value: "Server built with Kubes!",
@@ -109,7 +110,7 @@ export default function Create({ open, setOpen }) {
 
     validate: {
       server_name: (val) => val !== "" && /^[^\\/:"?<>|]+$/i.test(val) ? null : ' ',
-      ram_value: (val) => val !== "" && parseInt(val) % 1024 === 0 ? null : ' ',
+      ram_value: (val) => val !== "" && parseInt(val) % 1024 === 0 && parseInt(val) >= ramMin ? null : ' ',
       port_value: (val) => val !== "" && /^((6553[0-5])|(655[0-2][0-9])|(65[0-4][0-9]{2})|(6[0-4][0-9]{3})|([1-5][0-9]{4})|([0-5]{0,5})|([0-9]{1,4}))$/.test(val) ? null : ' ',
       ip_value: (val) => val !== "" && /^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(.(?!$)|$)){4}$/.test(val) ? null : ' ',
       motd_value: (val) => val !== "" && val ? null : ' ',
@@ -147,8 +148,12 @@ export default function Create({ open, setOpen }) {
       if(form.getInputProps('api_value')['value'] === 'forge'){
         setForge(true);
       }
+      else if(form.getInputProps('api_value')['value'].substring(0,6) === 'sponge'){
+        setRamMin(2048);
+      }
       else{
         setForge(false);
+        setRamMin(1024);
       }
     }
   },[form.getInputProps('api_value')['value']]);

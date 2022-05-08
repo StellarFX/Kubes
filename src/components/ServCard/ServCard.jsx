@@ -14,7 +14,7 @@ export default function ServCard(props) {
     const Version = props.api + ' ' + props.version;
     const Port = props.port;
     const onlineUsers = 0;
-    const availablePlaces = 50;
+    const availablePlaces = props.maxPlayers;
     const [Name, setName] = useState(props.name);
     const [directory, setDirectory] = useState(props.dir);
 
@@ -157,7 +157,7 @@ export default function ServCard(props) {
                 
             </div>
 
-            <Link to={{pathname:`/server/${Name}/console`, search: props.port}} state={{version: props.version, api: props.api, port: props.port}} className="manage-button" tabIndex="1">
+            <Link to={{pathname:`/server/${Name}/console`, search: props.port}} state={{version: props.version, api: props.api, port: props.port, maxPlayers: props.maxPlayers}} className="manage-button" tabIndex="1">
                 <p>Manage</p>
             </Link>
         </div>

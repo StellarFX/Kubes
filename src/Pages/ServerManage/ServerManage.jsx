@@ -45,6 +45,7 @@ function ServerManage(){
     const [port, setPort] = useState();
     const [version, setVersion] = useState();
     const [api, setApi] = useState();
+    const [maxPlayers, setMaxPlayers] = useState();
 
     const [servPath, setServPath] = useState("");
 
@@ -60,7 +61,8 @@ function ServerManage(){
 
     async function removeServer(){
         let resp = await ipcRenderer.invoke("remove", servPath);
-        if(resp === "success" && status === 0){
+        console.log(resp === "success", parseInt(status) === 0);
+        if(resp === "success" && parseInt(status) === 0){
             navigate("/dashboard");
         }
     }
@@ -91,8 +93,9 @@ function ServerManage(){
             }
         });
 
-        ipcRenderer.on('changed-port', (e,port)=>{
-            setPort(port);
+        ipcRenderer.on('changed-port', (e,data)=>{
+            setPort(data['port']);
+            setMaxPlayers(data['maxPlayers']);
             ipcRenderer.removeAllListeners();
         });
     },[status]);
@@ -127,6 +130,8 @@ function ServerManage(){
                             version={version} setVersion={setVersion} 
                             port={port} 
                             setPort={setPort} 
+                            maxPlayers={maxPlayers}
+                            setMaxPlayers={setMaxPlayers}
                             status={(num)=>setStatus(num)} 
                             stat={status}/>
                         }/>

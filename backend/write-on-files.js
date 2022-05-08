@@ -18,26 +18,27 @@ ipcMain.on("change-properties", (e, content, path)=>{
         }
     });
 
-    let port = content.split("\r\n")
+    let props = content.split("\r\n")
                     .filter((e)=>e.charAt(0)!=="#" && e)
                     .reduce((acc,line)=>{
                         _.set(acc, ...line.split('='));
                         return acc;
-                    },{})['server-port'];
-
-    
+                    },{});
+    let port = props['server-port'];
+    let maxPlayers = props['max-players'];
 
     let data = JSON.parse(fs.readFileSync(require.resolve('./lastLaunched.json')));
     for(let i = 0; i < data['serverList'].length; i++){
         if(data['serverList'][i]['path'] === path){
             data['serverList'][i]['port'] = port;
+            data['serverList'][i]['max-players'] = maxPlayers;
         }
     }
-    console.log(port);
+
     fs.writeFileSync(require.resolve('./lastLaunched.json'), JSON.stringify(data, null, 2));
     fs.writeFileSync(properties, content, { encoding: "utf-8"});
 
-    win.webContents.send('changed-port', port);
+    win.webContents.send('changed-port', {port: port, maxPlayers: maxPlayers});
 });
 
 ipcMain.on('changeFileContent', (e,content, path)=>{
@@ -46,22 +47,25 @@ ipcMain.on('changeFileContent', (e,content, path)=>{
     if(path.slice(-17) === "server.properties"){
         let dataLast = JSON.parse(fs.readFileSync(require.resolve('./lastLaunched.json')));
 
-        let port = content.split("\r\n")
+        let props = content.split("\r\n")
                     .filter((e)=>e.charAt(0)!=="#" && e)
                     .reduce((acc,line)=>{
                         _.set(acc, ...line.split('='));
                         return acc;
-                    },{})['server-port'];
+                    },{});
+        let port = props['server-port'];
+        let maxPlayers = props['max-players'];
 
         console.log(path.slice(-18))
         for(let i = 0; i < dataLast['serverList'].length; i++){
             console.log(dataLast['serverList'][i]['path']);
             if(dataLast['serverList'][i]['path'] === path.slice(0,-18)){
                 dataLast['serverList'][i]['port'] = port;
+                dataLast['serverList'][i]['max-players'] = maxPlayers;
             }
         }
         fs.writeFileSync(require.resolve('./lastLaunched.json'), JSON.stringify(dataLast, null ,2));
-        win.webContents.send('changed-port', port);
+        win.webContents.send('changed-port', {port: port, maxPlayers: maxPlayers});
     }
 
     fs.writeFileSync(path, content, { encoding: encod ?? "utf-8" });
