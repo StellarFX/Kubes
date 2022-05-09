@@ -5,6 +5,7 @@ const { randomId } = require('@mantine/hooks');
 const Encoding = require('encoding-japanese');
 const { ipcMain} = require('electron');
 const _ = require('lodash');
+const util = require('minecraft-server-util');
 
 var methods = {}
 let allDirs = [];
@@ -49,6 +50,12 @@ methods.scan = (dir)=>{
     fs.writeFileSync(require.resolve('./lastLaunched.json'), JSON.stringify(dataLast, null, 2));
     return allDirs;
 }
+
+ipcMain.handle('online-users', async (e, port)=>{
+    let resp = await util.status('localhost', parseInt(port), {enableSRV: true});
+    console.log(port, resp['players']);
+    return resp['players']['online'];
+});
 
 ipcMain.handle('rename-server', (e, data)=>{
     let dataLast = JSON.parse(fs.readFileSync(require.resolve('./lastLaunched.json')));

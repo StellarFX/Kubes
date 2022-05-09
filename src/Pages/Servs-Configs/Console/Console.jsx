@@ -13,6 +13,7 @@ export default function Console(props){
     const [api, setApi] = useState();
     const [version, setVersion] = useState();
     const [maxPlayers, setMaxPlayers] = useState();
+    const [currentPlayers, setCurrentPlayers] = useState(0);
 
     useEffect(()=>{
         if(location.state){
@@ -24,14 +25,26 @@ export default function Console(props){
             setVersion(location.state.version);
             props.setMaxPlayers(location.state.maxPlayers);
             setMaxPlayers(location.state.maxPlayers);
+            props.setCurrentPlayers(location.state.currentPlayers);
+            setCurrentPlayers(location.state.currentPlayers);
         }
         else{
             setPort(props.port);
             setVersion(props.version);
             setApi(props.api);
             setMaxPlayers(props.maxPlayers);
+            setCurrentPlayers(props.currentPlayers);
         }
     },[]);
+
+    ipcRenderer.on('server-request', (e, data)=>{
+        console.log(data);
+        if(data['path'] === props.path){
+            setCurrentPlayers(data['connected']);
+        }
+        
+        ipcRenderer.removeAllListeners('server-request');
+    });
     
     function start(){
         props.status(2);
@@ -82,7 +95,7 @@ export default function Console(props){
                             <p>Port:</p>
                         </div>
                         <div className="p-right">
-                            <p>0/{maxPlayers}</p>
+                            <p>{currentPlayers}/{maxPlayers}</p>
                             <p>{api} {version}</p>
                             <p>{port}</p>
                         </div>

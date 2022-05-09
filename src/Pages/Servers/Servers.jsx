@@ -42,7 +42,7 @@ function Servers(){
     }).map((serv)=>{
         return(
             <>
-                <ServCard status={serv['status']} api={serv['api']} name={serv["name"]} dir={serv["path"]} version={serv['version']} port={serv['port']} maxPlayers={serv['max-players']} key={serv['status']}/>
+                <ServCard status={serv['status']} api={serv['api']} online={serv['online']} name={serv["name"]} dir={serv["path"]} version={serv['version']} port={serv['port']} maxPlayers={serv['max-players']} key={serv['status']}/>
             </>
         )
 
@@ -51,8 +51,14 @@ function Servers(){
     async function scanServers(){
         let list = await ipcRenderer.invoke("scan-servers");
         for(let i = 0; i < list.length; i++){
-            let resp = await ipcRenderer.invoke('get-activity', list[i]['path']);
-            list[i]['status'] = resp;
+            list[i]['status'] = await ipcRenderer.invoke('get-activity', list[i]['path']);
+            
+            if(list[i]['status'] === 1){
+                list[i]['online'] = await ipcRenderer.invoke('online-users', list[i]['port']);
+            }
+            else{
+                list[i]['online'] = 0;
+            }
         }
         serversListHandler.setState(list);
         setScanned(true);
@@ -71,6 +77,14 @@ function Servers(){
         for(let i = 0; i < serversList.length; i++){
             if(serversList[i]['path'] === path){
                 serversListHandler.setItemProp(i, 'status', 1);
+            }
+        }
+    });
+
+    ipcRenderer.on('server-request', (e,data)=>{
+        for(let i = 0; i < serversList.length; i++){
+            if(serversList[i]['path'] === data['path']){
+                serversListHandler.setItemProp(i, 'online', data['connected']);
             }
         }
     });

@@ -25,8 +25,13 @@ function Dashboard() {
       return;
     }
     else{
-      let stat = await ipcRenderer.invoke('get-activity', resp['path']);
-      resp['status'] = stat;
+      resp['status'] = await ipcRenderer.invoke('get-activity', resp['path']);
+      if(resp['status'] === 1){
+        resp['online'] = await ipcRenderer.invoke('online-users', resp['port']);
+      }
+      else{
+        resp['online'] = 0;
+      }
       lastServHandler(resp);
     }
   },[]);
@@ -38,7 +43,7 @@ function Dashboard() {
   ipcRenderer.on('closed-server', (e, path)=>{
     if(lastServ !== undefined){
       if(path === lastServ['path']){
-        lastServHandler({name: lastServ['name'], path: lastServ['path'], api: lastServ['api'], version: lastServ['version'], port: lastServ['port'], 'max-players': lastServ['max-players'], status: 0, key: randomId()});
+        lastServHandler({name: lastServ['name'], online: lastServ['online'], path: lastServ['path'], api: lastServ['api'], version: lastServ['version'], port: lastServ['port'], 'max-players': lastServ['max-players'], status: 0, key: randomId()});
       }
     }
   });
@@ -46,7 +51,7 @@ function Dashboard() {
   ipcRenderer.on('started-server', (e, path)=>{
     if(lastServ !== undefined){
       if(path === lastServ['path']){
-        lastServHandler({name: lastServ['name'], path: lastServ['path'], api: lastServ['api'], version: lastServ['version'], port: lastServ['port'], 'max-players': lastServ['max-players'], status: 1, key: randomId()});
+        lastServHandler({name: lastServ['name'], online: lastServ['online'], path: lastServ['path'], api: lastServ['api'], version: lastServ['version'], port: lastServ['port'], 'max-players': lastServ['max-players'], status: 1, key: randomId()});
       }
     }
   });
@@ -94,7 +99,7 @@ function Dashboard() {
                 
               </div>
               :
-              <ServCard status={lastServ['status']} name={lastServ['name']} api={lastServ['api']} version={lastServ['version']} port={lastServ['port']} maxPlayers={lastServ['max-players']} dir={lastServ['path']} key={lastServ['key']}/>
+              <ServCard status={lastServ['status']} online={lastServ['online']} name={lastServ['name']} api={lastServ['api']} version={lastServ['version']} port={lastServ['port']} maxPlayers={lastServ['max-players']} dir={lastServ['path']} key={lastServ['key']}/>
 
               :
               <></>

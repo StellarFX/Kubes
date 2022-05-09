@@ -46,6 +46,7 @@ function ServerManage(){
     const [version, setVersion] = useState();
     const [api, setApi] = useState();
     const [maxPlayers, setMaxPlayers] = useState();
+    const [currentPlayers, setCurrentPlayers] = useState();
 
     const [servPath, setServPath] = useState("");
 
@@ -73,30 +74,38 @@ function ServerManage(){
         setCustomDialogOpened(toggle);
     }
 
+    ipcRenderer.on('server-request', (e, data)=>{
+        if(data['path'] === servPath){
+            setCurrentPlayers(data['connected']);
+        }
+        
+        ipcRenderer.removeAllListeners('server-request');
+    });
+
     useEffect(()=>{
         ipcRenderer.on('error-starting-server', (e,err)=>{
             toggleDialog(<><FontAwesomeIcon style={{fontSize: "1.5rem"}}icon={faTimes} /><p>{err}</p></>, {root: {color: "white", zIndex: "9999",backgroundColor: "var(--red)", borderColor: "#4a0a0a"}, closeButton: { color: "white", "&:hover": { backgroundColor: "#ff3636" }}}, true);
-            ipcRenderer.removeAllListeners();
+            ipcRenderer.removeAllListeners('error-starting-server');
         });
 
         ipcRenderer.on('closed-server', (e, path)=>{
             if(path === servPath && status === 4){
                 setStatus(0);
-                ipcRenderer.removeAllListeners();
+                ipcRenderer.removeAllListeners('closed-server');
             }
         });
         
         ipcRenderer.on('started-server', (e, path)=>{
             if(path === servPath){
                 setStatus(1);
-                ipcRenderer.removeAllListeners();
+                ipcRenderer.removeAllListeners('started-server');
             }
         });
 
         ipcRenderer.on('changed-port', (e,data)=>{
             setPort(data['port']);
             setMaxPlayers(data['maxPlayers']);
-            ipcRenderer.removeAllListeners();
+            ipcRenderer.removeAllListeners('changed-port');
         });
     },[status]);
 
@@ -132,6 +141,8 @@ function ServerManage(){
                             setPort={setPort} 
                             maxPlayers={maxPlayers}
                             setMaxPlayers={setMaxPlayers}
+                            currentPlayers={currentPlayers}
+                            setCurrentPlayers={setCurrentPlayers}
                             status={(num)=>setStatus(num)} 
                             stat={status}/>
                         }/>

@@ -16,10 +16,19 @@
       "name": "server",
       "port": "25566",
       "max-players": "20"
+    },
+    {
+      "path": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/testhmm",
+      "api": "Craftbukkit",
+      "version": "1.16.5",
+      "name": "testhmm",
+      "port": "25565",
+      "max-players": "20"
     }
   ],
   "lastLaunches": [
     "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/bukkit",
+    "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/testhmm",
     "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/bukkit",
     "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/bukkit",
     "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/server"

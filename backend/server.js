@@ -3,8 +3,8 @@ const fs = require('fs');
 const { ipcMain } = require('electron');
 var propertiesReader = require('properties-reader');
 const methods = require('./manage-servers');
-const util = require('minecraft-server-util');
 const axios = require('axios');
+const util = require('minecraft-server-util');
 
 let server = {};
 let servList = {};
@@ -115,13 +115,15 @@ server.start = (path)=>{
                 servList[path]['status'] = 1;
             }
 
+            
+            
+        }
+        if(servList[path]['status'] === 1){
             let port = dataLast['serverList'].filter((serv)=>serv['path'] === path)[0]['port'];
-
-            util.statusLegacy('localhost', port, {timeout: 1000 * 5, enableSRV: true})
-            .then((result)=>{
-                win.webContents.send('server-request', result);
-            }).catch((error)=>console.error(error));
-        }        
+            util.status('localhost', parseInt(port), {timeout: 5, enableSRV: true}).then((response)=>{
+                win.webContents.send('server-request', {connected: response['players']['online'], path: path});
+            });
+        }
     });
 }
 
