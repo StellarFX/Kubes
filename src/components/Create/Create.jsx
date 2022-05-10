@@ -161,7 +161,7 @@ export default function Create({ open, setOpen }) {
   const createForm = useRef(null);
 
   async function createServer(values){
-    setPrevention('');
+    setPrevention('Do not close Kubes right now.');
     setCreating(true);
     setButtonName('Creating...');
     ipcRenderer.on('err-creating-server', Error);
@@ -181,7 +181,7 @@ export default function Create({ open, setOpen }) {
       });
     
       ipcRenderer.on('creating-server', ()=>{
-        setPrevention('');
+        setPrevention("Do not close Kubes right now.");
         setBuildingInfo('creating the server...');
       });
     

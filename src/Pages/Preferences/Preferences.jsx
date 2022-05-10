@@ -1,4 +1,4 @@
-import React , { useRef, useEffect, useState } from 'react';
+import React , { useEffect, useState } from 'react';
 import './Preferences.scss';
 import { TextInput } from '@mantine/core';
 
@@ -7,7 +7,6 @@ const { ipcRenderer } = window.require('electron');
 function Preferences() {
 
   const [inputValue, setInputValue] = useState("");
-  const [initialized, setInitialized] = useState(false);
 
   useEffect(async()=>{
     let path = await ipcRenderer.invoke("initialize-path");

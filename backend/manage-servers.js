@@ -3,9 +3,10 @@ const fs = require('fs');
 const fastFolderSizeSync = require('fast-folder-size/sync');
 const { randomId } = require('@mantine/hooks');
 const Encoding = require('encoding-japanese');
-const { ipcMain} = require('electron');
+const { ipcMain } = require('electron');
 const _ = require('lodash');
 const util = require('minecraft-server-util');
+const { server } = require('./server.js');
 
 var methods = {}
 let allDirs = [];
@@ -28,6 +29,7 @@ methods.scan = (dir)=>{
                 if("api" in kubes && "version" in kubes){
                     let version = kubes['version']!==""&&kubes['version']?kubes['version']:"unknown";
                     let api = kubes['api']?kubes['api']:"";
+                    let ram = kubes['ram']?kubes['ram']:"2048";
                     let prop = data.filter((e)=>e === "server.properties");
                     let props = fs.readFileSync(path.concat("/"+file+"/"+prop), 'utf-8')
                                 .split("\r\n")
@@ -39,7 +41,7 @@ methods.scan = (dir)=>{
                     
                     let port = props['server-port'];
                     let maxPlayers = props['max-players'];
-
+                    server.scannedServer(path.concat("/" + file), api, version, file, port, ram);
                     scanDirs.push({"path": path.concat("/" + file),'api': api.charAt(0).toUpperCase() + api.slice(1), 'version': version, "name": file, 'port': port, 'max-players': maxPlayers});
                 }
             }
@@ -71,6 +73,7 @@ ipcMain.handle('rename-server', (e, data)=>{
             dataLast['lastLaunched'] = newPath;
         }
         dataLast['serverList'] = allDirs;
+        server.rename(data['path'], newPath, data['Newname']);
         fs.writeFileSync(require.resolve('./lastLaunched.json'), JSON.stringify(dataLast, null, 2));
         fs.renameSync(data['path'], newPath);
         return 'success'
@@ -81,12 +84,12 @@ ipcMain.handle('rename-server', (e, data)=>{
 });
 
 methods.remove = (path)=>{
-    console.log('bonalols', path);
     let dataLast = JSON.parse(fs.readFileSync(require.resolve('./lastLaunched.json')));
     fs.rmSync(path, { recursive: true });
     let serv = allDirs.filter((e)=>e['path'] === path);
     if(serv.length > 0){
         allDirs.splice(allDirs.indexOf(serv[0]), 1);
+        server.remove(path);
         dataLast['serverList'] =  allDirs;
         fs.writeFileSync(require.resolve('./lastLaunched.json'), JSON.stringify(dataLast, null, 2));
     }

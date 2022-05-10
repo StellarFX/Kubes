@@ -82,6 +82,13 @@ function ServerManage(){
         ipcRenderer.removeAllListeners('server-request');
     });
 
+    ipcRenderer.on('changed-port', (e,data)=>{
+        setPort(data['port']);
+        setMaxPlayers(data['maxPlayers']);
+        
+        ipcRenderer.removeAllListeners('changed-port');
+    });
+
     useEffect(()=>{
         ipcRenderer.on('error-starting-server', (e,err)=>{
             toggleDialog(<><FontAwesomeIcon style={{fontSize: "1.5rem"}}icon={faTimes} /><p>{err}</p></>, {root: {color: "white", zIndex: "9999",backgroundColor: "var(--red)", borderColor: "#4a0a0a"}, closeButton: { color: "white", "&:hover": { backgroundColor: "#ff3636" }}}, true);
@@ -100,12 +107,6 @@ function ServerManage(){
                 setStatus(1);
                 ipcRenderer.removeAllListeners('started-server');
             }
-        });
-
-        ipcRenderer.on('changed-port', (e,data)=>{
-            setPort(data['port']);
-            setMaxPlayers(data['maxPlayers']);
-            ipcRenderer.removeAllListeners('changed-port');
         });
     },[status]);
 
