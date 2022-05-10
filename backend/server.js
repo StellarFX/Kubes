@@ -22,6 +22,18 @@ class Server {
         this.status = 0;
     }
 
+    setApi(api){
+        this.api = api;
+    }
+
+    setVersion(version){
+        this.version = version;
+    }
+
+    setRam(ram){
+        this.ram = ram;
+    }
+
     renameServer(path, name){
         this.path = path;
         this.name = name;
@@ -265,9 +277,14 @@ server.setWin = (Win)=>{
     win = Win;
 }
 
-server.scannedServer = (path, api, version, name, port, ram)=>{
+server.scannedServer = (path, api, version, name, ram)=>{
     if(!servList[path]){
-        servList[path] = new Server(path, name, port, ram, api, version);
+        servList[path] = new Server(path, name, ram, api, version);
+    }
+    else{
+        servList[path].setRam(ram);
+        servList[path].setApi(api);
+        servList[path].setVersion(version);
     }
 }
 

@@ -41,12 +41,12 @@ methods.scan = (dir)=>{
                     
                     let port = props['server-port'];
                     let maxPlayers = props['max-players'];
-                    server.scannedServer(path.concat("/" + file), api, version, file, port, ram);
+                    server.scannedServer(path.concat("/" + file), api, version, file, ram);
                     scanDirs.push({"path": path.concat("/" + file),'api': api.charAt(0).toUpperCase() + api.slice(1), 'version': version, "name": file, 'port': port, 'max-players': maxPlayers});
                 }
             }
         }
-    }); 
+    });
     allDirs = scanDirs;
     dataLast["serverList"] = allDirs;
     fs.writeFileSync(require.resolve('./lastLaunched.json'), JSON.stringify(dataLast, null, 2));

@@ -2,6 +2,14 @@
   "lastLaunched": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/Minecraft Server - Copie",
   "serverList": [
     {
+      "path": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/paper",
+      "api": "Paper",
+      "version": "1.16.5",
+      "name": "paper",
+      "port": "25565",
+      "max-players": "20"
+    },
+    {
       "path": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/test",
       "api": "Craftbukkit",
       "version": "1.16.5",
@@ -11,6 +19,7 @@
     }
   ],
   "lastLaunches": [
+    "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/paper",
     "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/test"
   ]
 }
