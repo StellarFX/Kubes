@@ -216,7 +216,7 @@ server.createServ = (servInfo, path, rawCommand, rawSecondCommand, link2)=>{
             if(`${data}`.slice(-3) === "%\r\n"){
                 win.webContents.send('preparing-spawn');
             }
-            if(`stdout: ${data}`.slice(-25) === '! For help, type "help"\r\n' || `stdout: ${data}`.slice(-32) === '! For help, type "help" or "?"\r\n' ){
+            if(`stdout: ${data}`.match(/stdout: \[(.*)\] \[Server thread\/INFO\]: Done \((.*)s\)! For help, type "help"/g)){
                 let kubes = {
                     "api": servInfo['api'].charAt(0).toUpperCase() + servInfo['api'].slice(1),
                     "version": servInfo['version'],

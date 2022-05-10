@@ -2,35 +2,13 @@
   "lastLaunched": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/Minecraft Server - Copie",
   "serverList": [
     {
-      "path": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/bukkit",
-      "api": "Craftbukkit",
+      "path": "/home/dorian/Development/Kubes-Servers/Kubes/Servers/sugoma",
+      "api": "Spigot",
       "version": "1.16.5",
-      "name": "bukkit",
-      "port": "25565",
-      "max-players": "20"
-    },
-    {
-      "path": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/server",
-      "api": "Paper",
-      "version": "1.16.8",
-      "name": "server",
-      "port": "25566",
-      "max-players": "20"
-    },
-    {
-      "path": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/testhmm",
-      "api": "Craftbukkit",
-      "version": "1.16.5",
-      "name": "testhmm",
-      "port": "25565",
-      "max-players": "20"
+      "name": "sugoma"
     }
   ],
   "lastLaunches": [
-    "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/bukkit",
-    "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/testhmm",
-    "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/bukkit",
-    "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/bukkit",
-    "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/server"
+    "/home/dorian/Development/Kubes-Servers/Kubes/Servers/sugoma"
   ]
 }

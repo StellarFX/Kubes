@@ -10,7 +10,23 @@ const axios = require('axios');
 var crypto = require('crypto');
 const { spawn, exec } = require("child_process");
 
-var datas = fs.readFileSync(require.resolve('./data.json'));
+function getDatas() {
+
+    try {
+        return fs.readFileSync(require.resolve('./data.json'));
+    } catch (err) {
+        fs.writeFileSync(__dirname + "/data.json", JSON.stringify({
+            "directory": "",
+            "initialized": false,
+            "initial-path": ""
+        }));
+
+        return fs.readFileSync(require.resolve('./data.json'));
+    }
+
+}
+
+var datas = getDatas();
 var infos = JSON.parse(datas);
 var defaultPath = infos["initial-path"];
 let dir = infos["directory"];
@@ -119,7 +135,7 @@ function createWindow() {
         return win.isMaximized();
     });
 
-    if(infos["initialized"] === false){
+    if(!infos || infos["initialized"] === false){
         AskDefaultPath(win);
     } 
 
@@ -169,7 +185,7 @@ ipcMain.handle('create-server', async (e,data)=>{
 
         if(!fs.existsSync(samplePath)){
 
-            createDirIfNotExist("/Apis");
+            createDirIfNotExist(dir.concat("/Apis"));
             createDirIfNotExist(dir.concat("/Apis/"+data['api']));
             createDirIfNotExist(samplePath);
         }
