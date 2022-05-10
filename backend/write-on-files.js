@@ -2,7 +2,7 @@ const fs = require('fs');
 const Encoding = require('encoding-japanese');
 const { ipcMain } = require('electron');
 const _ = require('lodash');
-const { server } = require('./server.js');
+const { server } = require('./server');
 
 let win;
 
@@ -90,6 +90,8 @@ ipcMain.on("change-status", (e, data)=>{
             return true;
         }
     });
+
+    server.changePlayerStatus(data['path'], data['type'], data['user']['name'], response);
 
     if(response != true){
         fileContent.push({"uuid":data['user']['uuid'], 'name': data['user']['name'], "level":4, "bypassesPlayerLimit":false});

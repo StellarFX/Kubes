@@ -11,7 +11,7 @@
     },
     {
       "path": "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/paper - Copie",
-      "api": "Paper",
+      "api": "Craftbukkit",
       "version": "1.16.5",
       "name": "paper - Copie",
       "port": "25565",
@@ -27,6 +27,7 @@
     }
   ],
   "lastLaunches": [
+    "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/paper - Copie",
     "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/paper",
     "D:/Users/Baptiste/Documents/Dev/Repertory/Kubes/Servers/test"
   ]

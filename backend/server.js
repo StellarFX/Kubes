@@ -1,9 +1,11 @@
 const { spawn, exec } = require("child_process");
+const { memoryUsage } = require('node:process');
 const fs = require('fs');
 const { ipcMain } = require('electron');
 var propertiesReader = require('properties-reader');
 const methods = require('./manage-servers');
 const axios = require('axios');
+let pidusage = require('pidusage');
 
 let server = {};
 let servList = {};
@@ -20,6 +22,14 @@ class Server {
         this.process;
         this.restart;
         this.status = 0;
+    }
+
+    sendCommand(command){
+        if(this.status === 1){
+            this.process.stdin.cork();
+            this.process.stdin.write(command + "\n");
+            this.process.stdin.uncork();
+        }
     }
 
     setApi(api){
@@ -298,6 +308,52 @@ server.rename = (oldpath, newpath, name)=>{
     delete servList[oldpath];
 }
 
+server.changePlayerStatus = (path, type, username, sens)=>{
+    if(type === "ops"){
+        if(sens){
+            servList[path].sendCommand(`deop ${username}`);
+        }
+        else{
+            servList[path].sendCommand(`op ${username}`);
+        }
+    }
+    if(type === "banned-ips"){
+        if(sens){
+            servList[path].sendCommand(`pardon-ip ${username}`);
+        }
+        else{
+            servList[path].sendCommand(`ban-ip ${username}`);
+        }
+    }
+    if(type === "banned-players"){
+        if(sens){
+            servList[path].sendCommand(`pardon ${username}`);
+        }
+        else{
+            servList[path].sendCommand(`ban ${username}`);
+        }
+    }
+}
+
+ipcMain.handle('get-usage', async (e,path)=>{
+    let resp = await pidusage(servList[path].process.pid);
+    resp['ram'] = servList[path].ram;
+    return resp;
+    /*new Promise((res,rej)=>{
+        pidusage(servList[path].process.pid, (err, stats)=>{
+            if(err){
+                console.error(err);
+                rej();
+            }
+            console.log(stats);
+            let resp = stats;
+            resp['ram'] = servList[path].ram;
+            res(resp);
+        });
+        console.log();
+    });*/
+});
+
 ipcMain.handle('get-activity', async(e,path)=>{
     if(servList[path]){
         return servList[path].status;
@@ -316,7 +372,20 @@ ipcMain.handle('last-server-launched', ()=>{
     fs.writeFileSync(require.resolve('./lastLaunched.json'), JSON.stringify(data, null, 2));
     for(let i = 0; i < data['lastLaunches'].length; i++){
         if(fs.existsSync(data['lastLaunches'][i])){
-            return data['serverList'].filter((e)=>e['path'] === data['lastLaunches'][i])[0];
+            let last = data['serverList'].filter((e)=>e['path'] === data['lastLaunches'][i])[0];
+            let ram = JSON.parse(fs.readFileSync(last['path'] + "/.kubes"))['ram'];
+            if(ram === "" || !ram || parseInt(ram) < 1024){
+                ram = 2048
+            }
+            if(!servList[last['path']]){
+                servList[last['path']] = new Server(last['path'], last['name'], ram, last['api'], last['version']);
+            }
+            else{
+                servList[last['path']].setRam(ram);
+                servList[last['path']].setApi(last['api']);
+                servList[last['path']].setVersion(last['version']);
+            }
+            return last;
         }
     }
     return;

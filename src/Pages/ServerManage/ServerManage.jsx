@@ -22,7 +22,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Dialog } from '@mantine/core';
 
 const { ipcRenderer } = window.require('electron');
-
 function ServerManage(){
 
     const { id } = useParams();
@@ -85,7 +84,7 @@ function ServerManage(){
     ipcRenderer.on('changed-port', (e,data)=>{
         setPort(data['port']);
         setMaxPlayers(data['maxPlayers']);
-        
+
         ipcRenderer.removeAllListeners('changed-port');
     });
 
@@ -152,7 +151,7 @@ function ServerManage(){
                         <Route path="/players" element={<Players path={servPath}/>}/>
                         <Route path="/whitelist" element={<Whitelist path={servPath}/>}/>
                         <Route path="/files" element={<FileManager server={id} path={servPath}/>}/>
-                        <Route path="/performances" element={<Performances path={servPath}/> }/>
+                        <Route path="/performances" element={<Performances status={status} path={servPath}/>}/>
                     </Routes>
                 </div>
             </div>
