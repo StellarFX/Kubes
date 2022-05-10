@@ -2,6 +2,7 @@ const fs = require('fs');
 const Encoding = require('encoding-japanese');
 const { ipcMain } = require('electron');
 const _ = require('lodash');
+const { server } = require('./server.js');
 
 let win;
 
@@ -26,6 +27,8 @@ ipcMain.on("change-properties", (e, content, path)=>{
                     },{});
     let port = props['server-port'];
     let maxPlayers = props['max-players'];
+
+    server.changePort(port, path);
 
     let data = JSON.parse(fs.readFileSync(require.resolve('./lastLaunched.json')));
     for(let i = 0; i < data['serverList'].length; i++){

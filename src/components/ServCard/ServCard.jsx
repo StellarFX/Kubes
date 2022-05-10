@@ -105,7 +105,7 @@ export default function ServCard(props) {
     const [holderValue, setHolderValue] = useState("card-name-input-1");
     const [placeHolder, setPlaceHolder] = useState("Enter a name...");
 
-    const p = <p className="card-name" onClick={()=>{setInput()}} id={Name}>{Name}</p>;
+    const p = <p className="card-name" onClick={()=>{if(parseInt(Status)===0){setInput()}}} id={Name}>{Name}</p>;
     const input= <input type="text" className={holderValue} placeholder={placeHolder} onKeyDown={(event) => inputResponse(event)} autoFocus></input>;
     const doms = [p, input];
 
