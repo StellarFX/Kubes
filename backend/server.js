@@ -22,6 +22,18 @@ class Server {
         this.status = 0;
     }
 
+    setApi(api){
+        this.api = api;
+    }
+
+    setVersion(version){
+        this.version = version;
+    }
+
+    setRam(ram){
+        this.ram = ram;
+    }
+
     renameServer(path, name){
         this.path = path;
         this.name = name;
@@ -199,7 +211,7 @@ class Server {
                 if(`${data}`.slice(-3) === "%\r\n"){
                     win.webContents.send('preparing-spawn');
                 }
-                if(`stdout: ${data}`.slice(-25) === '! For help, type "help"\r\n' || `stdout: ${data}`.slice(-32) === '! For help, type "help" or "?"\r\n' ){
+                if(`stdout: ${data}`.match(/stdout: \[(.*)\] \[Server thread\/INFO\]: Done \((.*)s\)! For help, type "help"/g)){
                     let kubes = {
                         "api": this.api.charAt(0).toUpperCase() + this.api.slice(1),
                         "version": this.version,
@@ -265,9 +277,14 @@ server.setWin = (Win)=>{
     win = Win;
 }
 
-server.scannedServer = (path, api, version, name, port, ram)=>{
+server.scannedServer = (path, api, version, name, ram)=>{
     if(!servList[path]){
-        servList[path] = new Server(path, name, port, ram, api, version);
+        servList[path] = new Server(path, name, ram, api, version);
+    }
+    else{
+        servList[path].setRam(ram);
+        servList[path].setApi(api);
+        servList[path].setVersion(version);
     }
 }
 
